@@ -3,11 +3,9 @@ services:
     image: posgres:17.0
     container_name: db_viajando
     environment:
-      - Postgress_user=Facu
-      - Postgress_user=Abril
-      - Postgress_user=Ana
-      - Postgress_password=1234
-      - Postgress_viajes= viajando
+      - POSTGRESS_USER = Facu
+      - POSTGRESS_PASSWORD = 1234
+      - POSTGRESS_DB = viajando
     ports:
       - 5432:5432
     volumes:
