@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es"> 
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Proximo Destino - WorldTracker</title>
+        <link rel="stylesheet" href="../css/paises.css">
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- Open Sans Font -->
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+        <!-- Icons Webpage -->
+        <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- NavBar -->
+        <header role="banner">
+            <a href="index.html" class="logo-link">
+                <img src="../img/logo.png" alt="WorldTracker" width="60">
+                <span class="nombre-pagina">WorldTracker</span>
+            </a>
+            <div class="nav-center">
+                <nav class="paises">
+                    <a href="paises.html"></i>Proximo Destino</a>
+                </nav>
+                <nav class="vuelos">
+                    <a href="vuelos.html"></i>Vuelos</a>
+                </nav>
+            </div>
+            <div class="nav-right">
+                <nav class="usuario">
+                    <a href="registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>Registro</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Visualizador Paises -->
+        <table id="paisesTabla">
+        </table>
+        <div class="button-container">
+            <button id="anterior" class="lbottom" onclick="cambiarPagina(-1)">Anterior</button>
+            <button id="siguiente" class="rbottom" onclick="cambiarPagina(+1)">Siguiente</button>
+        </div>
+        <script>
+            let minimo = 0;
+            let maximo = 20; 
+
+            function fetchPaises(minimo, maximo){
+                fetch("https://restcountries.com/v3.1/all")
+                    .then(response => response.json())
+                    .then(datos => {
+                        let paises = datos.slice(minimo, minimo + maximo); // esto es para paginar :D
+                        console.log(paises);
+                        let tabla = document.getElementById("paisesTabla");
+                        tabla.innerHTML = "" //limpia el html de la tabla para que cada vez q avanzo en una pagina se carguen nuevos paises y no queden los anteriores
+                        
+                        for(let i = 0; i < paises.length; i += 5){ //i += 5 para mostrar de a 5 paises
+                            let fila = document.createElement("tr");
+                            for(let j = i; j < i + 5 && j < paises.length; j++){
+                                let celda = document.createElement("td");
+                                let nombrePais = paises[j].name.common; 
+
+                                let link = document.createElement("a");
+                                link.innerHTML = nombrePais;
+                                link.href = ""//Aca hay q agregar el otro archivo html del pais, es lo q nos llevaria a la pagina de cada pais
+                                celda.append(link)
+                                
+                                let img = document.createElement("img");
+                                img.src = paises[j].flags.png;
+                                img.alt = nombrePais;
+                                img.width = 100;
+                                celda.append(img); 
+                                    
+                                fila.append(celda);
+                            }
+                            tabla.append(fila);
+                        
+                        }
+
+                    });
+                    // aca podria ir un manejo de errores del fetch creo
+            }
+
+            function cambiarPagina(direccion){
+                    minimo += direccion * maximo;
+                    if (minimo < 0) minimo = 0;
+                    fetchPaises(minimo,maximo)
+                }
+        </script>
+    </body>
+</html>
