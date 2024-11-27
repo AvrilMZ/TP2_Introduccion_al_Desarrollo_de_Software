@@ -5,10 +5,10 @@ header {
     position: sticky;
     top: 0;
     z-index: 999;
-    font-family: 'Open Sans', sans-serif;
     display: flex;
     align-items: center;
     justify-content: space-between;
+
 }
 
 header img {
@@ -35,6 +35,10 @@ header img {
     display: flex;
     flex: 1;
     justify-content: center;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: bold;
 }
 
 .nav-right {
