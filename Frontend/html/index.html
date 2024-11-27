@@ -4,7 +4,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>WorldTracker</title>
-        <link rel="stylesheet" href="../css/style.css">
         <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,16 +11,20 @@
          <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
         <!-- Icons Webpage -->
         <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
+        <!--Bulma-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+        <!--CSS-->
+        <link rel="stylesheet" href="../css/style.css">
+
     </head>
 
     <body>
         <!-- NavBar -->
         <header role="banner">
             <a href="index.html" class="logo-link">
-                <img src="../img/logo.png" alt="WorldTracker" width="60">
-                <span class="nombre-pagina">WorldTracker</span>
+                <img src="../img/logo2.png" alt="WorldTracker" width="300">
             </a>
-            <div class="nav-center">
+            <div class="nav-center-no-bulma">
                 <nav class="paises">
                     <a href="paises.html"></i>PRÓXIMO DESTINO</a>
                 </nav>
@@ -29,11 +32,63 @@
                     <a href="vuelos.html"></i>VUELOS</a>
                 </nav>
             </div>
-            <div class="nav-right">
+            <div class="nav-right-no-bulma">
                 <nav class="usuario">
-                    <a href="registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>Registro</a>
+                    <a href="registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>REGISTRATE</a>
                 </nav>
             </div>
         </header>
-    </body>
+        <div class="carrousel">
+            <div class="fotocarrousel">
+                <img src="../img/carrousel1.jpg" alt="Londres" width=100%>
+            </div>
+            <div class="fotocarrousel">
+                <img src="../img/carrousel2.jpeg" alt="Macchu Picchu" width=100%>
+            </div>
+            <div class="fotocarrousel">
+                <img src="../img/carrousel3.jpg" alt="Misiones" width=100%>
+            </div>
+            <div class="fotocarrousel">
+                <img src="../img/carrousel4.jpeg" alt="New York" width=100%>
+            </div>
+             <!-- Next and previous buttons -->
+            <a class="anterior" onclick="avanzarFotos(-1)">&#10095;</a>
+            <a class="siguiente" onclick="avanzarFotos(1)">&#10094;</a>
+            </div>
+            <br>
+
+        </div>
+        <div class="has-text-centered">
+            <a href="paises.html" class="button is-primary boton-paises">Ver todos los países</a>
+        </div>
+        <script>
+            let carrouselIndex = 1;
+            mostrarFotos(carrouselIndex);
+
+            function avanzarFotos(n) {
+                mostrarFotos(carrouselIndex += n);
+            } 
+
+            function fotosActual(n){
+                mostrarFotos(carrouselIndex = n);
+            }
+            
+            function mostrarFotos(n){
+                let i;
+                let fotoscarrousel = document.getElementsByClassName("fotocarrousel")
+                if (n > fotoscarrousel.length) {carrouselIndex = 1} //si el indice > a la cantidad, vuelve al primero
+                if (n < 1) {carrouselIndex = fotoscarrousel.length} //si indice es < 1, va al final
+                for (i = 0; i < fotoscarrousel.length; i++) {//oculta todas las fotos
+                    fotoscarrousel[i].style.display="none";
+                }
+                fotoscarrousel[carrouselIndex-1].style.display = "block"; // muestra la foto actual nomas
+            }
+
+            setInterval(() => {
+            avanzarFotos(1);
+            }, 10000); //mueve las fotos cada 10 segundos
+
+        </script>
+            </body>
+        
 </html>
