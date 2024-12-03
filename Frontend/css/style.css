@@ -42,7 +42,7 @@ header img {
     justify-content: flex-end;
 }
 
-.vuelos{
+.vuelos {
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
     font-weight: 700;
@@ -50,7 +50,7 @@ header img {
     color: black;
 }
 
-.paises{
+.paises {
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
     font-weight: 700;
@@ -71,6 +71,10 @@ nav a {
     cursor: pointer;
     display: flex;
     align-items: center;
+}
+
+nav a i {
+    margin-right: 5px;
 }
 
 nav a:hover {
@@ -105,15 +109,16 @@ nav a:hover {
     font-weight: 700;
     font-style: bold;
     color: white;
-  }
+}
 
+/* ---- CARROUSEL ---- */
 .carrousel {
     max-width: 100%;
     position: relative;
     margin: auto;
-  }
+}
   
-.fotocarrousel {
+.fotoCarrousel {
     display: none;
 }
 
@@ -130,18 +135,13 @@ nav a:hover {
     transition: 0.6s ease;
     border-radius: 0 3px 3px 0;
     user-select: none;
-  }
+}
   
-  .anterior {
+.anterior {
     right: 0;
     border-radius: 3px 0 0 3px;
-  }
+}
   
-  .anterior:hover, .siguiente:hover {
+.anterior:hover, .siguiente:hover {
     background-color: rgba(0,0,0,0.8);
-  }
-  
-
-nav a i {
-    margin-right: 5px;
 }

@@ -38,25 +38,26 @@
                 </nav>
             </div>
         </header>
+
+        <!-- Carrousel -->
         <div class="carrousel">
-            <div class="fotocarrousel">
+            <div class="fotoCarrousel">
                 <img src="../img/carrousel1.jpg" alt="Londres" width=100%>
             </div>
-            <div class="fotocarrousel">
+            <div class="fotoCarrousel">
                 <img src="../img/carrousel2.jpeg" alt="Macchu Picchu" width=100%>
             </div>
-            <div class="fotocarrousel">
+            <div class="fotoCarrousel">
                 <img src="../img/carrousel3.jpg" alt="Misiones" width=100%>
             </div>
-            <div class="fotocarrousel">
+            <div class="fotoCarrousel">
                 <img src="../img/carrousel4.jpeg" alt="New York" width=100%>
             </div>
-             <!-- Next and previous buttons -->
-            <a class="anterior" onclick="avanzarFotos(-1)">&#10095;</a>
-            <a class="siguiente" onclick="avanzarFotos(1)">&#10094;</a>
+                <!-- Next and previous buttons -->
+                <a class="anterior" onclick="avanzarFotos(-1)">&#10095;</a>
+                <a class="siguiente" onclick="avanzarFotos(1)">&#10094;</a>
             </div>
             <br>
-
         </div>
         <div class="has-text-centered">
             <a href="paises.html" class="button is-primary boton-paises">Ver todos los países</a>
@@ -75,10 +76,10 @@
             
             function mostrarFotos(n){
                 let i;
-                let fotoscarrousel = document.getElementsByClassName("fotocarrousel")
+                let fotoscarrousel = document.getElementsByClassName("fotoCarrousel")
                 if (n > fotoscarrousel.length) {carrouselIndex = 1} //si el indice > a la cantidad, vuelve al primero
                 if (n < 1) {carrouselIndex = fotoscarrousel.length} //si indice es < 1, va al final
-                for (i = 0; i < fotoscarrousel.length; i++) {//oculta todas las fotos
+                for (i = 0; i < fotoscarrousel.length; i++) { //oculta todas las fotos
                     fotoscarrousel[i].style.display="none";
                 }
                 fotoscarrousel[carrouselIndex-1].style.display = "block"; // muestra la foto actual nomas
@@ -87,8 +88,6 @@
             setInterval(() => {
             avanzarFotos(1);
             }, 10000); //mueve las fotos cada 10 segundos
-
         </script>
-            </body>
-        
+    </body>
 </html>
