@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>WorldTracker</title>
+        <link rel="icon" href="../img/logo.png" type="image/png">
         <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,57 +39,79 @@
                 </nav>
             </div>
         </header>
-        <div class="carrousel">
-            <div class="fotocarrousel">
-                <img src="../img/carrousel1.jpg" alt="Londres" width=100%>
-            </div>
-            <div class="fotocarrousel">
-                <img src="../img/carrousel2.jpeg" alt="Macchu Picchu" width=100%>
-            </div>
-            <div class="fotocarrousel">
-                <img src="../img/carrousel3.jpg" alt="Misiones" width=100%>
-            </div>
-            <div class="fotocarrousel">
-                <img src="../img/carrousel4.jpeg" alt="New York" width=100%>
-            </div>
-             <!-- Next and previous buttons -->
-            <a class="anterior" onclick="avanzarFotos(-1)">&#10095;</a>
-            <a class="siguiente" onclick="avanzarFotos(1)">&#10094;</a>
+
+        <div class="content">
+            <!-- Carrousel -->
+            <div class="carrousel">
+                <div class="textoCarrousel">
+                    <p>ELEGÍ TU PRÓXIMO DESTINO</p>
+                </div>
+                <div class="fotoCarrousel">
+                    <img src="../img/carrousel1.jpg" alt="Londres">
+                </div>
+                <div class="fotoCarrousel">
+                    <img src="../img/carrousel2.jpeg" alt="Macchu Picchu">
+                </div>
+                <div class="fotoCarrousel">
+                    <img src="../img/carrousel3.jpg" alt="Misiones">
+                </div>
+                <div class="fotoCarrousel">
+                    <img src="../img/carrousel4.jpeg" alt="New York">
+                </div>
+                <!-- Next and previous buttons -->
+                <a class="anterior" onclick="avanzarFotos(-1)">&#10095;</a>
+                <a class="siguiente" onclick="avanzarFotos(1)">&#10094;</a>
             </div>
             <br>
+            <div class="has-text-centered">
+                <a href="paises.html" class="button is-primary boton-paises">Ver todos los países</a>
+            </div>
+            <script>
+                let carrouselIndex = 1;
+                let textoCarrousel = document.querySelector('.textoCarrousel');
+                mostrarFotos(carrouselIndex);
 
-        </div>
-        <div class="has-text-centered">
-            <a href="paises.html" class="button is-primary boton-paises">Ver todos los países</a>
-        </div>
-        <script>
-            let carrouselIndex = 1;
-            mostrarFotos(carrouselIndex);
+                function avanzarFotos(n) {
+                    mostrarFotos(carrouselIndex += n);
+                } 
 
-            function avanzarFotos(n) {
-                mostrarFotos(carrouselIndex += n);
-            } 
-
-            function fotosActual(n){
-                mostrarFotos(carrouselIndex = n);
-            }
-            
-            function mostrarFotos(n){
-                let i;
-                let fotoscarrousel = document.getElementsByClassName("fotocarrousel")
-                if (n > fotoscarrousel.length) {carrouselIndex = 1} //si el indice > a la cantidad, vuelve al primero
-                if (n < 1) {carrouselIndex = fotoscarrousel.length} //si indice es < 1, va al final
-                for (i = 0; i < fotoscarrousel.length; i++) {//oculta todas las fotos
-                    fotoscarrousel[i].style.display="none";
+                function fotosActual(n) {
+                    mostrarFotos(carrouselIndex = n);
                 }
-                fotoscarrousel[carrouselIndex-1].style.display = "block"; // muestra la foto actual nomas
-            }
+                
+                function mostrarFotos(n) {
+                    let fotoscarrousel = document.getElementsByClassName("fotoCarrousel")
+                    if (n > fotoscarrousel.length) {carrouselIndex = 1} //si el indice > a la cantidad, vuelve al primero
+                    if (n < 1) {carrouselIndex = fotoscarrousel.length} //si indice es < 1, va al final
+                    for (let i = 0; i < fotoscarrousel.length; i++) { //oculta todas las fotos
+                        fotoscarrousel[i].style.display = "none";
+                    }
+                    fotoscarrousel[carrouselIndex - 1].style.display = "block"; // muestra la foto actual nomas
 
-            setInterval(() => {
-            avanzarFotos(1);
-            }, 10000); //mueve las fotos cada 10 segundos
+                    textoCarrousel.style.opacity = 1; // Mostrar el texto con transición
+                }
 
-        </script>
-            </body>
-        
+                setInterval(() => {
+                    avanzarFotos(1);
+                }, 10000); // Mueve las fotos cada 10 segundos
+            </script>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <p>© 2024 WorldTravel. Todos los derechos reservados.</p>
+                <p>
+                    Desarrollado por 
+                    <a href="https://github.com/abbnunez" target="_blank">Abril Belén Nuñez</a>, 
+                    <a href="https://github.com/anaprovvi" target="_blank">Ana Provvisionato</a>, 
+                    <a href="https://github.com/AvrilMZ" target="_blank">Avril Victoria Morfeo Zerbi</a> y 
+                    <a href="https://github.com/facustifman" target="_blank">Facundo Camilo Stifman</a>.
+                </p>
+                <div class="footer-social">
+                    <a href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </footer>
+    </body>
 </html>
