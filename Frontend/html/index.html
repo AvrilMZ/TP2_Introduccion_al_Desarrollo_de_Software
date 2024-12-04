@@ -40,60 +40,62 @@
             </div>
         </header>
 
-        <!-- Carrousel -->
-        <div class="carrousel">
-            <div class="textoCarrousel">
-                <p>ELEGÍ TU PRÓXIMO DESTINO</p>
+        <div class="content">
+            <!-- Carrousel -->
+            <div class="carrousel">
+                <div class="textoCarrousel">
+                    <p>ELEGÍ TU PRÓXIMO DESTINO</p>
+                </div>
+                <div class="fotoCarrousel">
+                    <img src="../img/carrousel1.jpg" alt="Londres">
+                </div>
+                <div class="fotoCarrousel">
+                    <img src="../img/carrousel2.jpeg" alt="Macchu Picchu">
+                </div>
+                <div class="fotoCarrousel">
+                    <img src="../img/carrousel3.jpg" alt="Misiones">
+                </div>
+                <div class="fotoCarrousel">
+                    <img src="../img/carrousel4.jpeg" alt="New York">
+                </div>
+                <!-- Next and previous buttons -->
+                <a class="anterior" onclick="avanzarFotos(-1)">&#10095;</a>
+                <a class="siguiente" onclick="avanzarFotos(1)">&#10094;</a>
             </div>
-            <div class="fotoCarrousel">
-                <img src="../img/carrousel1.jpg" alt="Londres">
+            <br>
+            <div class="has-text-centered">
+                <a href="paises.html" class="button is-primary boton-paises">Ver todos los países</a>
             </div>
-            <div class="fotoCarrousel">
-                <img src="../img/carrousel2.jpeg" alt="Macchu Picchu">
-            </div>
-            <div class="fotoCarrousel">
-                <img src="../img/carrousel3.jpg" alt="Misiones">
-            </div>
-            <div class="fotoCarrousel">
-                <img src="../img/carrousel4.jpeg" alt="New York">
-            </div>
-            <!-- Next and previous buttons -->
-            <a class="anterior" onclick="avanzarFotos(-1)">&#10095;</a>
-            <a class="siguiente" onclick="avanzarFotos(1)">&#10094;</a>
-        </div>
-        <br>
-        <div class="has-text-centered">
-            <a href="paises.html" class="button is-primary boton-paises">Ver todos los países</a>
-        </div>
-        <script>
-            let carrouselIndex = 1;
-            let textoCarrousel = document.querySelector('.textoCarrousel');
-            mostrarFotos(carrouselIndex);
+            <script>
+                let carrouselIndex = 1;
+                let textoCarrousel = document.querySelector('.textoCarrousel');
+                mostrarFotos(carrouselIndex);
 
-            function avanzarFotos(n) {
-                mostrarFotos(carrouselIndex += n);
-            } 
+                function avanzarFotos(n) {
+                    mostrarFotos(carrouselIndex += n);
+                } 
 
-            function fotosActual(n) {
-                mostrarFotos(carrouselIndex = n);
-            }
-            
-            function mostrarFotos(n) {
-                let fotoscarrousel = document.getElementsByClassName("fotoCarrousel")
-                if (n > fotoscarrousel.length) {carrouselIndex = 1} //si el indice > a la cantidad, vuelve al primero
-                if (n < 1) {carrouselIndex = fotoscarrousel.length} //si indice es < 1, va al final
-                for (let i = 0; i < fotoscarrousel.length; i++) { //oculta todas las fotos
-                    fotoscarrousel[i].style.display = "none";
+                function fotosActual(n) {
+                    mostrarFotos(carrouselIndex = n);
                 }
-                fotoscarrousel[carrouselIndex - 1].style.display = "block"; // muestra la foto actual nomas
+                
+                function mostrarFotos(n) {
+                    let fotoscarrousel = document.getElementsByClassName("fotoCarrousel")
+                    if (n > fotoscarrousel.length) {carrouselIndex = 1} //si el indice > a la cantidad, vuelve al primero
+                    if (n < 1) {carrouselIndex = fotoscarrousel.length} //si indice es < 1, va al final
+                    for (let i = 0; i < fotoscarrousel.length; i++) { //oculta todas las fotos
+                        fotoscarrousel[i].style.display = "none";
+                    }
+                    fotoscarrousel[carrouselIndex - 1].style.display = "block"; // muestra la foto actual nomas
 
-                textoCarrousel.style.opacity = 1; // Mostrar el texto con transición
-            }
+                    textoCarrousel.style.opacity = 1; // Mostrar el texto con transición
+                }
 
-            setInterval(() => {
-                avanzarFotos(1);
-            }, 10000); // Mueve las fotos cada 10 segundos
-        </script>
+                setInterval(() => {
+                    avanzarFotos(1);
+                }, 10000); // Mueve las fotos cada 10 segundos
+            </script>
+        </div>
 
         <!-- Footer -->
         <footer class="footer">

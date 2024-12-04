@@ -39,60 +39,62 @@
                 </nav>
             </div>
         </header>
-        
-        <!-- Visualizador Paises -->
-        <table id="paisesTabla">
-        </table>
-        <div class="button-container">
-            <button id="anterior" class="lbottom" onclick="cambiarPagina(-1)">Anterior</button>
-            <button id="siguiente" class="rbottom" onclick="cambiarPagina(+1)">Siguiente</button>
-        </div>
-        <script>
-            let minimo = 0;
-            let maximo = 20; 
 
-            function fetchPaises(minimo, maximo){
-                fetch("https://restcountries.com/v3.1/all")
-                    .then(response => response.json())
-                    .then(datos => {
-                        let paises = datos.slice(minimo, minimo + maximo); // esto es para paginar :D
-                        console.log(paises);
-                        let tabla = document.getElementById("paisesTabla");
-                        tabla.innerHTML = "" //limpia el html de la tabla para que cada vez q avanzo en una pagina se carguen nuevos paises y no queden los anteriores
-                        
-                        for(let i = 0; i < paises.length; i += 5){ //i += 5 para mostrar de a 5 paises
-                            let fila = document.createElement("tr");
-                            for(let j = i; j < i + 5 && j < paises.length; j++){
-                                let celda = document.createElement("td");
-                                let nombrePais = paises[j].name.common; 
+        <div class="content">
+            <!-- Visualizador Paises -->
+            <table id="paisesTabla">
+            </table>
+            <div class="button-container">
+                <button id="anterior" class="lbottom" onclick="cambiarPagina(-1)">Anterior</button>
+                <button id="siguiente" class="rbottom" onclick="cambiarPagina(+1)">Siguiente</button>
+            </div>
+            <script>
+                let minimo = 0;
+                let maximo = 20; 
 
-                                let link = document.createElement("a");
-                                link.innerHTML = nombrePais;
-                                link.href = ""//Aca hay q agregar el otro archivo html del pais, es lo q nos llevaria a la pagina de cada pais
-                                celda.append(link)
-                                
-                                let img = document.createElement("img");
-                                img.src = paises[j].flags.png;
-                                img.alt = nombrePais;
-                                img.width = 100;
-                                celda.append(img); 
+                function fetchPaises(minimo, maximo){
+                    fetch("https://restcountries.com/v3.1/all")
+                        .then(response => response.json())
+                        .then(datos => {
+                            let paises = datos.slice(minimo, minimo + maximo); // esto es para paginar :D
+                            console.log(paises);
+                            let tabla = document.getElementById("paisesTabla");
+                            tabla.innerHTML = "" //limpia el html de la tabla para que cada vez q avanzo en una pagina se carguen nuevos paises y no queden los anteriores
+                            
+                            for(let i = 0; i < paises.length; i += 5){ //i += 5 para mostrar de a 5 paises
+                                let fila = document.createElement("tr");
+                                for(let j = i; j < i + 5 && j < paises.length; j++){
+                                    let celda = document.createElement("td");
+                                    let nombrePais = paises[j].name.common; 
+
+                                    let link = document.createElement("a");
+                                    link.innerHTML = nombrePais;
+                                    link.href = ""//Aca hay q agregar el otro archivo html del pais, es lo q nos llevaria a la pagina de cada pais
+                                    celda.append(link)
                                     
-                                fila.append(celda);
+                                    let img = document.createElement("img");
+                                    img.src = paises[j].flags.png;
+                                    img.alt = nombrePais;
+                                    img.width = 100;
+                                    celda.append(img); 
+                                        
+                                    fila.append(celda);
+                                }
+                                tabla.append(fila);
+                            
                             }
-                            tabla.append(fila);
-                        
-                        }
 
-                    });
-                    // aca podria ir un manejo de errores del fetch creo
-            }
-
-            function cambiarPagina(direccion){
-                    minimo += direccion * maximo;
-                    if (minimo < 0) minimo = 0;
-                    fetchPaises(minimo,maximo)
+                        });
+                        // aca podria ir un manejo de errores del fetch creo
                 }
-        </script>
+
+                function cambiarPagina(direccion){
+                        minimo += direccion * maximo;
+                        if (minimo < 0) minimo = 0;
+                        fetchPaises(minimo,maximo)
+                    }
+            </script>
+        </div>
         
         <!-- Footer -->
         <footer class="footer">
