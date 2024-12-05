@@ -3,7 +3,7 @@ services:
     image: postgres:17
     container_name: database
     environment:
-      - POSTGRESS_USER = Facu
+      - POSTGRESS_USER = Intro
       - POSTGRESS_PASSWORD = 1234
       - POSTGRESS_DB = viajando
     ports:
