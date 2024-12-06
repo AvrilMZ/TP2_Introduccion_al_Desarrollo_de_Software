@@ -1,4 +1,4 @@
-const { PrismaClient } = require ('@prisma/client')
+const { PrismaClient } = require('@prisma/client')
 const express = require('express')
 const app = express()
 const port = 3000
@@ -13,18 +13,18 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/v1/users', async(req, res) => {
-  const users = await prisma.findMany() 
+  const users = await prisma.user.findMany() 
   res.json(users)
 })
 
-app.get('/api/v1/users/:id', async (req, res) => {
+app.get('/api/v1/users/:usuario', async (req, res) => {
   const user = await prisma.user.findUnique({
     where: {
-      id: parseInt(req.params.id)
+      usuario: req.params.usuario
     }
   })
 
-  if (user === null) {
+  if (!user) {
     res.status(404).send('User not found')
     return
   }
@@ -36,9 +36,10 @@ app.post('/api/v1/users', async (req, res) => {
   const user = await prisma.user.create({
     data: {
       nombre: req.body.nombre,
+      usuario: req.body.usuario,
       nacionalidad: req.body.nacionalidad,
       idiomas: req.body.idiomas,
-      contacto: req.body.contacto,
+      email: req.body.contacto,
       paises_visitados: req.body.paises_visitados
     }
   })
@@ -60,7 +61,7 @@ app.delete('/api/v1/users/:id', async (req, res) => {
   
   await prisma.user.delete({
     where: {
-      id: parseInt (req.params.id)
+      id: parseInt(req.params.id)
     }
   })
   
@@ -69,7 +70,7 @@ app.delete('/api/v1/users/:id', async (req, res) => {
 
 
 app.put('/api/v1/users/:id', async (req, res) => {
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: {
       id: parseInt(req.params.id)
     }
@@ -86,6 +87,7 @@ app.put('/api/v1/users/:id', async (req, res) => {
     },
     data: {
       nombre: req.body.nombre,
+      usuario: req.body.usuario,
       nacionaidad: req.body.nacionalidad,
       idiomas: req.body.idiomas,
       contacto: req.body.contacto,
