@@ -14,7 +14,8 @@ datasource db {
 }
 
 model User {
-  id               Int      @id @default(autoincrement())
+  id               Int @id @default(autoincrement())
+  usuario          String @unique
   nombre           String
   nacionalidad     String
   idiomas          String[]
