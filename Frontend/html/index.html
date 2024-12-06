@@ -65,35 +65,7 @@
             <div class="has-text-centered">
                 <a href="paises.html" class="button is-primary boton-paises">Ver todos los países</a>
             </div>
-            <script>
-                let carrouselIndex = 1;
-                let textoCarrousel = document.querySelector('.textoCarrousel');
-                mostrarFotos(carrouselIndex);
-
-                function avanzarFotos(n) {
-                    mostrarFotos(carrouselIndex += n);
-                } 
-
-                function fotosActual(n) {
-                    mostrarFotos(carrouselIndex = n);
-                }
-                
-                function mostrarFotos(n) {
-                    let fotoscarrousel = document.getElementsByClassName("fotoCarrousel")
-                    if (n > fotoscarrousel.length) {carrouselIndex = 1} //si el indice > a la cantidad, vuelve al primero
-                    if (n < 1) {carrouselIndex = fotoscarrousel.length} //si indice es < 1, va al final
-                    for (let i = 0; i < fotoscarrousel.length; i++) { //oculta todas las fotos
-                        fotoscarrousel[i].style.display = "none";
-                    }
-                    fotoscarrousel[carrouselIndex - 1].style.display = "block"; // muestra la foto actual nomas
-
-                    textoCarrousel.style.opacity = 1; // Mostrar el texto con transición
-                }
-
-                setInterval(() => {
-                    avanzarFotos(1);
-                }, 10000); // Mueve las fotos cada 10 segundos
-            </script>
+            <script src="../js/main.js"></script>
         </div>
 
         <!-- Footer -->
