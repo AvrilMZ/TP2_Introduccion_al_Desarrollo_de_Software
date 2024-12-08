@@ -1,0 +1,12 @@
+services:
+  viaje:
+    image: postgres:17
+    container_name: database
+    environment:
+      - POSTGRES_USER=Intro
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=viajando
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
