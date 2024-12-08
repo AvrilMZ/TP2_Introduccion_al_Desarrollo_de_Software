@@ -14,11 +14,35 @@ datasource db {
 }
 
 model User {
-  id               Int @id @default(autoincrement())
-  usuario          String @unique
+  id               Int      @id @default(autoincrement())
+  usuario          String   @unique
   nombre           String
   nacionalidad     String
   idiomas          String[]
   contacto         String
   paises_visitados String[]
+  Viaje            Viaje[]
+}
+
+model Pais {
+  id         Int      @id @default(autoincrement())
+  nombre     String
+  capital    String
+  idiomas    String[]
+  moneda     String
+  continente String
+  Viaje      Viaje[]
+}
+
+model Viaje {
+  id           Int      @id @default(autoincrement())
+  pais         Pais     @relation(fields: [paisId], references: [id])
+  paisId       Int
+  usuario      User     @relation(fields: [usuarioId], references: [id])
+  usuarioId    Int
+  fecha_inicio DateTime
+  fecha_fin    DateTime
+  ciudades     String[]
+  presupuesto  Decimal  @default(0)
+  calificacion Int      @default(0)
 }
