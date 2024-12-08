@@ -19,7 +19,7 @@ model User {
   nombre           String
   nacionalidad     String
   idiomas          String[]
-  contacto         Int
+  mail             String   @unique
   paises_visitados String[]
   Viaje            Viaje[]
 }
