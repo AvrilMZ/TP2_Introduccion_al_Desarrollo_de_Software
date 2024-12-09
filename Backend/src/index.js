@@ -21,7 +21,7 @@ app.get('/api/v1/users/:usuario', async (req, res) => {
   const user = await prisma.user.findUnique({
     where: {
       usuario: req.params.usuario
-    }
+    },
   })
 
   if (!user) {
@@ -30,6 +30,24 @@ app.get('/api/v1/users/:usuario', async (req, res) => {
   }
 
   res.json(user)
+})
+
+app.get('/api/v1/users/:usuario', async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      usuario: req.params.usuario
+    },
+    include: {
+      viajes: true
+    }
+  })
+
+  if (!user) {
+    res.status(404).send('User not found')
+    return
+  }
+
+  res.json(user.viaje)
 })
 
 app.post('/api/v1/users', async (req, res) => {
