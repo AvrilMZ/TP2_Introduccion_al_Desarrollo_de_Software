@@ -1,11 +1,13 @@
 const { PrismaClient } = require('@prisma/client')
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const port = 3000
 
 const prisma = new PrismaClient()
 
 app.use(express.json())
+app.use(cors()) 
 
 
 app.get('/', (req, res) => {
@@ -56,20 +58,37 @@ app.get('/api/v1/users/:usuario', async (req, res) => {
 })
 
 // Agrega un nuevo usuario
-app.post('/api/v1/users', async (req, res) => {
-  const user = await prisma.user.create({
-    data: {
-      nombre: req.body.nombre,
-      usuario: req.body.usuario,
-      nacionalidad: req.body.nacionalidad,
-      idiomas: req.body.idiomas,
-      email: req.body.contacto,
-      paises_visitados: req.body.paises_visitados
+app.post('/api/v1/usuarios', async (req, res) => {
+  try {
+    console.log('Datos recibidos:', req.body);
+
+    const user = await prisma.user.create({
+      data: {
+        nombre: req.body.nombre,
+        usuario: req.body.usuario,
+        nacionalidad: req.body.nacionalidad,
+        idiomas: req.body.idiomas,
+        mail: req.body.mail, 
+        paises_visitados: req.body['paises-visitados'],
+      },
+    });
+
+    res.status(201).json(user);
+  } catch (error) {
+    console.error('Error en el backend:', error);
+
+    if (error.code === 'P2002') {
+      //error 'p2002' de prisma es para cuando hay un campo único duplicado
+      return res.status(400).json({
+        error: ['El mail o usuario ya está en uso.'],
+      });
     }
-  })
-  
-  res.status(201).json(user)
-})
+
+    res.status(500).json({
+      error: ['Hubo un problema al crear el usuario. Por favor, intenta nuevamente.'],
+    });
+  }
+});
 
 //Elimina un usuario
 
