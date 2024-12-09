@@ -144,6 +144,4 @@ document.querySelector('form').addEventListener('submit', async function (event)
             errorGeneral.style.display = 'block';
         }
     }
-    
 });
-
