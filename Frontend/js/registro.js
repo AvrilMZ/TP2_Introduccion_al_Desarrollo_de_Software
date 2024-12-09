@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    
     fetch('https://restcountries.com/v3.1/all')
         .then(response => response.json())
         .then(countries => {
@@ -57,4 +58,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
         setTimeout(() => new MultiSelectTag('idiomas-container'), 0);
     }
+});
+
+document.querySelector('#registro-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const data = {};
+
+    for (const [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+
+    fetch('https://localhost:3000/api/v1/users', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Usuario registrado correctamente');
+            event.target.reset();
+        } else {
+            alert('Error al registrar el usuario');
+        }
+    });
 });
