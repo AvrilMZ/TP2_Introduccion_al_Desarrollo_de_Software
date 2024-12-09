@@ -12,10 +12,15 @@ app.get('/', (req, res) => {
   res.send('Viajandoo...')
 })
 
+// METODOS USERS
+// Busca todos los usuarios
+
 app.get('/api/v1/users', async(req, res) => {
   const users = await prisma.user.findMany() 
   res.json(users)
 })
+
+// Busca por usuario
 
 app.get('/api/v1/users/:usuario', async (req, res) => {
   const user = await prisma.user.findUnique({
@@ -25,7 +30,7 @@ app.get('/api/v1/users/:usuario', async (req, res) => {
   })
 
   if (!user) {
-    res.status(404).send('User not found')
+    res.status(404).send('Usuario no encontrado')
     return
   }
 
@@ -43,13 +48,14 @@ app.get('/api/v1/users/:usuario', async (req, res) => {
   })
 
   if (!user) {
-    res.status(404).send('User not found')
+    res.status(404).send('Usuario no encontrado')
     return
   }
 
   res.json(user.viaje)
 })
 
+// Agrega un nuevo usuario
 app.post('/api/v1/users', async (req, res) => {
   const user = await prisma.user.create({
     data: {
@@ -65,26 +71,31 @@ app.post('/api/v1/users', async (req, res) => {
   res.status(201).json(user)
 })
 
-app.delete('/api/v1/users/:id', async (req, res) => {
+//Elimina un usuario
+
+app.delete('/api/v1/users/:usuario', async (req, res) => {
+  const userUsuario = req.params.usuario
   const user = await prisma.user.findUnique({
     where: {
-      id: parseInt(req.params.id)
+      usuario: userUsuario
     }
   })
   
-  if (user === null) {
-    res.status(404).send('User not found')
+  if (!user) {
+    res.status(404).send('Usuario no encontrado')
     return
   }
   
   await prisma.user.delete({
     where: {
-      id: parseInt(req.params.id)
+      usuario: userUsuario
     }
   })
   
-  res.send(user)
+  res.send(`Usuario ${userUsuario} eliminado exitosamente`)
 })
+
+//Actualiza un usuario
 
 
 app.put('/api/v1/users/:id', async (req, res) => {
@@ -94,8 +105,8 @@ app.put('/api/v1/users/:id', async (req, res) => {
     }
   })
 
-  if (user === null) {
-    res.status(404).send('User not found')
+  if (!user) {
+    res.status(404).send('Usuario no encontrado')
     return
   }
 
@@ -106,7 +117,7 @@ app.put('/api/v1/users/:id', async (req, res) => {
     data: {
       nombre: req.body.nombre,
       usuario: req.body.usuario,
-      nacionaidad: req.body.nacionalidad,
+      nacionalidad: req.body.nacionalidad,
       idiomas: req.body.idiomas,
       contacto: req.body.contacto,
       paises_visitados: req.body.paises_visitados,
