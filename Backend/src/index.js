@@ -4,7 +4,6 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 require("dotenv").config();
-const fetch = require("node-fetch");
 const prisma = new PrismaClient();
 
 app.use(express.json());
@@ -303,43 +302,74 @@ app.delete("/api/v1/viajes/:id", async (req, res) => {
 
 //METODOS PAISES
 
-//metodo para crear una tabla de los paises(ya existente informacion)
-
-
-app.get("/api/v1/paises", async (req, res) => {
+// Ruta para traer y guardar países desde la API
+app.get('/api/v1/paises/fetch', async (req, res) => {
   try {
-    const respuesta = await fetch("https://restcountries.com/v3.1/all");
-    const paises = await respuesta.json();
+    console.log('Iniciando fetch de países...');
+    const response = await fetch('https://restcountries.com/v3.1/all');
+    console.log('Respuesta obtenida de la API');
+    const countries = await response.json();
 
-    for (const pais of paises) {
-      try {
-        const nombre = pais.name.common || "Desconocido";
-        const capital = pais.capital ? pais.capital[0] : "Desconocido";
-        const idiomas = pais.languages ? Object.values(pais.languages) : ["Desconocido"];
-        const moneda = pais.currencies ? Object.keys(pais.currencies)[0] : "Desconocido";
-        const continente = pais.continents ? pais.continents[0] : "Desconocido";
+    // Limitar a 250 países
+    const paises_limitados = countries.slice(0, 250);
 
-        await prisma.pais.create({
-          data: {
-            nombre,
-            capital,
-            idiomas,
-            moneda,
-            continente,
-          },
-        });
+    for (const pais of paises_limitados) {
+      console.log(`Procesando país: ${pais.name.common}`);
+      const idiomas = pais.languages ? Object.values(pais.languages) : [];
+      const capital = pais.capital && pais.capital.length > 0 ? pais.capital[0] : 'Desconocida';
+      const moneda = pais.currencies ? Object.keys(pais.currencies)[0] : 'Desconocida';
 
-        console.log(`Insertado: ${nombre}`);
-      } catch (err) {
-        console.error(`Error al insertar el país ${pais.name.common}:`, err.message);
-      }
+      await prisma.pais.create({
+        data: {
+          nombre: pais.name.common,
+          capital: capital,
+          idiomas: idiomas,
+          moneda: moneda,
+          continente: pais.region || 'Desconocido',
+        },
+      });
+      console.log(`País guardado: ${pais.name.common}`);
     }
 
-    res.status(201).send("Paises creados exitosamente");
+    res.status(200).json({ message: 'Países guardados exitosamente' });
   } catch (error) {
-    console.error('Error al recuperar datos de la API:', error.message);
-    res.status(500).send("Hubo un error al insertar los datos");
-  } finally {
-    await prisma.$disconnect();
+    console.error('Error detallado:', error);
+    res.status(500).json({ error: 'Error al guardar los países', detalles: error.message });
+  }
+});
+
+
+
+// Ruta para obtener todos los países
+app.get('/api/v1/paises', async (req, res) => {
+  try {
+    const paises = await prisma.pais.findMany({
+      include: { Viaje: true },
+    });
+    res.status(200).json(paises);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener los países' });
+  }
+});
+
+// Ruta para obtener un país por ID
+app.get('/api/v1/paises/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const pais = await prisma.pais.findUnique({
+      where: { id: parseInt(id) },
+      include: { Viaje: true },
+    });
+
+    if (!pais) {
+      return res.status(404).json({ error: 'País no encontrado' });
+    }
+
+    res.status(200).json(pais);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener el país' });
   }
 });
