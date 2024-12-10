@@ -20,7 +20,7 @@ Desarrollar un sitio web completo utilizando las tecnologías vistas a lo largo 
 * **DevOps**: Docker Compose
 
 ## WorldTracker
-WorldTracker es una página web que permite a los usuarios registrar los países que han visitado, agregar destinos a su lista de deseos y consultar información sobre ellos.
+WorldTracker es una página web que permite a los usuarios registrar los países que han visitado y consultar información sobre ellos.
 
 ### Capturas de pantalla del funcionamiento
 <!--
@@ -31,7 +31,45 @@ WorldTracker es una página web que permite a los usuarios registrar los países
 -->
 
 ### Instrucciones para correr el proyecto
-1. Clonar el repositorio
+Antes de ejecutar el proyecto, hay que tener instaladas las siguientes herramientas:
+* Docker (última versión estable)
+* Node.js (LTS)
+
+**Pasos a seguir:**
+1. Clonar el repositorio:
 ```bash
-git clone
+git clone <clave_ssh>
+```
+2. Entrar en el directorio del proyecto:
+```bash
+cd <direccion_local_repositorio>
+```
+3. Levantar el contenedor de la base de datos con Docker:
+```bash
+cd Backend
+docker-compose up -d
+```
+4. Renombra el archivo 'example.env' a '.env' y luego, usándolo como modelo, modifica los detalles de tu base de datos:
+```bash
+cp example.env .env
+```
+5. Instalar las dependencias del proyecto:
+```bash
+npm install
+```
+6. Generar el cliente de Prisma:
+```bash
+npx prisma generate
+```
+7. Aplicar migraciones para crear tablas en la base de datos:
+```bash
+npx prisma migrate dev
+```
+8. Levantar el servidor de la aplicación:
+```bash
+npm run dev
+```
+9. Levantar el servidor de la aplicación:
+```bash
+npm run dev
 ```
