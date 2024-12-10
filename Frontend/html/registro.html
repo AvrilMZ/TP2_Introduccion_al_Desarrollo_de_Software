@@ -1,133 +1,197 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Registro - WorldTracker</title>
-            <link rel="icon" href="../img/logo.png" type="image/png">
-            <!-- Google Fonts -->
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <!-- Inter font -->
-             <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-            <!-- Icons Webpage -->
-            <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
-            <!-- Bulma -->
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-            <!-- Multiple Select -->
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/css/multi-select-tag.css">
-            <!-- CSS -->
-            <link rel="stylesheet" href="../css/registro.css">
-        </head>
-    </head>
+	<head>
+		<head>
+			<meta charset="UTF-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<title>Registro - WorldTracker</title>
+			<link rel="icon" href="../img/logo.png" type="image/png" />
+			<!-- Google Fonts -->
+			<link rel="preconnect" href="https://fonts.googleapis.com" />
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+			<!-- Inter font -->
+			<link
+				href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+				rel="stylesheet"
+			/>
+			<!-- Icons Webpage -->
+			<link
+				href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
+				rel="stylesheet"
+			/>
+			<!-- Bulma -->
+			<link
+				rel="stylesheet"
+				href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+			/>
+			<!-- Multiple Select -->
+			<link
+				rel="stylesheet"
+				href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/css/multi-select-tag.css"
+			/>
+			<!-- CSS -->
+			<link rel="stylesheet" href="../css/registro.css" />
+		</head>
+	</head>
 
-    <body>
-        <!-- Nav Bar-->
-        <header role="banner">
-            <a href="index.html" class="logo-link">
-                <img src="../img/logo2.png" alt="WorldTracker" width="300">
-            </a>
-            <div class="nav-center-no-bulma">
-                <nav class="paises"><a href="paises.html">PAISES</a></nav>
-                <nav class="vuelos"><a href="viajes.html">VIAJES</a></nav>
-            </div>
-            <div class="nav-right-no-bulma">
-                <nav class="usuario"><a href="registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>REGISTRATE</a></nav>
-            </div>
-        </header>
-                <div class="content">
-            <h2>Registrate</h2>
-            <div class="field">
-                <p>¿Ya tenés una cuenta? <a href="login.html">Inicia sesión</a></p>
-            </div>
+	<body>
+		<!-- Nav Bar-->
+		<header role="banner">
+			<a href="index.html" class="logo-link">
+				<img src="../img/logo2.png" alt="WorldTracker" width="300" />
+			</a>
+			<div class="nav-center-no-bulma">
+				<nav class="paises"><a href="paises.html">PAISES</a></nav>
+				<nav class="vuelos"><a href="viajes.html">VIAJES</a></nav>
+			</div>
+			<div class="nav-right-no-bulma">
+				<nav class="usuario">
+					<a href="registro.html" class="boton-registro">
+						<i class="new bx bx-id-card"></i>
+						REGISTRATE
+					</a>
+				</nav>
+			</div>
+		</header>
+		<div class="content">
+			<h2>Registrate</h2>
+			<div class="field">
+				<p>
+					¿Ya tenés una cuenta?
+					<a href="login.html">Inicia sesión</a>
+				</p>
+			</div>
 
-            <div id="error-mensajes" style="display: none; color: red;"></div>
-            <div id="error-general" style="display: none; color: red;"></div>
-            <!-- Formulario -->
-            <form id="confirmar">
-                <div class="field">
-                    <label class="label">Nombre Completo</label>
-                    <div class="control">
-                        <input class="input" type="text" name="nombre" required>
-                    </div>
-                </div>
-                
-                <div class="field">
-                    <label class="label">Usuario</label>
-                    <div class="control">
-                        <input id="usuario" class="input is-success" type="text" name="usuario" required>
-                    </div>
-                    <p id="usuario-help" class="help is-success">Usuario disponible</p>
-                </div>
-                
-                <div class="field">
-                    <label class="label">Email</label>
-                    <div class="control">
-                        <input id="mail" class="input" type="mail" name="mail" required>
-                    </div>
-                    <p id="email-help" class="help is-danger" style="display: none;">Email inválido</p>
-                </div>
-                <div class="field">
-                    <label class="label">Nacionalidad</label>
-                    <div class="select">
-                        <select id="pais-select" name="nacionalidad" required>
-                            <option value="" selected>Seleccionar</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="field">
-                    <label class="label">¿Qué países visitaste?</label>
-                    <select id="paises-container" name="paises-visitados[]" multiple required>
-                    </select>
-                    <p id="paises-visitados-help" class="help is-danger" style="display: none;">Selecciona al menos un país visitado</p>
-                </div>
+			<div id="error-mensajes" style="display: none; color: red"></div>
+			<div id="error-general" style="display: none; color: red"></div>
+			<!-- Formulario -->
+			<form id="confirmar">
+				<div class="field">
+					<label class="label">Nombre Completo</label>
+					<div class="control">
+						<input class="input" type="text" name="nombre" required />
+					</div>
+				</div>
 
-                <div class="field">
-                    <label class="label">Idiomas que hablas</label>
-                    <select id="idiomas-container" name="idiomas[]" multiple></select>
-                </div>
+				<div class="field">
+					<label class="label">Usuario</label>
+					<div class="control">
+						<input
+							id="usuario"
+							class="input is-success"
+							type="text"
+							name="usuario"
+							required
+						/>
+					</div>
+					<p id="usuario-help" class="help is-success">Usuario disponible</p>
+				</div>
 
-                <div class="field">
-                    <div class="control">
-                        <label class="checkbox">
-                            <input id="termsCheckbox" type="checkbox" required>
-                            Acepto <a href="#">términos y condiciones</a>
-                        </label>
-                    </div>
-                    <p id="error-terminos" class="help is-danger" style="display: none;">Debes aceptar los términos y condiciones.</p>
-                </div>
-                
-                <div class="field is-grouped">
-                    <div class="control">
-                        <button class="button is-link" type="submit">Registrate</button>
-                    </div>
-                    <div class="control">
-                        <button class="button is-link is-light" type="button" onclick="window.location.href='index.html'">Cancelar</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+				<div class="field">
+					<label class="label">Email</label>
+					<div class="control">
+						<input id="mail" class="input" type="mail" name="mail" required />
+					</div>
+					<p id="email-help" class="help is-danger" style="display: none">
+						Email inválido
+					</p>
+				</div>
+				<div class="field">
+					<label class="label">Nacionalidad</label>
+					<div class="select">
+						<select id="pais-select" name="nacionalidad" required>
+							<option value="" selected>Seleccionar</option>
+						</select>
+					</div>
+				</div>
 
-        <script src="../js/registro.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
+				<div class="field">
+					<label class="label">¿Qué países visitaste?</label>
+					<select
+						id="paises-container"
+						name="paises-visitados[]"
+						multiple
+						required
+					></select>
+					<p
+						id="paises-visitados-help"
+						class="help is-danger"
+						style="display: none"
+					>
+						Selecciona al menos un país visitado
+					</p>
+				</div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-container">
-                <p>© 2024 WorldTravel. Todos los derechos reservados.</p>
-                <p>
-                    Desarrollado por 
-                    <a href="https://github.com/abbnunez" target="_blank">Abril Belén Nuñez</a>, 
-                    <a href="https://github.com/anaprovvi" target="_blank">Ana Provvisionato</a>, 
-                    <a href="https://github.com/AvrilMZ" target="_blank">Avril Victoria Morfeo Zerbi</a> y 
-                    <a href="https://github.com/facustifman" target="_blank">Facundo Camilo Stifman</a>.
-                </p>
-                <div class="footer-social">
-                    <a href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software" target="_blank">GitHub</a>
-                </div>
-            </div>
-        </footer>
-    </body>
+				<div class="field">
+					<label class="label">Idiomas que hablas</label>
+					<select id="idiomas-container" name="idiomas[]" multiple></select>
+				</div>
+
+				<div class="field">
+					<div class="control">
+						<label class="checkbox">
+							<input id="termsCheckbox" type="checkbox" required />
+							Acepto
+							<a href="#">términos y condiciones</a>
+						</label>
+					</div>
+					<p id="error-terminos" class="help is-danger" style="display: none">
+						Debes aceptar los términos y condiciones.
+					</p>
+				</div>
+
+				<div class="field is-grouped">
+					<div class="control">
+						<button class="button is-link" type="submit">Registrate</button>
+					</div>
+					<div class="control">
+						<button
+							class="button is-link is-light"
+							type="button"
+							onclick="window.location.href='index.html'"
+						>
+							Cancelar
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<script src="../js/registro.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
+
+		<!-- Footer -->
+		<footer class="footer">
+			<div class="footer-container">
+				<p>© 2024 WorldTravel. Todos los derechos reservados.</p>
+				<p>
+					Desarrollado por
+					<a href="https://github.com/abbnunez" target="_blank">
+						Abril Belén Nuñez
+					</a>
+					,
+					<a href="https://github.com/anaprovvi" target="_blank">
+						Ana Provvisionato
+					</a>
+					,
+					<a href="https://github.com/AvrilMZ" target="_blank">
+						Avril Victoria Morfeo Zerbi
+					</a>
+					y
+					<a href="https://github.com/facustifman" target="_blank">
+						Facundo Camilo Stifman
+					</a>
+					.
+				</p>
+				<div class="footer-social">
+					<a
+						href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software"
+						target="_blank"
+					>
+						GitHub
+					</a>
+				</div>
+			</div>
+		</footer>
+	</body>
 </html>
