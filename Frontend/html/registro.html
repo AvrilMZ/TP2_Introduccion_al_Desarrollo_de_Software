@@ -55,15 +55,9 @@
 		</header>
 		<div class="content">
 			<h2>Registrate</h2>
-			<div class="field">
-				<p>
-					¿Ya tenés una cuenta?
-					<a href="login.html">Inicia sesión</a>
-				</p>
-			</div>
-
 			<div id="error-mensajes" style="display: none; color: red"></div>
 			<div id="error-general" style="display: none; color: red"></div>
+
 			<!-- Formulario -->
 			<form id="confirmar">
 				<div class="field">
@@ -78,13 +72,14 @@
 					<div class="control">
 						<input
 							id="usuario"
-							class="input is-success"
+							class="input"
 							type="text"
 							name="usuario"
 							required
 						/>
 					</div>
-					<p id="usuario-help" class="help is-success">Usuario disponible</p>
+					<p id="usuario-disponible" class="help is-success">Usuario disponible</p>
+                	<p id="usuario-ocupado" class="help is-danger">Usuario no disponible</p>
 				</div>
 
 				<div class="field">
@@ -96,6 +91,7 @@
 						Email inválido
 					</p>
 				</div>
+
 				<div class="field">
 					<label class="label">Nacionalidad</label>
 					<div class="select">
@@ -130,7 +126,7 @@
 				<div class="field">
 					<div class="control">
 						<label class="checkbox">
-							<input id="termsCheckbox" type="checkbox" required />
+							<input id="termsCheckbox" type="checkbox" required/>
 							Acepto
 							<a href="#">términos y condiciones</a>
 						</label>
@@ -156,7 +152,6 @@
 				</div>
 			</form>
 		</div>
-
 		<script src="../js/registro.js"></script>
 		<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
 
