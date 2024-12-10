@@ -3,33 +3,18 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Registro - WorldTracker</title>
+		<title>Agregar Viaje - WorldTracker</title>
 		<link rel="icon" href="../img/logo.png" type="image/png" />
 		<!-- Google Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<!-- Inter font -->
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-			rel="stylesheet"
-		/>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet"/>
 		<!-- Icons Webpage -->
-		<link
-			href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
-			rel="stylesheet"
-		/>
+		<link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet"/>
 		<!-- Bulma -->
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
-		/>
-		<!-- Multiple Select -->
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/css/multi-select-tag.css"
-		/>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
 		<!-- CSS -->
-		<link rel="stylesheet" href="../css/registro.css" />
 		<link rel="stylesheet" href="../css/viaje_registro.css" />
 	</head>
 
@@ -60,6 +45,21 @@
 			<!-- Formulario -->
 			<form id="confirmar">
 				<div class="field">
+					<label class="label">Usuario</label>
+					<div class="control">
+						<input
+							id="usuario"
+							class="input"
+							type="text"
+							name="usuario"
+							required
+						/>
+					</div>
+					<p id="usuario-encontrado" class="help is-success">Usuario encontrado</p>
+					<p id="usuario-desconocido" class="help is-danger">Usuario no encontrado</p>
+				</div>
+
+				<div class="field">
 					<label class="label" for="pais-select">País</label>
 					<div class="select">
 						<select id="pais-select" name="pais" required>
@@ -78,6 +78,7 @@
 						max="2024-12-31"
 					/>
 				</div>
+
 				<div class="field">
 					<label class="label" for="end-date">Fecha de fin:</label>
 					<input
@@ -146,9 +147,7 @@
 				</div>
 			</form>
 		</div>
-
 		<script src="../js/viaje_registro.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
 
 		<!-- Footer -->
 		<footer class="footer">
