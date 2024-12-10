@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Registro - WorldTracker</title>
+		<link rel="icon" href="../img/logo.png" type="image/png" />
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<!-- Inter font -->
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+			rel="stylesheet"
+		/>
+		<!-- Icons Webpage -->
+		<link
+			href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
+			rel="stylesheet"
+		/>
+		<!-- Bulma -->
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+		/>
+		<!-- Multiple Select -->
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/css/multi-select-tag.css"
+		/>
+		<!-- CSS -->
+		<link rel="stylesheet" href="../css/registro.css" />
+		<link rel="stylesheet" href="../css/viaje_registro.css" />
+	</head>
+
+	<body>
+		<!-- Nav Bar-->
+		<header role="banner">
+			<a href="index.html" class="logo-link">
+				<img src="../img/logo2.png" alt="WorldTracker" width="300" />
+			</a>
+			<div class="nav-center-no-bulma">
+				<nav class="paises"><a href="paises.html">PAISES</a></nav>
+				<nav class="vuelos"><a href="viajes.html">VIAJES</a></nav>
+			</div>
+			<div class="nav-right-no-bulma">
+				<nav class="usuario">
+					<a href="registro.html" class="boton-registro">
+						<i class="new bx bx-id-card"></i>
+						REGISTRATE
+					</a>
+				</nav>
+			</div>
+		</header>
+		<div class="content">
+			<h2>Nuevo Viaje</h2>
+
+			<div id="error-mensajes" style="display: none; color: red"></div>
+			<div id="error-general" style="display: none; color: red"></div>
+			<!-- Formulario -->
+			<form id="confirmar">
+				<div class="field">
+					<label class="label" for="pais-select">País</label>
+					<div class="select">
+						<select id="pais-select" name="pais" required>
+							<option value="" selected>Seleccionar</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label" for="start-date">Fecha de inicio:</label>
+					<input
+						type="date"
+						id="start-date"
+						name="viaje-inicio"
+						min="1950-01-01"
+						max="2024-12-31"
+					/>
+				</div>
+				<div class="field">
+					<label class="label" for="end-date">Fecha de fin:</label>
+					<input
+						type="date"
+						id="end-date"
+						name="viaje-fin"
+						min="1950-01-01"
+						max="2024-12-31"
+					/>
+				</div>
+
+				<div class="field">
+					<label class="label" for="ciudades">¿Qué ciudades visitaste?</label>
+					<div class="control">
+						<input
+							id="ciudades"
+							class="input"
+							type="text"
+							placeholder="Ingresa una ciudad y presiona Enter"
+						/>
+					</div>
+					<div id="ciudades-tags" class="tags"></div>
+				</div>
+
+				<div class="field">
+					<label class="label" for="presupuesto">Presupuesto</label>
+					<div class="control">
+						<input
+							id="presupuesto"
+							class="input"
+							type="number"
+							name="presupuesto"
+							required
+						/>
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label" for="calificacion">Calificación</label>
+					<div class="control">
+						<input
+							id="calificacion"
+							class="input"
+							type="number"
+							name="calificacion"
+							required
+							min="0"
+							max="5"
+						/>
+					</div>
+				</div>
+
+				<div class="field is-grouped">
+					<div class="control">
+						<button class="button is-link" type="submit">Añadir</button>
+					</div>
+					<div class="control">
+						<button
+							class="button is-link is-light"
+							type="button"
+							onclick="window.location.href='index.html'"
+						>
+							Cancelar
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<script src="../js/viaje_registro.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
+
+		<!-- Footer -->
+		<footer class="footer">
+			<div class="footer-container">
+				<p>© 2024 WorldTravel. Todos los derechos reservados.</p>
+				<p>
+					Desarrollado por
+					<a href="https://github.com/abbnunez" target="_blank">
+						Abril Belén Nuñez
+					</a>
+					,
+					<a href="https://github.com/anaprovvi" target="_blank">
+						Ana Provvisionato
+					</a>
+					,
+					<a href="https://github.com/AvrilMZ" target="_blank">
+						Avril Victoria Morfeo Zerbi
+					</a>
+					y
+					<a href="https://github.com/facustifman" target="_blank">
+						Facundo Camilo Stifman
+					</a>
+					.
+				</p>
+				<div class="footer-social">
+					<a
+						href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software"
+						target="_blank"
+					>
+						GitHub
+					</a>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>
