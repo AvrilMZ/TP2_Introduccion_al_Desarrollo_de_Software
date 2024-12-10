@@ -39,9 +39,35 @@
             </div>
         </header>
 
+        <!-- Content -->
         <div class="content">
-            
+            <h2>Tus Viajes</h2>
+
+            <div class="field">
+                <label class="label">Usuario</label>
+                <div class="control">
+                    <input
+                        id="usuario"
+                        class="input"
+                        type="text"
+                        name="usuario"
+                        required
+                    />
+                </div>
+                <p id="usuario-encontrado" class="help is-success">Usuario encontrado</p>
+                <p id="usuario-desconocido" class="help is-danger">Usuario no encontrado</p>
+            </div>
+
+            <div class="card-container" id="card-container"></div>
+
+            <div class="field is-grouped">
+                <div class="control">
+                    <button id="buscar-viaje" class="button is-primary is-rounded">Buscar Viajes</button>
+                    <button id="agregar-viaje" class="button is-rounded" style="color: #00d1b2; border-color: #00d1b2;" onclick="window.location.href='viaje_registro.html'">Agregar Viaje</button>
+                </div>
+            </div>
         </div>
+        <script src="../js/viajes.js"></script>
 
         <!-- Footer -->
         <footer class="footer">
