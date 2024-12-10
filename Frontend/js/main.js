@@ -25,3 +25,6 @@ function mostrarFotos(n) {
 setInterval(() => {
     avanzarFotos(1);
 }, 10000); // Mueve las fotos cada 10 segundos
+
+
+
