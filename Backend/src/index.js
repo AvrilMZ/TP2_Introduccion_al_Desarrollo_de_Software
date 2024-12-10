@@ -4,11 +4,18 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 require("dotenv").config();
-
+const fetch = require("node-fetch");
 const prisma = new PrismaClient();
 
 app.use(express.json());
 app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:8000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"]
+  })
+);
 
 app.get("/", (req, res) => {
   res.send("Viajandoo...");
@@ -39,6 +46,8 @@ app.get("/api/v1/users/:usuario", async (req, res) => {
   res.json(user);
 });
 
+
+// devuelve los viajes del usuario
 app.get("/api/v1/users/:usuario", async (req, res) => {
   const user = await prisma.user.findUnique({
     where: {
@@ -164,6 +173,7 @@ app.get("/api/v1/viajes", async (req, res) => {
   res.json(viajes);
 });
 
+//Busco viaje por id
 app.get("/api/v1/viajes/:id", async (req, res) => {
   const viaje = await prisma.viaje.findUnique({
     where: { id: parseInt(req.params.id) },
@@ -180,6 +190,7 @@ app.get("/api/v1/viajes/:id", async (req, res) => {
   res.json(viaje);
 });
 
+//Creo un viaje
 app.post("/api/v1/viajes", async (req, res) => {
   const {
     paisId,
@@ -219,6 +230,7 @@ app.post("/api/v1/viajes", async (req, res) => {
   res.status(201).json(nuevoViaje);
 });
 
+//Actualizo un viaje
 app.put("/api/v1/viajes/:id", async (req, res) => {
   const viajeId = parseInt(req.params.id);
   const {
@@ -286,4 +298,48 @@ app.delete("/api/v1/viajes/:id", async (req, res) => {
   await prisma.viaje.delete({ where: { id: viajeId } });
 
   res.send(`Viaje con ID ${viajeId} eliminado exitosamente`);
+});
+
+
+//METODOS PAISES
+
+//metodo para crear una tabla de los paises(ya existente informacion)
+
+
+app.get("/api/v1/paises", async (req, res) => {
+  try {
+    const respuesta = await fetch("https://restcountries.com/v3.1/all");
+    const paises = await respuesta.json();
+
+    for (const pais of paises) {
+      try {
+        const nombre = pais.name.common || "Desconocido";
+        const capital = pais.capital ? pais.capital[0] : "Desconocido";
+        const idiomas = pais.languages ? Object.values(pais.languages) : ["Desconocido"];
+        const moneda = pais.currencies ? Object.keys(pais.currencies)[0] : "Desconocido";
+        const continente = pais.continents ? pais.continents[0] : "Desconocido";
+
+        await prisma.pais.create({
+          data: {
+            nombre,
+            capital,
+            idiomas,
+            moneda,
+            continente,
+          },
+        });
+
+        console.log(`Insertado: ${nombre}`);
+      } catch (err) {
+        console.error(`Error al insertar el país ${pais.name.common}:`, err.message);
+      }
+    }
+
+    res.status(201).send("Paises creados exitosamente");
+  } catch (error) {
+    console.error('Error al recuperar datos de la API:', error.message);
+    res.status(500).send("Hubo un error al insertar los datos");
+  } finally {
+    await prisma.$disconnect();
+  }
 });
