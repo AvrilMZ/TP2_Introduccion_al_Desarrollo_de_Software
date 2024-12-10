@@ -5,13 +5,6 @@ html, body {
     flex-direction: column;
 }
 
-.content {
-    flex: 1;
-	margin-top: 80px;
-	margin-left: 300px;
-	margin-right: 300px;
-}
-
 /* ---- NAVBAR ---- */
 header {
     background-color: rgba(255, 255, 255, 0.363);
@@ -126,6 +119,47 @@ nav a:hover {
     font-weight: 700;
     font-style: bold;
     color: white;
+}
+
+/* ---- MOSTRAR VIAJES ---- */
+#usuario-encontrado, #usuario-desconocido {
+    display: none;
+}
+
+.content {
+    flex: 1;
+	margin-top: 80px;
+	margin-left: 300px;
+	margin-right: 300px;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 300px;
+    margin: 10px;
+}
+
+.card .content {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.card p {
+    margin: 5px 0;
 }
 
 /* ---- FOOTER ---- */
