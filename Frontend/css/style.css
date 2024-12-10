@@ -141,19 +141,38 @@ nav a:hover {
 	object-fit: cover;
 }
 
+
+
 .textoCarrousel {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%, -50%);
-	color: white;
-	font-size: 4rem;
+	transform: translate(-100%, -50%);
+	color:white;
+	font-family: 'Dancing script', capitalize;
+	font-size: 3rem;
+	font-weight: 400;
 	opacity: 0;
-	transition: opacity 2s ease-in-out;
+	animation: deslizarIzquierda 3s ease-in-out forwards;
 	z-index: 10;
-	font-family: 'Inter', sans-serif;
-	text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+    text-shadow: 3px 3px 5px rgba(193, 103, 142, 0.816);
+	
 }
+
+@keyframes deslizarIzquierda {
+    0% {
+        opacity: 0;
+        transform: translate(-100%, -50%); /* Fuera de la pantalla */
+    }
+    50% {
+        opacity: 1; /* Comienza a aparecer */
+    }
+    100% {
+        transform: translate(0, -50%); /* Posición final en el centro */
+    }
+}
+
+
 
 .siguiente,
 .anterior {
