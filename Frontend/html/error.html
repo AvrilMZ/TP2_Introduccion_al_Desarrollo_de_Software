@@ -17,8 +17,18 @@
     <link rel="stylesheet" href="../css/error.css">
 </head>
 <body>
-    <h1>Error <span id="code">[CÓDIGO]</span></h1>
-    <p id="message">[MENSAJE]</p>
+    <h1>Error <span id="code">[CODE]</span></h1>
+    <p id="mensaje">[MENSAJE]</p>
     <a href="index.html">Volver al inicio</a>
+    <script>
+        // Obtener los parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code'); // Obtiene el código de error
+        const mensaje = urlParams.get('mensaje'); // Obtiene el mensaje
+
+        // Reemplazar los valores en el HTML
+        document.getElementById('code').textContent = code || "Desconocido";
+        document.getElementById('mensaje').textContent = mensaje || "No se proporcionó un mensaje de error.";
+    </script>
 </body>
 </html>
