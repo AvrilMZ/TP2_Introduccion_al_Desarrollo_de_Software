@@ -26,5 +26,15 @@ setInterval(() => {
     avanzarFotos(1);
 }, 10000); // Mueve las fotos cada 10 segundos
 
+// Deslizamiento texto Carrousel
+document.addEventListener('DOMContentLoaded', () => {
+    const textoCarrousel = document.querySelector('.textoCarrousel');
+    const botonPaisesContenedor = document.querySelector('.boton-paises-contenedor');
 
-
+    // Escuchar cuando la animación del texto termine
+    textoCarrousel.addEventListener('animationend', () => {
+        // Mostrar el botón después de la animación del texto
+        botonPaisesContenedor.classList.remove('hidden');
+        botonPaisesContenedor.classList.add('show');
+    });
+});

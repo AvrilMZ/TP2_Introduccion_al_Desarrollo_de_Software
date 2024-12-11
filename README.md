@@ -20,7 +20,7 @@ Desarrollar un sitio web completo utilizando las tecnologías vistas a lo largo 
 * **DevOps**: Docker Compose
 
 ## WorldTracker
-WorldTracker es una página web que permite a los usuarios registrar los países que han visitado y consultar información sobre ellos.
+WorldTracker es una página web que permite a los usuarios registrar los países que han visitado, rellenar un formulario sobre su experiencia además de contar con información de cada país.
 
 ### Capturas de pantalla del funcionamiento
 <!--
@@ -51,7 +51,7 @@ docker-compose up -d
 ```
 4. Renombra el archivo 'example.env' a '.env' y luego, usándolo como modelo, modifica los detalles de tu base de datos:
 ```bash
-cp example.env .env
+cp .example.env .env
 ```
 5. Instalar las dependencias del proyecto:
 ```bash
@@ -69,7 +69,4 @@ npx prisma migrate dev
 ```bash
 npm run dev
 ```
-9. Levantar el servidor de la aplicación:
-```bash
-npm run dev
-```
+
