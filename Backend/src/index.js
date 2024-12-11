@@ -380,6 +380,7 @@ async function saveCountriesToDB() {
       continente: country.region,
     }));
 
+    await prisma.viaje.deleteMany();
     await prisma.pais.deleteMany();
 
     for (const country of countryData) {
@@ -431,8 +432,4 @@ app.get("/api/v1/paises/:id", async (req, res) => {
     console.error("Error al obtener el país: ", error);
     return res.status(500).json({ error: "Error interno al obtener el país" });
   }
-});
-
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
 });
