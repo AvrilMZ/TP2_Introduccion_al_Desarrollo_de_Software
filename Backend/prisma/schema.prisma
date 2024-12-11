@@ -21,9 +21,9 @@ model User {
 model Pais {
   id         Int      @id @default(autoincrement())
   nombre     String
-  capital    String
+  capital    String?
   idiomas    String[]
-  moneda     String
+  moneda     String?
   continente String
   Viaje      Viaje[]
 }

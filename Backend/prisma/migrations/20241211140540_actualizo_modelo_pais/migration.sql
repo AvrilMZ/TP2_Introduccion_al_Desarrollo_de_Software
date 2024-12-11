@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Pais" ALTER COLUMN "capital" DROP NOT NULL,
+ALTER COLUMN "moneda" DROP NOT NULL;
