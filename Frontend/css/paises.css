@@ -123,6 +123,21 @@ nav a:hover {
     flex: 1;
 }
 
+.field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  #search {
+    width: 1200px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
 td {
     background-color: gainsboro;
     padding: 15px;
