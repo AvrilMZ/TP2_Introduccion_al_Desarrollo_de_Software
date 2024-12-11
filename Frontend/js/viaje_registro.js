@@ -76,20 +76,21 @@ document
 		const data = {
 			usuario: formData.get('usuario'),
 			pais: formData.get('pais'),
-			paisId: formData.get('pais'),
-			'viaje-inicio': formData.get('viaje-inicio'),
-			'viaje-fin': formData.get('viaje-fin'),
+			fechaInicio: formData.get('viaje-inicio'),
+			fechaFin: formData.get('viaje-fin'),
 			ciudades: ciudadesArray,
 			presupuesto: formData.get('presupuesto'),
 			calificacion: formData.get('calificacion'),
 		};
 
+		console.log('Datos enviados al backend:', data);
+
 		//VALIDACIONES
 		if (
 			!data.usuario ||
 			!data.pais ||
-			!data['viaje-inicio'] ||
-			!data['viaje-fin'] ||
+			!data.fechaFin ||
+			!data.fechaInicio ||
 			!data.presupuesto ||
 			!data.calificacion
 		) {
