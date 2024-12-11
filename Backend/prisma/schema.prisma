@@ -8,19 +8,19 @@ datasource db {
 }
 
 model User {
-  id               Int      @id @default(autoincrement())
-  usuario          String   @unique
-  nombre           String
-  nacionalidad     String
-  idiomas          String[]
-  paises_visitados String[]
-  mail             String   @unique
-  Viaje            Viaje[]
+  id              Int      @id @default(autoincrement())
+  usuario         String   @unique
+  nombre          String
+  nacionalidad    String
+  idiomas         String[]
+  paisesVisitados String[]
+  mail            String   @unique
+  Viaje           Viaje[]
 }
 
 model Pais {
   id         Int      @id @default(autoincrement())
-  nombre     String
+  nombre     String   @unique
   capital    String?
   idiomas    String[]
   moneda     String?
@@ -29,14 +29,14 @@ model Pais {
 }
 
 model Viaje {
-  id           Int      @id @default(autoincrement())
-  paisId       Int
-  usuarioId    Int
-  fecha_inicio DateTime
-  fecha_fin    DateTime
-  ciudades     String[]
-  presupuesto  Decimal  @default(0)
-  calificacion Int      @default(0)
-  pais         Pais     @relation(fields: [paisId], references: [id])
-  usuario      User     @relation(fields: [usuarioId], references: [id])
+  id            Int      @id @default(autoincrement())
+  paisId        Int
+  nombreUsuario String
+  fechaInicio   DateTime
+  fechaFin      DateTime
+  ciudades      String[]
+  presupuesto   Decimal  @default(0)
+  calificacion  Int      @default(0)
+  pais          Pais     @relation(fields: [paisId], references: [id])
+  usuario       User     @relation(fields: [nombreUsuario], references: [usuario])
 }
