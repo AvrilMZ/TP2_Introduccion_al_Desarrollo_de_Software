@@ -1,0 +1,45 @@
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-image: url('../img/desierto.png');
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    color: white;
+    font-style: bold;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 20px;
+}
+
+p {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin: 0 0 30px;
+}
+
+a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgb(72, 95, 199);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+a:hover {
+    transition: 0.3s;
+    background-color: rgb(12, 41, 110);
+	color: white;
+}
