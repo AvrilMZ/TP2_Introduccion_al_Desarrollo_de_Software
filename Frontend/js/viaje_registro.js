@@ -1,3 +1,5 @@
+let ciudadesArray = [];
+
 document.addEventListener('DOMContentLoaded', function () {
 	fetch('https://restcountries.com/v3.1/all')
 		.then((response) => response.json())
@@ -19,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	const inputCiudades = document.getElementById('ciudades');
 	const tagsContainer = document.getElementById('ciudades-tags');
-	let ciudadesArray = [];
 
 	// Array para almacenar las ciudades
 	inputCiudades.addEventListener('keydown', function (event) {
@@ -73,7 +74,9 @@ document
 		const formData = new FormData(event.target);
 		//guardo los valores de los inputs
 		const data = {
+			usuario: formData.get('usuario'),
 			pais: formData.get('pais'),
+			paisId: formData.get('pais'),
 			'viaje-inicio': formData.get('viaje-inicio'),
 			'viaje-fin': formData.get('viaje-fin'),
 			ciudades: ciudadesArray,
@@ -83,6 +86,7 @@ document
 
 		//VALIDACIONES
 		if (
+			!data.usuario ||
 			!data.pais ||
 			!data['viaje-inicio'] ||
 			!data['viaje-fin'] ||
