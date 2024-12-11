@@ -300,58 +300,76 @@ app.delete("/api/v1/viajes/:id", async (req, res) => {
 });
 
 
-//METODOS PAISES
+//!METODOS PAISES
+const axios = require('axios');
 
 // Ruta para traer y guardar países desde la API
-app.get('/api/v1/paises/fetch', async (req, res) => {
+async function getCountriesFromAPI() {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000); // Timeout de 10 segundos
+  
   try {
-    console.log('Iniciando fetch de países...');
-    const response = await fetch('https://restcountries.com/v3.1/all');
-    console.log('Respuesta obtenida de la API');
-    const countries = await response.json();
-
-    // Limitar a 250 países
-    const paises_limitados = countries.slice(0, 250);
-
-    for (const pais of paises_limitados) {
-      console.log(`Procesando país: ${pais.name.common}`);
-      const idiomas = pais.languages ? Object.values(pais.languages) : [];
-      const capital = pais.capital && pais.capital.length > 0 ? pais.capital[0] : 'Desconocida';
-      const moneda = pais.currencies ? Object.keys(pais.currencies)[0] : 'Desconocida';
-
-      await prisma.pais.create({
-        data: {
-          nombre: pais.name.common,
-          capital: capital,
-          idiomas: idiomas,
-          moneda: moneda,
-          continente: pais.region || 'Desconocido',
-        },
+      const response = await fetch('https://restcountries.com/v3.1/all', {
+          signal: controller.signal
       });
-      console.log(`País guardado: ${pais.name.common}`);
-    }
+      
+      // Si la solicitud es exitosa, procesamos los países
+      const countries = await response.json();
 
-    res.status(200).json({ message: 'Países guardados exitosamente' });
+      // Limitar a los primeros 250 países
+      return countries.slice(0, 250);
   } catch (error) {
-    console.error('Error detallado:', error);
-    res.status(500).json({ error: 'Error al guardar los países', detalles: error.message });
+      if (error.name === 'AbortError') {
+          console.error('Request timed out');
+      } else {
+          console.error('Error fetching countries:', error);
+      }
+      throw error;
+  } finally {
+      clearTimeout(timeout);
   }
-});
+}
 
+// Función para guardar países en la base de datos
+async function saveCountriesToDB() {
+  try {
+      const countries = await getCountriesFromAPI();
+
+      for (const country of countries) {
+          await prisma.pais.create({
+              data: {
+                  nombre: country.name.common,
+                  capital: country.capital ? country.capital[0] : null,
+                  idiomas: country.languages ? Object.values(country.languages) : [],
+                  moneda: country.currencies ? Object.values(country.currencies).map(c => c.name).join(', ') : null,
+                  continente: country.region,
+              }
+          });
+      }
+
+      console.log('Countries saved to the database');
+  } catch (error) {
+      console.error('Error saving countries to DB:', error);
+  }
+}
+
+// Llamada para guardar los países en la base de datos
+saveCountriesToDB();
 
 
 // Ruta para obtener todos los países
 app.get('/api/v1/paises', async (req, res) => {
   try {
-    const paises = await prisma.pais.findMany({
-      include: { Viaje: true },
-    });
-    res.status(200).json(paises);
+      const paises = await prisma.pais.findMany({
+          take: 250  // Limitar a los primeros 250 países
+      });
+      res.json(paises);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al obtener los países' });
+      res.status(500).json({ error: 'Error fetching countries from the database' });
   }
 });
+
+
 
 // Ruta para obtener un país por ID
 app.get('/api/v1/paises/:id', async (req, res) => {
