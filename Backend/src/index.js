@@ -9,6 +9,7 @@ const axios = require("axios");
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static("../Frontend"));
 
 app.get("/", (req, res) => {
   res.send("Viajandoo...");
@@ -16,14 +17,12 @@ app.get("/", (req, res) => {
 
 // METODOS USERS
 // Busca todos los usuarios
-
 app.get("/api/v1/users", async (req, res) => {
   const users = await prisma.user.findMany();
   res.json(users);
 });
 
 // Busca por usuario
-
 app.get("/api/v1/users/:usuario", async (req, res) => {
   const user = await prisma.user.findUnique({
     where: {
@@ -32,8 +31,8 @@ app.get("/api/v1/users/:usuario", async (req, res) => {
   });
 
   if (!user) {
-    res.status(404).send("Usuario no encontrado");
-    return;
+    console.error("Usuario no encontrado: ", error);
+    return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
   }
 
   res.json(user);
@@ -51,8 +50,8 @@ app.get("/api/v1/users/:usuario", async (req, res) => {
   });
 
   if (!user) {
-    res.status(404).send("Usuario no encontrado");
-    return;
+    console.error("Usuario no encontrado: ", error);
+    return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
   }
 
   res.json(user.viaje);
@@ -78,23 +77,16 @@ app.post("/api/v1/usuarios", async (req, res) => {
   } catch (error) {
     console.error("Error en el backend:", error);
 
+    //error 'p2002' de prisma es para cuando hay un campo único duplicado
     if (error.code === "P2002") {
-      //error 'p2002' de prisma es para cuando hay un campo único duplicado
-      return res.status(400).json({
-        error: ["El mail o usuario ya está en uso."],
-      });
+      return res.status(400).json({ error: "El mail o usuario ya está en uso" });
     }
 
-    res.status(500).json({
-      error: [
-        "Hubo un problema al crear el usuario. Por favor, intenta nuevamente.",
-      ],
-    });
+    return res.status(500).json({ error: "Hubo un problema al crear el usuario" });
   }
 });
 
 //Elimina un usuario
-
 app.delete("/api/v1/users/:usuario", async (req, res) => {
   const userUsuario = req.params.usuario;
   const user = await prisma.user.findUnique({
@@ -104,8 +96,8 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
   });
 
   if (!user) {
-    res.status(404).send("Usuario no encontrado");
-    return;
+    console.error("Usuario no encontrado: ", error);
+    return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
   }
 
   await prisma.user.delete({
@@ -118,7 +110,6 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
 });
 
 //Actualiza un usuario
-
 app.put("/api/v1/users/:id", async (req, res) => {
   let user = await prisma.user.findUnique({
     where: {
@@ -127,8 +118,8 @@ app.put("/api/v1/users/:id", async (req, res) => {
   });
 
   if (!user) {
-    res.status(404).send("Usuario no encontrado");
-    return;
+    console.error("Usuario no encontrado: ", error);
+    return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
   }
 
   user = await prisma.user.update({
@@ -153,7 +144,6 @@ app.listen(port, () => {
 });
 
 //METODOS VIAJES
-
 //Busco todos los viajes
 app.get("/api/v1/viajes", async (req, res) => {
   const viajes = await prisma.viaje.findMany({
@@ -175,9 +165,9 @@ app.get("/api/v1/viajes/:id", async (req, res) => {
     },
   });
 
-  if (!viaje) {
-    res.status(404).send("Viaje no encontrado");
-    return;
+  if (!user) {
+    console.error("Viaje no encontrado: ", error);
+    return res.redirect("/html/error.html?code=404&mensaje=Viaje no encontrado");
   }
   res.json(viaje);
 });
@@ -203,9 +193,8 @@ app.post("/api/v1/viajes", async (req, res) => {
     !presupuesto ||
     !calificacion
   ) {
-    return res.status(400).json({
-      error: "Todos los campos son obligatorios",
-    });
+    console.error("Todos los campos son obligatorios: ", error);
+    return res.status(400).json({ error: "Todos los campos son obligatorios" });
   }
 
   //verifico que existe el pais
@@ -215,7 +204,8 @@ app.post("/api/v1/viajes", async (req, res) => {
     });
 
     if (!paisData) {
-      return res.status(404).json({ error: "El país especificado no existe." });
+      console.error("El usuario especificado no existe: ", error);
+      return res.redirect("/html/error.html?code=404&mensaje=El país especificado no existe");
     }
 
     //verifico que existe el usuario
@@ -224,9 +214,8 @@ app.post("/api/v1/viajes", async (req, res) => {
     });
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ error: "El usuario especificado no existe." });
+      console.error("El usuario especificado no existe: ", error);
+      return res.redirect("/html/error.html?code=404&mensaje=El usuario especificado no existe");
     }
 
     const nuevoViaje = await prisma.viaje.create({
@@ -243,10 +232,8 @@ app.post("/api/v1/viajes", async (req, res) => {
 
     res.status(201).json(nuevoViaje);
   } catch (error) {
-    console.error("Error al crear el viaje:", error);
-    res.status(500).json({
-      error: "Ocurrió un error al crear el viaje. Intenta nuevamente.",
-    });
+    console.error("Ocurrió un error al crear el viaje: ", error);
+    return res.status(500).json({ error: "Ocurrió un error al crear el viaje" });
   }
 });
 
@@ -269,7 +256,8 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
     });
 
     if (!viajeExistente) {
-      return res.status(404).json({ error: "Viaje no encontrado." });
+      console.error("Viaje no encontrado: ", error);
+      return res.redirect("/html/error.html?code=404&mensaje=Viaje no encontrado");
     }
 
     let paisId = viajeExistente.paisId;
@@ -279,9 +267,8 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
       });
 
       if (!paisData) {
-        return res
-          .status(404)
-          .json({ error: "El país especificado no existe." });
+        console.error("El país especificado no existe: ", error);
+        return res.redirect("/html/error.html?code=404&mensaje=El país especificado no existe");
       }
       paisId = paisData.id;
     }
@@ -293,9 +280,8 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
       });
 
       if (!user) {
-        return res
-          .status(404)
-          .json({ error: "El usuario especificado no existe." });
+        console.error("El usuario especificado no existe: ", error);
+        return res.redirect("/html/error.html?code=404&mensaje=El usuario especificado no existe");
       }
       nombreUsuario = usuario;
     }
@@ -317,10 +303,8 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
 
     res.json(viajeActualizado);
   } catch (error) {
-    console.error("Error al actualizar el viaje:", error);
-    res.status(500).json({
-      error: "Ocurrió un error al actualizar el viaje. Intenta nuevamente.",
-    });
+    console.error("Error al actualizar el viaje: ", error);
+    return res.status(500).json({ error: "Error al actualizar el viaje" });
   }
 });
 
@@ -333,8 +317,8 @@ app.delete("/api/v1/viajes/:id", async (req, res) => {
   });
 
   if (!viaje) {
-    res.status(404).send("Viaje no encontrado");
-    return;
+    console.error("Viaje no encontrado: ", error);
+    return res.redirect("/html/error.html?code=404&mensaje=Viaje no encontrado");
   }
 
   await prisma.viaje.delete({
@@ -346,8 +330,7 @@ app.delete("/api/v1/viajes/:id", async (req, res) => {
   res.send(`Viaje ${userViaje} eliminado exitosamente`);
 });
 
-//!METODOS PAISES
-
+//METODOS PAISES
 // Ruta para traer y guardar países desde la API
 async function getCountriesFromAPI() {
   const controller = new AbortController();
@@ -360,17 +343,21 @@ async function getCountriesFromAPI() {
     );
 
     if (!response.ok) {
-      throw new Error(`Error al obtener países: ${response.statusText}`);
+      console.error("Error al obtener el países: ", error);
+      return res.status(500).json({ error: "Error al obtener el países" });
     }
 
     return await response.json();
   } catch (error) {
     if (error.name === "AbortError") {
-      console.error("La solicitud fue abortada debido al timeout.");
+      console.error("La solicitud fue abortada debido al timeout: ", error);
+      return res.status(504).json({ error: "La solicitud fue abortada debido al timeout" });
+
     } else {
       console.error("Error de fetch: ", error);
+      return res.status(500).json({ error: "Error de fetch" });
     }
-    throw error;
+
   } finally {
     clearTimeout(timeout);
   }
@@ -387,8 +374,8 @@ async function saveCountriesToDB() {
       idiomas: country.languages ? Object.values(country.languages) : [],
       moneda: country.currencies
         ? Object.values(country.currencies)
-            .map((currency) => currency.name)
-            .join(", ")
+          .map((currency) => currency.name)
+          .join(", ")
         : null,
       continente: country.region,
     }));
@@ -403,7 +390,8 @@ async function saveCountriesToDB() {
 
     console.log("Todos los países se guardaron en la base de datos.");
   } catch (error) {
-    console.error("Error guardando países en la base de datos:", error);
+    console.error("Error guardando países en la base de datos: ", error);
+    return res.status(500).json({ error: "Error guardando países en la base de datos" });
   }
 }
 // llamada para guardar los países en la base de datos
@@ -418,9 +406,8 @@ app.get("/api/v1/paises", async (req, res) => {
     });
     res.json(paises);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Error fetching countries from the database" });
+    console.error("Error al actualizar el viaje: ", error);
+    return res.status(500).json({ error: "Error interno al actualizar el viaje" });
   }
 });
 
@@ -435,12 +422,17 @@ app.get("/api/v1/paises/:id", async (req, res) => {
     });
 
     if (!pais) {
-      return res.status(404).json({ error: "País no encontrado" });
+      console.error("País no encontrado: ", id);
+      return res.redirect("/html/error.html?code=404&mensaje=País no encontrado");
     }
 
     res.status(200).json(pais);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al obtener el país" });
+    console.error("Error al obtener el país: ", error);
+    return res.status(500).json({ error: "Error interno al obtener el país" });
   }
+});
+
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://localhost:${port}`);
 });
