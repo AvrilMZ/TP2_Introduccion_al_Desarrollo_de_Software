@@ -1,3 +1,4 @@
+const path = require('path');
 const { PrismaClient } = require("@prisma/client");
 const express = require("express");
 const cors = require("cors");
@@ -9,7 +10,7 @@ const axios = require("axios");
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static("../Frontend"));
+app.use(express.static(path.join(__dirname, '../Frontend/html')));
 
 app.get("/", (req, res) => {
   res.send("Viajandoo...");
@@ -32,7 +33,7 @@ app.get("/api/v1/users/:usuario", async (req, res) => {
 
   if (!user) {
     console.error("Usuario no encontrado");
-    return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
+    return res.redirect("error.html?code=404&mensaje=Usuario no encontrado");
   }
 
   res.json(user);
@@ -56,7 +57,7 @@ app.get("/api/v1/users/:usuario/viajes", async (req, res) => {
 
     if (!user) {
       console.error("Usuario no encontrado");
-      return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
+      return res.redirect("error.html?code=404&mensaje=Usuario no encontrado");
     }
 
     res.json(user.Viaje);
@@ -106,7 +107,7 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
 
   if (!user) {
     console.error("Usuario no encontrado");
-    return res.status(404).json({ error: "Usuario no encontrado" });
+    return res.redirect("error.html?code=404&mensaje=Usuario no encontrado");
   }
 
   await prisma.user.delete({
@@ -128,7 +129,7 @@ app.put("/api/v1/users/:id", async (req, res) => {
 
   if (!user) {
     console.error("Usuario no encontrado");
-    return res.status(404).json({ error: "Usuario no encontrado" });
+    return res.redirect("error.html?code=404&mensaje=Usuario no encontrado");
   }
 
   user = await prisma.user.update({
@@ -172,7 +173,7 @@ app.get("/api/v1/viajes/:id", async (req, res) => {
 
   if (!viaje) {
     console.error("Viaje no encontrado");
-    return res.redirect("/html/error.html?code=404&mensaje=Viaje no encontrado");
+    return res.redirect("error.html?code=404&mensaje=Viaje no encontrado");
   }
   res.json(viaje);
 });
@@ -210,7 +211,7 @@ app.post("/api/v1/viajes", async (req, res) => {
 
     if (!paisData) {
       console.error("El usuario especificado no existe");
-      return res.redirect("/html/error.html?code=404&mensaje=El país especificado no existe");
+      return res.redirect("error.html?code=404&mensaje=El país especificado no existe");
     }
 
     // Verifico que existe el usuario
@@ -220,7 +221,7 @@ app.post("/api/v1/viajes", async (req, res) => {
 
     if (!user) {
       console.error("El usuario especificado no existe");
-      return res.redirect("/html/error.html?code=404&mensaje=El usuario especificado no existe");
+      return res.redirect("error.html?code=404&mensaje=El usuario especificado no existe");
     }
 
     const nuevoViaje = await prisma.viaje.create({
@@ -262,7 +263,7 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
 
     if (!viajeExistente) {
       console.error("Viaje no encontrado");
-      return res.redirect("/html/error.html?code=404&mensaje=Viaje no encontrado");
+      return res.redirect("error.html?code=404&mensaje=Viaje no encontrado");
     }
 
     let paisId = viajeExistente.paisId;
@@ -273,7 +274,7 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
 
       if (!paisData) {
         console.error("El país especificado no existe");
-        return res.redirect("/html/error.html?code=404&mensaje=El país especificado no existe");
+        return res.redirect("error.html?code=404&mensaje=El país especificado no existe");
       }
       paisId = paisData.id;
     }
@@ -286,7 +287,7 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
 
       if (!user) {
         console.error("El usuario especificado no existe");
-        return res.redirect("/html/error.html?code=404&mensaje=El usuario especificado no existe");
+        return res.redirect("error.html?code=404&mensaje=El usuario especificado no existe");
       }
       nombreUsuario = usuario;
     }
@@ -325,7 +326,7 @@ app.delete("/api/v1/viajes/:id", async (req, res) => {
 
     if (!viaje) {
       console.error("Viaje no encontrado");
-      return res.status(404).json({ error: "Viaje no encontrado" });
+      return res.redirect("error.html?code=404&mensaje=Viaje no encontrado");
     }
 
     await prisma.viaje.delete({
@@ -435,7 +436,7 @@ app.get("/api/v1/paises/:id", async (req, res) => {
 
     if (!pais) {
       console.error("País no encontrado: ", id);
-      return res.redirect("/html/error.html?code=404&mensaje=País no encontrado");
+      return res.redirect("error.html?code=404&mensaje=País no encontrado");
     }
 
     res.status(200).json(pais);
