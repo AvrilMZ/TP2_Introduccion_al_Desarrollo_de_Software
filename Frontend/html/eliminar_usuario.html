@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Viajes - WorldTracker</title>
+        <link rel="icon" href="../img/logo.png" type="image/png">
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- Inter font -->
+         <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+        <!-- Icons Webpage -->
+        <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
+        <!--Bulma-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+        <!-- Horizontal Card-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@telophase/bulma-horizontal-card/css/bulma-horizontal-card.min.css">
+        <!--CSS-->
+        <link rel="stylesheet" href="../css/viajes.css">
+    </head>
+
+    <body>
+        <!-- NavBar -->
+        <header role="banner">
+            <a href="/html/index.html" class="logo-link">
+                <img src="../img/logo2.png" alt="WorldTracker" width="300">
+            </a>
+            <div class="nav-center-no-bulma">
+                <nav class="paises">
+                    <a href="/html/paises.html"></i>PAISES</a>
+                </nav>
+                <nav class="vuelos">
+                    <a href="/html/viajes.html"></i>VIAJES</a>
+                </nav>
+            </div>
+            <div class="nav-right-no-bulma">
+                <nav class="logo_editar">
+                    <a href="/html/eliminar_usuario.html" class="Borrar-logo-link">
+                    <img src="../img/borrador.png" alt="Borrar usuario" width="30">
+                    </a>
+                </nav>
+                <nav class="usuario">
+                    <a href="/html/registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>REGISTRATE</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+            <h2>Eliminar Usuario</h2>
+
+            <div class="field">
+                <label class="label">Usuario</label>
+                <div class="control">
+                    <input
+                        id="usuario"
+                        class="input"
+                        type="text"
+                        name="usuario"
+                        required
+                    />
+                </div>
+                <p id="usuario-encontrado" class="help is-success">Usuario encontrado</p>
+                <p id="usuario-desconocido" class="help is-danger">Usuario no encontrado</p>
+            </div>
+
+            <div class="field is-grouped">
+                <div class="control">
+                    <button id="eliminar_usuario" class="button is-primary is-rounded">Eliminar</button>
+                </div>
+            </div>
+
+            <div class="card is-horizontal" id="card-container" style="display: none;"></div>
+        </div>
+        <script src="../js/eliminar_usuario.js"></script>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <p>© 2024 WorldTracker. Todos los derechos reservados.</p>
+                <p>
+                    Desarrollado por 
+                    <a href="https://github.com/abbnunez" target="_blank">Abril Belén Nuñez</a>, 
+                    <a href="https://github.com/anaprovvi" target="_blank">Ana Provvisionato</a>, 
+                    <a href="https://github.com/AvrilMZ" target="_blank">Avril Victoria Morfeo Zerbi</a> y 
+                    <a href="https://github.com/facustifman" target="_blank">Facundo Camilo Stifman</a>.
+                </p>
+                <div class="footer-social">
+                    <a href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>
