@@ -344,7 +344,7 @@ app.delete("/api/v1/viajes/:id", async (req, res) => {
 
 // METODOS PAISES
 // Ruta para traer y guardar países desde la API
-async function getCountriesFromAPI() {
+async function Agarrar_paises_api() {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 20000); // Timeout de 20 segundos
 
@@ -376,14 +376,14 @@ async function getCountriesFromAPI() {
 }
 
 // Guardar países en la base de datos
-async function saveCountriesToDB() {
+async function Guardar_paisesDB() {
   try {
-    const countries = await getCountriesFromAPI();
+    const countries = await Agarrar_paises_api();
 
     const countryData = countries.map((country, index) => ({
       id: index + 1,
       nombre: country.name.common,
-      capital: country.capital ? country.capital[0] : null,
+      capital: country.capital ? country.capital[0] : "Indefinido",
       idiomas: country.languages ? Object.values(country.languages) : [],
       moneda: country.currencies
         ? Object.values(country.currencies)
@@ -407,7 +407,7 @@ async function saveCountriesToDB() {
   }
 }
 // llamada para guardar los países en la base de datos
-saveCountriesToDB();
+Guardar_paisesDB();
 
 // Ruta para obtener todos los países
 app.get("/api/v1/paises", async (req, res) => {
