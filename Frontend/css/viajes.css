@@ -135,6 +135,12 @@ nav a:hover {
 	margin-right: 300px;
 }
 
+#card-container {
+    width: 100%;
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
 /* ---- FOOTER ---- */
 .footer {
     background-color: rgba(255, 255, 255, 0.363);
