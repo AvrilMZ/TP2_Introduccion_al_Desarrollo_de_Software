@@ -95,9 +95,11 @@ npx prisma migrate dev
 npm run dev
 ```
 
-9. Levantar el servidor del Frontend:
+9. Levantar el servidor del Frontend (en una terminal aparte):
 
 ```bash
+cd <direccion_local_repositorio>
+cd Frontend
 npm run start
 
 ```
