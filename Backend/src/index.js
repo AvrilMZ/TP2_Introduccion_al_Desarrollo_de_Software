@@ -46,7 +46,11 @@ app.get("/api/v1/users/:usuario/viajes", async (req, res) => {
         usuario: req.params.usuario,
       },
       include: {
-        Viaje: true,
+        Viaje: {
+          include: {
+            pais: true, // Incluir la información del país en la respuesta
+          },
+        }
       },
     });
 
@@ -311,25 +315,31 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
 
 // Eliminar un viaje
 app.delete("/api/v1/viajes/:id", async (req, res) => {
-  const viajeId = req.params.id;
-  const viaje = await prisma.viaje.findUnique({
-    where: {
-      viaje: viajeId,
-    },
-  });
+  const viajeId = parseInt(req.params.id);
+  try {
+    const viaje = await prisma.viaje.findUnique({
+      where: {
+        id: viajeId,
+      },
+    });
 
-  if (!viaje) {
-    console.error("Viaje no encontrado");
-    return res.redirect("/html/error.html?code=404&mensaje=Viaje no encontrado");
+    if (!viaje) {
+      console.error("Viaje no encontrado");
+      return res.status(404).json({ error: "Viaje no encontrado" });
+    }
+
+    await prisma.viaje.delete({
+      where: {
+        id: viajeId,
+      },
+    });
+
+    console.log(`Viaje eliminado exitosamente`);
+    res.send(`Viaje ${viajeId} eliminado exitosamente`);
+  } catch (error) {
+    console.error("Error al eliminar el viaje:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
-
-  await prisma.viaje.delete({
-    where: {
-      viaje: viajeId,
-    },
-  });
-
-  res.send(`Viaje ${viajeId} eliminado exitosamente`);
 });
 
 // METODOS PAISES
@@ -383,12 +393,11 @@ async function saveCountriesToDB() {
       continente: country.region,
     }));
 
-    await prisma.viaje.deleteMany();
-    await prisma.pais.deleteMany();
-
     for (const country of countryData) {
-      await prisma.pais.create({
-        data: country,
+      await prisma.pais.upsert({
+        where: { id: country.id },
+        update: country,
+        create: country,
       });
     }
 
