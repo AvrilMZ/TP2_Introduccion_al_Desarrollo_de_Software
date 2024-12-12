@@ -38,27 +38,32 @@ app.get("/api/v1/users/:usuario", async (req, res) => {
   res.json(user);
 });
 
-// devuelve los viajes del usuario
-app.get("/api/v1/users/:usuario", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      usuario: req.params.usuario,
-    },
-    include: {
-      viajes: true,
-    },
-  });
+// Devuelve los viajes del usuario
+app.get("/api/v1/users/:usuario/viajes", async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        usuario: req.params.usuario,
+      },
+      include: {
+        Viaje: true,
+      },
+    });
 
-  if (!user) {
-    console.error("Usuario no encontrado");
-    return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
+    if (!user) {
+      console.error("Usuario no encontrado");
+      return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
+    }
+
+    res.json(user.Viaje);
+  } catch (error) {
+    console.error("Error al obtener los viajes del usuario:", error);
+    res.status(500).json({ error: "Error al obtener los viajes del usuario" });
   }
-
-  res.json(user.viaje);
 });
 
 // Agrega un nuevo usuario
-app.post("/api/v1/usuarios", async (req, res) => {
+app.post("/api/v1/users", async (req, res) => {
   try {
     console.log("Datos recibidos:", req.body);
 
@@ -69,7 +74,7 @@ app.post("/api/v1/usuarios", async (req, res) => {
         nacionalidad: req.body.nacionalidad,
         idiomas: req.body.idiomas,
         mail: req.body.mail,
-        paises_visitados: req.body["paises-visitados"],
+        paisesVisitados: req.body["paisesVisitados"],
       },
     });
 
@@ -77,7 +82,7 @@ app.post("/api/v1/usuarios", async (req, res) => {
   } catch (error) {
     console.error("Error en el backend:", error);
 
-    //error 'p2002' de prisma es para cuando hay un campo único duplicado
+    // Error 'p2002' de prisma es para cuando hay un campo único duplicado
     if (error.code === "P2002") {
       return res.status(400).json({ error: "El mail o usuario ya está en uso" });
     }
@@ -86,7 +91,7 @@ app.post("/api/v1/usuarios", async (req, res) => {
   }
 });
 
-//Elimina un usuario
+// Elimina un usuario
 app.delete("/api/v1/users/:usuario", async (req, res) => {
   const userUsuario = req.params.usuario;
   const user = await prisma.user.findUnique({
@@ -97,7 +102,7 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
 
   if (!user) {
     console.error("Usuario no encontrado");
-    return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
+    return res.status(404).json({ error: "Usuario no encontrado" });
   }
 
   await prisma.user.delete({
@@ -109,7 +114,7 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
   res.send(`Usuario ${userUsuario} eliminado exitosamente`);
 });
 
-//Actualiza un usuario
+// Actualiza un usuario
 app.put("/api/v1/users/:id", async (req, res) => {
   let user = await prisma.user.findUnique({
     where: {
@@ -119,7 +124,7 @@ app.put("/api/v1/users/:id", async (req, res) => {
 
   if (!user) {
     console.error("Usuario no encontrado");
-    return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
+    return res.status(404).json({ error: "Usuario no encontrado" });
   }
 
   user = await prisma.user.update({
@@ -132,19 +137,15 @@ app.put("/api/v1/users/:id", async (req, res) => {
       nacionalidad: req.body.nacionalidad,
       idiomas: req.body.idiomas,
       contacto: req.body.contacto,
-      paises_visitados: req.body.paises_visitados,
+      paisesVisitados: req.body.paisesVisitadoss,
     },
   });
 
   res.send(user);
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
-//METODOS VIAJES
-//Busco todos los viajes
+// METODOS VIAJES
+// Busco todos los viajes
 app.get("/api/v1/viajes", async (req, res) => {
   const viajes = await prisma.viaje.findMany({
     include: {
@@ -155,7 +156,7 @@ app.get("/api/v1/viajes", async (req, res) => {
   res.json(viajes);
 });
 
-//Busco viaje por id
+// Busco viaje por id
 app.get("/api/v1/viajes/:id", async (req, res) => {
   const viaje = await prisma.viaje.findUnique({
     where: { id: parseInt(req.params.id) },
@@ -165,7 +166,7 @@ app.get("/api/v1/viajes/:id", async (req, res) => {
     },
   });
 
-  if (!user) {
+  if (!viaje) {
     console.error("Viaje no encontrado");
     return res.redirect("/html/error.html?code=404&mensaje=Viaje no encontrado");
   }
@@ -197,7 +198,7 @@ app.post("/api/v1/viajes", async (req, res) => {
     return res.status(400).json({ error: "Todos los campos son obligatorios" });
   }
 
-  //verifico que existe el pais
+  // Verifico que existe el pais
   try {
     const paisData = await prisma.pais.findUnique({
       where: { nombre: pais },
@@ -208,7 +209,7 @@ app.post("/api/v1/viajes", async (req, res) => {
       return res.redirect("/html/error.html?code=404&mensaje=El país especificado no existe");
     }
 
-    //verifico que existe el usuario
+    // Verifico que existe el usuario
     const user = await prisma.user.findUnique({
       where: { usuario: usuario },
     });
@@ -308,11 +309,12 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
   }
 });
 
+// Eliminar un viaje
 app.delete("/api/v1/viajes/:id", async (req, res) => {
-  const userViaje = req.params.viaje;
+  const viajeId = req.params.id;
   const viaje = await prisma.viaje.findUnique({
     where: {
-      viaje: userViaje,
+      viaje: viajeId,
     },
   });
 
@@ -323,14 +325,14 @@ app.delete("/api/v1/viajes/:id", async (req, res) => {
 
   await prisma.viaje.delete({
     where: {
-      viaje: userViaje,
+      viaje: viajeId,
     },
   });
 
-  res.send(`Viaje ${userViaje} eliminado exitosamente`);
+  res.send(`Viaje ${viajeId} eliminado exitosamente`);
 });
 
-//METODOS PAISES
+// METODOS PAISES
 // Ruta para traer y guardar países desde la API
 async function getCountriesFromAPI() {
   const controller = new AbortController();
@@ -363,6 +365,7 @@ async function getCountriesFromAPI() {
   }
 }
 
+// Guardar países en la base de datos
 async function saveCountriesToDB() {
   try {
     const countries = await getCountriesFromAPI();
@@ -392,7 +395,6 @@ async function saveCountriesToDB() {
     console.log("Todos los países se guardaron en la base de datos.");
   } catch (error) {
     console.error("Error guardando países en la base de datos: ", error);
-    return res.status(500).json({ error: "Error guardando países en la base de datos" });
   }
 }
 // llamada para guardar los países en la base de datos
@@ -407,8 +409,8 @@ app.get("/api/v1/paises", async (req, res) => {
     });
     res.json(paises);
   } catch (error) {
-    console.error("Error al actualizar el viaje: ", error);
-    return res.status(500).json({ error: "Error interno al actualizar el viaje" });
+    console.error("Error interno al obtener el países: ", error);
+    return res.status(500).json({ error: "Error interno al obtener el países" });
   }
 });
 
@@ -432,4 +434,8 @@ app.get("/api/v1/paises/:id", async (req, res) => {
     console.error("Error al obtener el país: ", error);
     return res.status(500).json({ error: "Error interno al obtener el país" });
   }
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
 });
