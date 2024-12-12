@@ -138,7 +138,7 @@ app.put("/api/v1/users/:usuario", async (req, res) => {
 
   user = await prisma.user.update({
     where: {
-      usuario: req.params.usuario,
+      usuario: user.usuario,
     },
     data: {
       nombre: req.body.nombre,
