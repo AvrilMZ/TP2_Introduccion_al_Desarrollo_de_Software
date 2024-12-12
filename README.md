@@ -24,16 +24,9 @@ Desarrollar un sitio web completo utilizando las tecnologías vistas a lo largo 
 - **DevOps**: Docker Compose
 
 ## WorldTracker
-
-<<<<<<< HEAD
-
-# WorldTracker es una página web que permite a los usuarios registrar los países que han visitado, rellenar un formulario sobre su experiencia además de contar con información de cada país.
-
 WorldTracker es una página web que permite a los usuarios registrar los países que han visitado, rellenar un formulario sobre su experiencia además de contar con información de cada país.
 
 API utilizada: [REST Countries](https://restcountries.com/)
-
-> > > > > > > 65b6c60462d12d83d08adcb970614b76b0e5c7fe
 
 ### Capturas de pantalla del funcionamiento
 
