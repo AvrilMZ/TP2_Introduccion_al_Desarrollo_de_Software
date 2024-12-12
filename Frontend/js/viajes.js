@@ -107,16 +107,18 @@ document.getElementById('buscar-viaje').addEventListener('click', async () => {
 
     if (usuario) {
         try {
-            // Obtener los viajes del usuario usando su nombre de usuario
+            // Obtener los viajes y países visitados del usuario usando su nombre de usuario
             const viajesResponse = await fetch(`http://localhost:3000/api/v1/users/${usuario}/viajes`);
             if (viajesResponse.ok) {
                 const viajesData = await viajesResponse.json();
-                console.log(viajesData);
-                const viajes = viajesData; // Asegúrate de que la estructura de la respuesta sea correcta
-                if (viajes && viajes.length > 0) {
+                const userResponse = await fetch(`http://localhost:3000/api/v1/users/${usuario}`);
+                const userData = await userResponse.json();
+                const paisesVisitados = userData.paisesVisitados; // Obtener los países visitados del usuario
+
+                if (viajesData && viajesData.length > 0) {
                     usuarioEncontrado.style.display = 'block';
                     usuarioInput.classList.add('is-success');
-                    mostrarViajes(viajes);
+                    mostrarViajes(viajesData, paisesVisitados);
                     cardContainer.style.display = 'block';
                 } else {
                     usuarioDesconocido.style.display = 'block';
