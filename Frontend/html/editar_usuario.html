@@ -16,11 +16,16 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
         <!--CSS-->
         <link rel="stylesheet" href="../css/editar_viaje.css">
+        <!-- Multiple Select -->
+			<link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/css/multi-select-tag.css"
+        />
     </head>
 
     <body>
         <!-- NavBar -->
-        <header role="banner">
+		<header role="banner">
             <a href="index.html" class="logo-link">
                 <img src="../img/logo2.png" alt="WorldTracker" width="300">
             </a>
@@ -33,7 +38,7 @@
                 </nav>
             </div>
             <div class="nav-right-no-bulma">
-				<nav class="logo_editar">
+                <nav class="logo_editar">
                     <a href="editar_usuario" class="editar-logo-link">
                     <img src="../img/editor.png" alt="Editar usuario" width="30">
                     </a>
@@ -45,12 +50,19 @@
         </header>
 
         <div class="content">
-            <h2>Modificar Viaje</h2>
+            <h2>Editar Usuario</h2>
 
             <div id="error-mensajes" style="display: none; color: red"></div>
 			<div id="error-general" style="display: none; color: red"></div>
             <!-- Formulario -->
             <form id="confirmar">
+				<div class="field">
+					<label class="label">Nombre Completo</label>
+					<div class="control">
+						<input class="input" type="text" name="nombre" required />
+					</div>
+				</div>
+
 				<div class="field">
 					<label class="label">Usuario</label>
 					<div class="control">
@@ -62,85 +74,71 @@
 							required
 						/>
 					</div>
-					<p id="usuario-encontrado" class="help is-success">Usuario encontrado</p>
-					<p id="usuario-desconocido" class="help is-danger">Usuario no encontrado</p>
+					<p id="usuario-disponible" class="help is-success">
+						Usuario disponible
+					</p>
+					<p id="usuario-ocupado" class="help is-danger">
+						Usuario no disponible
+					</p>
 				</div>
 
 				<div class="field">
-					<label class="label" for="pais-select">País</label>
+					<label class="label">Email</label>
+					<div class="control">
+						<input id="mail" class="input" type="mail" name="mail" required />
+					</div>
+					<p id="email-help" class="help is-danger" style="display: none">
+						Email inválido
+					</p>
+				</div>
+
+				<div class="field">
+					<label class="label">Nacionalidad</label>
 					<div class="select">
-						<select id="pais-select" name="pais" required>
+						<select id="pais-select" name="nacionalidad" required>
 							<option value="" selected>Seleccionar</option>
 						</select>
 					</div>
 				</div>
 
 				<div class="field">
-					<label class="label" for="start-date">Fecha de inicio:</label>
-					<input
-						type="date"
-						id="start-date"
-						name="viaje-inicio"
-						min="1950-01-01"
-						max="2024-12-31"
-					/>
+					<label class="label">¿Qué países visitaste?</label>
+					<select
+						id="paises-container"
+						name="paises-visitados[]"
+						multiple
+						required
+					></select>
+					<p
+						id="paises-visitados-help"
+						class="help is-danger"
+						style="display: none"
+					>
+						Selecciona al menos un país visitado
+					</p>
 				</div>
 
 				<div class="field">
-					<label class="label" for="end-date">Fecha de fin:</label>
-					<input
-						type="date"
-						id="end-date"
-						name="viaje-fin"
-						min="1950-01-01"
-						max="2024-12-31"
-					/>
+					<label class="label">Idiomas que hablas</label>
+					<select id="idiomas-container" name="idiomas[]" multiple></select>
 				</div>
 
 				<div class="field">
-					<label class="label" for="ciudades">¿Qué ciudades visitaste?</label>
 					<div class="control">
-						<input
-							id="ciudades"
-							class="input"
-							type="text"
-							placeholder="Ingresa una ciudad y presiona Enter"
-						/>
+						<label class="checkbox">
+							<input id="termsCheckbox" type="checkbox" required />
+							Acepto
+							<a href="#">términos y condiciones</a>
+						</label>
 					</div>
-					<div id="ciudades-tags" class="tags"></div>
-				</div>
-
-				<div class="field">
-					<label class="label" for="presupuesto">Presupuesto</label>
-					<div class="control">
-						<input
-							id="presupuesto"
-							class="input"
-							type="number"
-							name="presupuesto"
-							required
-						/>
-					</div>
-				</div>
-
-				<div class="field">
-					<label class="label" for="calificacion">Calificación</label>
-					<div class="control">
-						<input
-							id="calificacion"
-							class="input"
-							type="number"
-							name="calificacion"
-							required
-							min="0"
-							max="5"
-						/>
-					</div>
+					<p id="error-terminos" class="help is-danger" style="display: none">
+						Debes aceptar los términos y condiciones.
+					</p>
 				</div>
 
 				<div class="field is-grouped">
 					<div class="control">
-						<button class="button is-link" type="submit">Añadir</button>
+						<button class="button is-link" type="submit">Actualizar</button>
 					</div>
 					<div class="control">
 						<button
@@ -153,13 +151,14 @@
 					</div>
 				</div>
 			</form>
-        </div>
-        <script src="../js/editar_viaje.js"></script>
+		</div>
+		<script src="../js/editar_usuario.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
 
         <!-- Footer -->
         <footer class="footer">
             <div class="footer-container">
-                <p>© 2024 WorldTravel. Todos los derechos reservados.</p>
+                <p>© 2024 WorldTracker. Todos los derechos reservados.</p>
                 <p>
                     Desarrollado por 
                     <a href="https://github.com/abbnunez" target="_blank">Abril Belén Nuñez</a>, 
