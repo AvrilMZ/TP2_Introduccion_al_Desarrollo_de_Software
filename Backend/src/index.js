@@ -99,7 +99,7 @@ app.post("/api/v1/users", async (req, res) => {
             usuarioId: user.id,
             fechaInicio: null,
             fechaFin: null,
-            ciudades: '',
+            ciudades: "",
             presupuesto: 0,
             calificacion: 0,
           },
@@ -125,8 +125,10 @@ app.post("/api/v1/users", async (req, res) => {
 });
 
 // Elimina un usuario
+
 app.delete("/api/v1/users/:usuario", async (req, res) => {
   const userUsuario = req.params.usuario;
+
   const user = await prisma.user.findUnique({
     where: {
       usuario: userUsuario,
@@ -135,58 +137,30 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
 
   if (!user) {
     console.error("Usuario no encontrado");
-    return res.redirect("error.html?code=404&mensaje=Usuario no encontrado");
+    return res.status(404).json({ error: "Usuario no encontrado" });
   }
 
-  await prisma.user.delete({
-    where: {
-      usuario: userUsuario,
-    },
-  });
+  try {
+    // con esto elimino los registros de usuario en la tabla de viaje
+    await prisma.viaje.deleteMany({
+      where: {
+        nombreUsuario: userUsuario,
+      },
+    });
 
-  res.send(`Usuario ${userUsuario} eliminado exitosamente`);
-});
+    await prisma.user.delete({
+      where: {
+        usuario: userUsuario,
+      },
+    });
 
-// Actualiza un usuario
-app.put("/api/v1/users/:usuario", async (req, res) => {
-  let user = await prisma.user.findUnique({
-    where: {
-      usuario: req.params.usuario,
-    },
-  });
-
-  if (!user) {
-    console.error("Usuario no encontrado");
-    return res.redirect("error.html?code=404&mensaje=Usuario no encontrado");
+    res.send(`Usuario ${userUsuario} eliminado exitosamente`);
+  } catch (error) {
+    console.error("Error al eliminar el usuario:", error);
+    res
+      .status(500)
+      .send("Error al eliminar el usuario. Inténtalo nuevamente más tarde.");
   }
-
-  user = await prisma.user.update({
-    where: {
-      usuario: user.usuario,
-    },
-    data: {
-      nombre: req.body.nombre,
-      usuario: req.body.usuario,
-      nacionalidad: req.body.nacionalidad,
-      idiomas: req.body.idiomas,
-      contacto: req.body.contacto,
-      paisesVisitados: req.body.paisesVisitadoss,
-    },
-  });
-
-  res.send(user);
-});
-
-// METODOS VIAJES
-// Busco todos los viajes
-app.get("/api/v1/viajes", async (req, res) => {
-  const viajes = await prisma.viaje.findMany({
-    include: {
-      pais: true,
-      usuario: true,
-    },
-  });
-  res.json(viajes);
 });
 
 // METODOS VIAJES
@@ -438,8 +412,8 @@ async function Guardar_paisesDB() {
       idiomas: country.languages ? Object.values(country.languages) : [],
       moneda: country.currencies
         ? Object.values(country.currencies)
-          .map((currency) => currency.name)
-          .join(", ")
+            .map((currency) => currency.name)
+            .join(", ")
         : null,
       continente: country.region,
     }));
