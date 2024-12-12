@@ -25,14 +25,22 @@ async function agregarBanderas(viajes) {
 }
 
 // Mostrar viajes pertenecientes al usuario
-async function mostrarViajes(viajes) {
+async function mostrarViajes(viajes, paisesVisitados) {
     const cardContainer = document.getElementById('card-container');
     cardContainer.innerHTML = '';
 
-    const viajesConBanderas = await agregarBanderas(viajes); // Aseguramos que cada viaje tenga una bandera
+    // Asegura que los viajes tengan banderas
+    const viajesConBanderas = await agregarBanderas(viajes);
+
+    // Extrae los países que no tienen un viaje asociado
+    const paisesNoAsociados = paisesVisitados.filter(pais =>
+        !viajesConBanderas.some(viaje => viaje.pais?.nombre === pais)
+    );
+
+    // Muestra cada viaje existente
     viajesConBanderas.forEach(viaje => {
-        const pais = viaje.pais; // Asegúrate de que viaje tenga el campo pais
-        const flagUrl = pais && pais.flags ? pais.flags.png : 'https://via.placeholder.com/150'; // Imagen por defecto si falta
+        const pais = viaje.pais;
+        const flagUrl = pais?.flags?.png || 'https://via.placeholder.com/150';
 
         const card = document.createElement('div');
         card.className = 'card is-horizontal';
@@ -70,32 +78,51 @@ async function mostrarViajes(viajes) {
         cardContainer.appendChild(card);
     });
 
-    // Agregar eventos para eliminar viajes
-    document.querySelectorAll('.delete-viaje').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            event.preventDefault();
-            const viajeId = button.getAttribute('data-id');
-            try {
-                const response = await fetch(`http://localhost:3000/api/v1/viajes/${viajeId}`, {
-                    method: 'DELETE',
-                });
-                if (response.ok) {
-                    alert(`Viaje ${viajeId} eliminado exitosamente.`);
-                    button.closest('.card').remove(); // Eliminar la tarjeta de la interfaz
-                } else {
-                    console.error('Error al eliminar el viaje:', await response.json());
-                }
-            } catch (error) {
-                console.error('Error al realizar la solicitud:', error);
-            }
-        });
-    });
+    // Muestra tarjetas para los países visitados sin viajes
+    for (const pais of paisesNoAsociados) {
+        const flagUrl = await obtenerBandera(pais);
+
+        const card = document.createElement('div');
+        card.className = 'card is-horizontal';
+
+        card.innerHTML = `
+            <div class="card-image">
+                <figure class="image">
+                    <img src="${flagUrl}" alt="${pais}">
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img src="${flagUrl}" alt="${pais}">
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <p class="title is-4">${pais}</p>
+                    </div>
+                </div>
+                <div class="info">
+                    <p>Fecha de inicio: -</p>
+                    <p>Fecha de fin: -</p>
+                    <p>Ciudades visitadas: -</p>
+                    <p>Presupuesto: -</p>
+                    <p>Calificación: -</p>
+                </div>
+                <footer class="card-footer">
+                    <a href="../html/editar_viaje.html" class="card-footer-item modificar-viaje" data-pais="${pais}">Modificar</a>
+                    <a href="#" class="card-footer-item delete-viaje" data-pais="${pais}">Eliminar</a>
+                </footer>
+            </div>
+        `;
+        cardContainer.appendChild(card);
+    }
 }
 
-// Verificar existencia de usuario
+// Verificar existencia de usuario y obtener viajes
 document.getElementById('buscar-viaje').addEventListener('click', async () => {
     const usuarioInput = document.getElementById('usuario');
-    const usuario = usuarioInput.value.trim(); // Se usa 'trim' para eliminar espacios innecesarios
+    const usuario = usuarioInput.value.trim();
     const usuarioEncontrado = document.getElementById('usuario-encontrado');
     const usuarioDesconocido = document.getElementById('usuario-desconocido');
     const cardContainer = document.getElementById('card-container');
@@ -107,27 +134,23 @@ document.getElementById('buscar-viaje').addEventListener('click', async () => {
 
     if (usuario) {
         try {
-            // Obtener los viajes y países visitados del usuario usando su nombre de usuario
+            // Obtiene los viajes y países visitados del usuario
             const viajesResponse = await fetch(`http://localhost:3000/api/v1/users/${usuario}/viajes`);
-            if (viajesResponse.ok) {
-                const viajesData = await viajesResponse.json();
-                const userResponse = await fetch(`http://localhost:3000/api/v1/users/${usuario}`);
-                const userData = await userResponse.json();
-                const paisesVisitados = userData.paisesVisitados; // Obtener los países visitados del usuario
+            const userResponse = await fetch(`http://localhost:3000/api/v1/users/${usuario}`);
 
-                if (viajesData && viajesData.length > 0) {
-                    usuarioEncontrado.style.display = 'block';
-                    usuarioInput.classList.add('is-success');
-                    mostrarViajes(viajesData, paisesVisitados);
-                    cardContainer.style.display = 'block';
-                } else {
-                    usuarioDesconocido.style.display = 'block';
-                    usuarioInput.classList.add('is-danger');
-                }
+            if (viajesResponse.ok && userResponse.ok) {
+                const viajesData = await viajesResponse.json();
+                const userData = await userResponse.json();
+
+                usuarioEncontrado.style.display = 'block';
+                usuarioInput.classList.add('is-success');
+                cardContainer.style.display = 'block';
+
+                // Muestra los viajes y países visitados
+                mostrarViajes(viajesData, userData.paisesVisitados);
             } else {
                 usuarioDesconocido.style.display = 'block';
                 usuarioInput.classList.add('is-danger');
-                console.error('Error al buscar los viajes');
             }
         } catch (error) {
             usuarioDesconocido.style.display = 'block';

@@ -72,6 +72,7 @@ app.post("/api/v1/users", async (req, res) => {
   try {
     console.log("Datos recibidos:", req.body);
 
+    // Crear el usuario
     const user = await prisma.user.create({
       data: {
         nombre: req.body.nombre,
@@ -79,15 +80,38 @@ app.post("/api/v1/users", async (req, res) => {
         nacionalidad: req.body.nacionalidad,
         idiomas: req.body.idiomas,
         mail: req.body.mail,
-        paisesVisitados: req.body["paisesVisitados"],
       },
     });
 
-    res.status(201).json(user);
+    // Manejar países visitados
+    const paisesVisitados = req.body.paisesVisitados || [];
+    for (const paisNombre of paisesVisitados) {
+      // Buscar el país en la base de datos
+      const pais = await prisma.pais.findUnique({
+        where: { nombre: paisNombre },
+      });
+
+      // Si el país existe, asociarlo como un viaje
+      if (pais) {
+        await prisma.viaje.create({
+          data: {
+            paisId: pais.id,
+            usuarioId: user.id,
+            fechaInicio: null,
+            fechaFin: null,
+            ciudades: '',
+            presupuesto: 0,
+            calificacion: 0,
+          },
+        });
+      }
+    }
+
+    res.status(201).json({ user });
   } catch (error) {
     console.error("Error en el backend:", error);
 
-    // Error 'p2002' de prisma es para cuando hay un campo único duplicado
+    // Manejo del error 'P2002' de prisma (campo único duplicado)
     if (error.code === "P2002") {
       return res
         .status(400)
@@ -414,8 +438,8 @@ async function Guardar_paisesDB() {
       idiomas: country.languages ? Object.values(country.languages) : [],
       moneda: country.currencies
         ? Object.values(country.currencies)
-            .map((currency) => currency.name)
-            .join(", ")
+          .map((currency) => currency.name)
+          .join(", ")
         : null,
       continente: country.region,
     }));
