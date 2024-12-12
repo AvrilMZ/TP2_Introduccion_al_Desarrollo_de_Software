@@ -61,7 +61,7 @@ document.querySelector('form').addEventListener('submit', async function (event)
 
     function mostrarErrores(errores) {
         const errorDiv = document.getElementById('error-mensajes');
-        
+
         errorDiv.innerHTML = '';
         errores.forEach((error) => {
             const mensaje = document.createElement('p'); //crea un p para cada error
@@ -70,7 +70,7 @@ document.querySelector('form').addEventListener('submit', async function (event)
         });
         errorDiv.style.display = 'block'; // muestra el container de errores
     }
-    
+
 
     const formData = new FormData(event.target);
     //guardo los valores de los inputs
@@ -81,7 +81,7 @@ document.querySelector('form').addEventListener('submit', async function (event)
         nacionalidad: formData.get('nacionalidad'),
         'paises-visitados': formData.getAll('paises-visitados[]'),
         idiomas: formData.getAll('idiomas[]'),
-    }; 
+    };
 
 
     //VALIDACIONES
@@ -114,18 +114,18 @@ document.querySelector('form').addEventListener('submit', async function (event)
 
     //envio los datos al backend
     try {
-        const response = await fetch('http://localhost:3000/api/v1/usuarios', {
+        const response = await fetch('http://localhost:3000/api/v1/users', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
-    
+
         //si la rta falla, devuelvo el error para el catch
         if (!response.ok) {
             const error = await response.json();
             throw error;
         }
-    
+
         //se crea, muestro una alerta y reinicio la pagina
         const usuarioCreado = await response.json();
         console.log('Usuario creado:', usuarioCreado);
@@ -133,7 +133,7 @@ document.querySelector('form').addEventListener('submit', async function (event)
         event.target.reset();
     } catch (error) {
         console.error('Error recibido del backend:', error);
-    
+
         //si backend devuelve error especifico lo muestro
         if (Array.isArray(error.error)) {
             mostrarErrores(error.error.map((msg) => ({ msg })));
