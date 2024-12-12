@@ -20,7 +20,9 @@ Desarrollar un sitio web completo utilizando las tecnologías vistas a lo largo 
 * **DevOps**: Docker Compose
 
 ## WorldTracker
-WorldTracker es una página web que permite a los usuarios registrar los países que han visitado, rellenar un formulario sobre su experiencia además de contar con información de cada país.
+WorldTracker es una página web que permite a los usuarios registrar los países que han visitado, rellenar un formulario sobre su experiencia además de contar con información de cada país.  
+  
+API utilizada: [REST Countries](https://restcountries.com/)
 
 ### Capturas de pantalla del funcionamiento
 <!--
@@ -47,9 +49,9 @@ cd <direccion_local_repositorio>
 3. Levantar el contenedor de la base de datos con Docker:
 ```bash
 cd Backend
-docker-compose up -d
+docker compose up -d
 ```
-4. Renombra el archivo 'example.env' a '.env' y luego, usándolo como modelo, modifica los detalles de tu base de datos:
+4. Renombra el archivo 'example.env' a '.env' y luego, usándolo como modelo, modifica los detalles con tu base de datos:
 ```bash
 cp .example.env .env
 ```
