@@ -9,11 +9,20 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<!-- Inter font -->
-		<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet"/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+			rel="stylesheet"
+		/>
 		<!-- Icons Webpage -->
-		<link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet"/>
+		<link
+			href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
+			rel="stylesheet"
+		/>
 		<!-- Bulma -->
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+		/>
 		<!-- CSS -->
 		<link rel="stylesheet" href="../css/viaje_registro.css" />
 	</head>
@@ -29,6 +38,11 @@
 				<nav class="vuelos"><a href="viajes.html">VIAJES</a></nav>
 			</div>
 			<div class="nav-right-no-bulma">
+				<nav class="logo_editar">
+					<a href="editar_usuario" class="editar-logo-link">
+						<img src="../img/editor.png" alt="Editar usuario" width="30" />
+					</a>
+				</nav>
 				<nav class="usuario">
 					<a href="registro.html" class="boton-registro">
 						<i class="new bx bx-id-card"></i>
@@ -55,8 +69,12 @@
 							required
 						/>
 					</div>
-					<p id="usuario-encontrado" class="help is-success">Usuario encontrado</p>
-					<p id="usuario-desconocido" class="help is-danger">Usuario no encontrado</p>
+					<p id="usuario-encontrado" class="help is-success">
+						Usuario encontrado
+					</p>
+					<p id="usuario-desconocido" class="help is-danger">
+						Usuario no encontrado
+					</p>
 				</div>
 
 				<div class="field">
