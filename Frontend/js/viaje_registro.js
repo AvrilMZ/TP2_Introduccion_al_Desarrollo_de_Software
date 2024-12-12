@@ -98,7 +98,7 @@ document
 			return;
 		}
 
-		if (new Date(data['viaje-inicio']) > new Date(data['viaje-fin'])) {
+		if (new Date(data['fechaInicio']) > new Date(data['fechaFin'])) {
 			alert(
 				'La fecha de inicio del viaje no puede ser posterior a la fecha de fin.'
 			);
