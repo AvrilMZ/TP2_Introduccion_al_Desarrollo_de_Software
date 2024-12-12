@@ -79,7 +79,7 @@ document.querySelector('form').addEventListener('submit', async function (event)
         usuario: formData.get('usuario'),
         mail: formData.get('mail'),
         nacionalidad: formData.get('nacionalidad'),
-        'paises-visitados': formData.getAll('paises-visitados[]'),
+        'paisesVisitados': formData.getAll('paisesVisitados[]'),
         idiomas: formData.getAll('idiomas[]'),
     };
 
@@ -96,8 +96,8 @@ document.querySelector('form').addEventListener('submit', async function (event)
         errores.mail = 'El email no es válido';
     }
 
-    if (data['paises-visitados'].length === 0) {
-        errores['paises-visitados'] = 'Selecciona al menos un país';
+    if (data['paisesVisitados'].length === 0) {
+        errores['paisesVisitados'] = 'Selecciona al menos un país';
     }
 
     if (data.idiomas.length === 0) {
