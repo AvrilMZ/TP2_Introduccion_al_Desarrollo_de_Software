@@ -123,7 +123,7 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
 app.put("/api/v1/users/:id", async (req, res) => {
   let user = await prisma.user.findUnique({
     where: {
-      id: parseInt(req.params.id),
+      usuario: req.params.usuario,
     },
   });
 
@@ -134,7 +134,7 @@ app.put("/api/v1/users/:id", async (req, res) => {
 
   user = await prisma.user.update({
     where: {
-      id: user.id,
+      usuario: user.usuario,
     },
     data: {
       nombre: req.body.nombre,
