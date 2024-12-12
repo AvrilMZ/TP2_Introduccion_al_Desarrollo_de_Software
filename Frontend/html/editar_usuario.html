@@ -15,7 +15,7 @@
         <!--Bulma-->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
         <!--CSS-->
-        <link rel="stylesheet" href="../css/registro.css">
+        <link rel="stylesheet" href="../css/editar_viaje.css">
         <!-- Multiple Select -->
 			<link
             rel="stylesheet"
@@ -25,26 +25,26 @@
 
     <body>
         <!-- NavBar -->
-        <header role="banner">
-            <a href="/html/index.html" class="logo-link">
+		<header role="banner">
+            <a href="index.html" class="logo-link">
                 <img src="../img/logo2.png" alt="WorldTracker" width="300">
             </a>
             <div class="nav-center-no-bulma">
                 <nav class="paises">
-                    <a href="/html/paises.html"></i>PAISES</a>
+                    <a href="paises.html"></i>PAISES</a>
                 </nav>
                 <nav class="vuelos">
-                    <a href="/html/viajes.html"></i>VIAJES</a>
+                    <a href="viajes.html"></i>VIAJES</a>
                 </nav>
             </div>
             <div class="nav-right-no-bulma">
                 <nav class="logo_editar">
-                    <a href="/html/editar_usuario.html" class="editar-logo-link">
+                    <a href="editar_usuario" class="editar-logo-link">
                     <img src="../img/editor.png" alt="Editar usuario" width="30">
                     </a>
                 </nav>
                 <nav class="usuario">
-                    <a href="/html/registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>REGISTRATE</a>
+                    <a href="registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>REGISTRATE</a>
                 </nav>
             </div>
         </header>
@@ -57,13 +57,6 @@
             <!-- Formulario -->
             <form id="confirmar">
 				<div class="field">
-					<label class="label">Nombre Completo</label>
-					<div class="control">
-						<input class="input" type="text" name="nombre" required />
-					</div>
-				</div>
-
-				<div class="field">
 					<label class="label">Usuario</label>
 					<div class="control">
 						<input
@@ -74,18 +67,27 @@
 							required
 						/>
 					</div>
-					<p id="usuario-disponible" class="help is-success">
-						Usuario disponible
-					</p>
-					<p id="usuario-ocupado" class="help is-danger">
-						Usuario no disponible
-					</p>
+					<p id="usuario-encontrado" class="help is-success">Usuarios encontrados</p>
+					<p id="usuario-desconocido" class="help is-danger">Usuarios no encontrados</p>
 				</div>
-
+	
+				<div class="field is-grouped">
+					<div class="control">
+						<button id="buscar-usuario" class="button is-primary is-rounded">Buscar Usuario</button>
+						<button id="eliminar-usuario" class="button is-rounded" style="color: #00d1b2; border-color: #00d1b2;">Eliminar Usuario</button>
+					</div>
+				</div>
+				<div class="field">
+					<label class="label">Nombre Completo</label>
+					<div class="control">
+						<input class="input" type="text" name="nombre" disabled required />
+					</div>
+				</div>
+			
 				<div class="field">
 					<label class="label">Email</label>
 					<div class="control">
-						<input id="mail" class="input" type="mail" name="mail" required />
+						<input id="mail" class="input" type="mail" name="mail" disabled required />
 					</div>
 					<p id="email-help" class="help is-danger" style="display: none">
 						Email inválido
@@ -95,7 +97,7 @@
 				<div class="field">
 					<label class="label">Nacionalidad</label>
 					<div class="select">
-						<select id="pais-select" name="nacionalidad" required>
+						<select id="pais-select" name="nacionalidad" disabled required>
 							<option value="" selected>Seleccionar</option>
 						</select>
 					</div>
@@ -106,6 +108,7 @@
 					<select
 						id="paises-container"
 						name="paises-visitados[]"
+						disabled
 						multiple
 						required
 					></select>
@@ -120,21 +123,9 @@
 
 				<div class="field">
 					<label class="label">Idiomas que hablas</label>
-					<select id="idiomas-container" name="idiomas[]" multiple></select>
+					<select id="idiomas-container" name="idiomas[]" disabled multiple required></select>
 				</div>
 
-				<div class="field">
-					<div class="control">
-						<label class="checkbox">
-							<input id="termsCheckbox" type="checkbox" required />
-							Acepto
-							<a href="#">términos y condiciones</a>
-						</label>
-					</div>
-					<p id="error-terminos" class="help is-danger" style="display: none">
-						Debes aceptar los términos y condiciones.
-					</p>
-				</div>
 
 				<div class="field is-grouped">
 					<div class="control">
@@ -151,6 +142,7 @@
 					</div>
 				</div>
 			</form>
+			
 		</div>
 		<script src="../js/editar_usuario.js"></script>
 		<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>

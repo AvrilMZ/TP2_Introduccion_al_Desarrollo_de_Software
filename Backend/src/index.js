@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require("path");
 const { PrismaClient } = require("@prisma/client");
 const express = require("express");
 const cors = require("cors");
@@ -10,7 +10,7 @@ const axios = require("axios");
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, '../Frontend/html')));
+app.use(express.static(path.join(__dirname, "../Frontend/html")));
 
 app.get("/", (req, res) => {
   res.send("Viajandoo...");
@@ -51,7 +51,7 @@ app.get("/api/v1/users/:usuario/viajes", async (req, res) => {
           include: {
             pais: true, // Incluir la información del país en la respuesta
           },
-        }
+        },
       },
     });
 
@@ -89,10 +89,14 @@ app.post("/api/v1/users", async (req, res) => {
 
     // Error 'p2002' de prisma es para cuando hay un campo único duplicado
     if (error.code === "P2002") {
-      return res.status(400).json({ error: "El mail o usuario ya está en uso" });
+      return res
+        .status(400)
+        .json({ error: "El mail o usuario ya está en uso" });
     }
 
-    return res.status(500).json({ error: "Hubo un problema al crear el usuario" });
+    return res
+      .status(500)
+      .json({ error: "Hubo un problema al crear el usuario" });
   }
 });
 
@@ -120,10 +124,10 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
 });
 
 // Actualiza un usuario
-app.put("/api/v1/users/:id", async (req, res) => {
+app.put("/api/v1/users/:usuario", async (req, res) => {
   let user = await prisma.user.findUnique({
     where: {
-      id: parseInt(req.params.id),
+      usuario: req.params.usuario,
     },
   });
 
@@ -134,7 +138,7 @@ app.put("/api/v1/users/:id", async (req, res) => {
 
   user = await prisma.user.update({
     where: {
-      id: user.id,
+      usuario: req.params.usuario,
     },
     data: {
       nombre: req.body.nombre,
@@ -147,6 +151,18 @@ app.put("/api/v1/users/:id", async (req, res) => {
   });
 
   res.send(user);
+});
+
+// METODOS VIAJES
+// Busco todos los viajes
+app.get("/api/v1/viajes", async (req, res) => {
+  const viajes = await prisma.viaje.findMany({
+    include: {
+      pais: true,
+      usuario: true,
+    },
+  });
+  res.json(viajes);
 });
 
 // METODOS VIAJES
@@ -211,7 +227,9 @@ app.post("/api/v1/viajes", async (req, res) => {
 
     if (!paisData) {
       console.error("El usuario especificado no existe");
-      return res.redirect("error.html?code=404&mensaje=El país especificado no existe");
+      return res.redirect(
+        "error.html?code=404&mensaje=El país especificado no existe"
+      );
     }
 
     // Verifico que existe el usuario
@@ -221,7 +239,9 @@ app.post("/api/v1/viajes", async (req, res) => {
 
     if (!user) {
       console.error("El usuario especificado no existe");
-      return res.redirect("error.html?code=404&mensaje=El usuario especificado no existe");
+      return res.redirect(
+        "error.html?code=404&mensaje=El usuario especificado no existe"
+      );
     }
 
     const nuevoViaje = await prisma.viaje.create({
@@ -239,7 +259,9 @@ app.post("/api/v1/viajes", async (req, res) => {
     res.status(201).json(nuevoViaje);
   } catch (error) {
     console.error("Ocurrió un error al crear el viaje: ", error);
-    return res.status(500).json({ error: "Ocurrió un error al crear el viaje" });
+    return res
+      .status(500)
+      .json({ error: "Ocurrió un error al crear el viaje" });
   }
 });
 
@@ -274,7 +296,9 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
 
       if (!paisData) {
         console.error("El país especificado no existe");
-        return res.redirect("error.html?code=404&mensaje=El país especificado no existe");
+        return res.redirect(
+          "error.html?code=404&mensaje=El país especificado no existe"
+        );
       }
       paisId = paisData.id;
     }
@@ -287,7 +311,9 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
 
       if (!user) {
         console.error("El usuario especificado no existe");
-        return res.redirect("error.html?code=404&mensaje=El usuario especificado no existe");
+        return res.redirect(
+          "error.html?code=404&mensaje=El usuario especificado no existe"
+        );
       }
       nombreUsuario = usuario;
     }
@@ -364,13 +390,13 @@ async function Agarrar_paises_api() {
   } catch (error) {
     if (error.name === "AbortError") {
       console.error("La solicitud fue abortada debido al timeout: ", error);
-      return res.status(504).json({ error: "La solicitud fue abortada debido al timeout" });
-
+      return res
+        .status(504)
+        .json({ error: "La solicitud fue abortada debido al timeout" });
     } else {
       console.error("Error de fetch: ", error);
       return res.status(500).json({ error: "Error de fetch" });
     }
-
   } finally {
     clearTimeout(timeout);
   }
@@ -388,8 +414,8 @@ async function Guardar_paisesDB() {
       idiomas: country.languages ? Object.values(country.languages) : [],
       moneda: country.currencies
         ? Object.values(country.currencies)
-          .map((currency) => currency.name)
-          .join(", ")
+            .map((currency) => currency.name)
+            .join(", ")
         : null,
       continente: country.region,
     }));
@@ -420,7 +446,9 @@ app.get("/api/v1/paises", async (req, res) => {
     res.json(paises);
   } catch (error) {
     console.error("Error interno al obtener el países: ", error);
-    return res.status(500).json({ error: "Error interno al obtener el países" });
+    return res
+      .status(500)
+      .json({ error: "Error interno al obtener el países" });
   }
 });
 

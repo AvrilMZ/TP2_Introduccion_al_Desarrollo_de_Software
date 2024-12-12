@@ -1,160 +1,183 @@
-document.addEventListener('DOMContentLoaded', function () {
-	fetch('https://restcountries.com/v3.1/all')
-		.then((response) => response.json())
-		.then((countries) => {
-			cargarPaisesSelect(countries);
-			cargarPaisesMultiSelect(countries);
-			cargarIdiomas(countries);
-		});
-
-	// Países para la nacionalidad
-	function cargarPaisesSelect(countries) {
-		const paisSelect = document.getElementById('pais-select');
-		countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
-		countries.forEach((country) => {
-			const option = document.createElement('option');
-			option.value = country.name.common;
-			option.textContent = country.name.common;
-			paisSelect.appendChild(option);
-		});
-	}
-
-	// Países para países visitados
-	function cargarPaisesMultiSelect(countries) {
-		const paisesContainer = document.getElementById('paises-container');
-		countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
-		countries.forEach((country) => {
-			const option = document.createElement('option');
-			option.value = country.name.common;
-			option.textContent = country.name.common;
-			paisesContainer.appendChild(option);
-		});
-
-		console.log(
-			'Opciones cargadas para países visitados:',
-			paisesContainer.innerHTML
-		);
-		// Inicializar MultiSelect
-		setTimeout(() => new MultiSelectTag('paises-container'), 0);
-	}
-
-	// Idiomas
-	function cargarIdiomas(countries) {
-		const idiomasContainer = document.getElementById('idiomas-container');
-		const idiomas = new Set();
-		countries.forEach((country) => {
-			if (country.languages) {
-				Object.values(country.languages).forEach((language) =>
-					idiomas.add(language)
-				);
-			}
-		});
-
-		Array.from(idiomas)
-			.sort()
-			.forEach((language) => {
-				const option = document.createElement('option');
-				option.value = language;
-				option.textContent = language;
-				idiomasContainer.appendChild(option);
-			});
-
-		setTimeout(() => new MultiSelectTag('idiomas-container'), 0);
-	}
-});
-
+// Evento para buscar el usuario
 document
-	.querySelector('form')
-	.addEventListener('submit', async function (event) {
+	.getElementById('buscar-usuario')
+	.addEventListener('click', async (event) => {
 		event.preventDefault();
 
-		function mostrarErrores(errores) {
-			const errorDiv = document.getElementById('error-mensajes');
+		const usuarioInput = document.getElementById('usuario');
+		const usuario = usuarioInput.value.trim();
+		const usuarioEncontrado = document.getElementById('usuario-encontrado');
+		const usuarioDesconocido = document.getElementById('usuario-desconocido');
 
-			errorDiv.innerHTML = '';
-			errores.forEach((error) => {
-				const mensaje = document.createElement('p'); //crea un p para cada error
-				mensaje.textContent = error.msg || error;
-				errorDiv.appendChild(mensaje);
-			});
-			errorDiv.style.display = 'block'; // muestra el container de errores
+		// Limpia mensajes previos
+		usuarioEncontrado.style.display = 'none';
+		usuarioDesconocido.style.display = 'none';
+		usuarioInput.classList.remove('is-success', 'is-danger');
+
+		if (usuario) {
+			try {
+				const response = await fetch(
+					`http://localhost:3000/api/v1/users/${usuario}`
+				);
+				if (response.ok) {
+					const usuarioData = await response.json();
+
+					// Rellenar el formulario
+					document.getElementById('nombre').value = usuarioData.nombre || '';
+					document.getElementById('mail').value = usuarioData.contacto || '';
+					document.getElementById('pais-select').value =
+						usuarioData.nacionalidad || '';
+
+					const paisesContainer = document.getElementById('paises-container');
+					paisesContainer.innerHTML = '';
+					usuarioData.paisesVisitados.forEach((pais) => {
+						const option = document.createElement('option');
+						option.value = pais;
+						option.textContent = pais;
+						option.selected = true;
+						paisesContainer.appendChild(option);
+					});
+
+					const idiomasContainer = document.getElementById('idiomas-container');
+					idiomasContainer.innerHTML = '';
+					usuarioData.idiomas.forEach((idioma) => {
+						const option = document.createElement('option');
+						option.value = idioma;
+						option.textContent = idioma;
+						option.selected = true;
+						idiomasContainer.appendChild(option);
+					});
+
+					document
+						.querySelectorAll('#confirmar input, #confirmar select')
+						.forEach((field) => {
+							field.disabled = false; // habilito los campos
+						});
+
+					usuarioEncontrado.style.display = 'block';
+					usuarioInput.classList.add('is-success');
+				} else {
+					usuarioDesconocido.style.display = 'block';
+					usuarioInput.classList.add('is-danger');
+				}
+			} catch (error) {
+				usuarioDesconocido.style.display = 'block';
+				usuarioInput.classList.add('is-danger');
+				console.error('Error al buscar el usuario:', error);
+			}
+		} else {
+			alert('Por favor, ingrese un usuario.');
 		}
+	});
 
-		const formData = new FormData(event.target);
-		//guardo los valores de los inputs
-		const data = {
-			nombre: formData.get('nombre'),
-			usuario: formData.get('usuario'),
-			mail: formData.get('mail'),
-			nacionalidad: formData.get('nacionalidad'),
-			'paises-visitados': formData.getAll('paises-visitados[]'),
-			idiomas: formData.getAll('idiomas[]'),
-		};
+document
+	.getElementById('confirmar')
+	.addEventListener('click', async (event) => {
+		event.preventDefault();
 
-		//VALIDACIONES
-		const errores = {};
+		const usuarioInput = document.getElementById('usuario');
+		const usuario = usuarioInput.value.trim();
 
-		if (data.usuario.length < 5) {
-			errores.usuario = 'El usuario debe tener al menos 5 caracteres';
+		if (usuario) {
+			const nombre = document.getElementById('nombre').value.trim();
+			const contacto = document.getElementById('mail').value.trim();
+			const nacionalidad = document.getElementById('pais-select').value;
+
+			const paisesVisitados = Array.from(
+				document.getElementById('paises-container').options
+			)
+				.filter((option) => option.selected)
+				.map((option) => option.value);
+
+			const idiomas = Array.from(
+				document.getElementById('idiomas-container').options
+			)
+				.filter((option) => option.selected)
+				.map((option) => option.value);
+
+			try {
+				const response = await fetch(
+					`http://localhost:3000/api/v1/users/${usuario}`,
+					{
+						method: 'PUT',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							nombre,
+							usuario,
+							nacionalidad,
+							idiomas,
+							contacto,
+							paisesVisitados,
+						}),
+					}
+				);
+
+				if (response.ok) {
+					const updatedUser = await response.json();
+					alert('Usuario modificado con éxito');
+				} else {
+					const errorData = await response.json();
+					alert(`Error al modificar el usuario: ${errorData.error}`);
+				}
+			} catch (error) {
+				console.error('Error al modificar el usuario:', error);
+				alert('Error al modificar el usuario. Inténtalo de nuevo más tarde.');
+			}
+		} else {
+			alert('Por favor, ingrese un usuario.');
 		}
+	});
 
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(data.mail)) {
-			errores.mail = 'El email no es válido';
-		}
+document
+	.getElementById('eliminar-usuario')
+	.addEventListener('click', async (event) => {
+		event.preventDefault();
 
-		if (data['paises-visitados'].length === 0) {
-			errores['paises-visitados'] = 'Selecciona al menos un país';
-		}
+		const usuarioInput = document.getElementById('usuario');
+		const usuario = usuarioInput.value.trim();
 
-		if (data.idiomas.length === 0) {
-			errores.idiomas = 'Selecciona al menos un idioma';
-		}
-
-		//si hay errores en el {errores}, muestro su contenedor
-		if (Object.keys(errores).length > 0) {
-			const erroresArray = Object.entries(errores).map(([campo, mensaje]) => ({
-				campo,
-				msg: mensaje,
-			}));
-			mostrarErrores(erroresArray);
+		if (!usuario) {
+			alert('Por favor, ingrese un usuario para eliminar.');
 			return;
 		}
 
-		//envio los datos al backend
+		const confirmacion = confirm(
+			`¿Estás seguro de que deseas eliminar al usuario ${usuario}?`
+		);
+		if (!confirmacion) {
+			return; // salgo si el usuario cancela
+		}
+
 		try {
 			const response = await fetch(
-				'http://localhost:3000/api/v1/users/:usuario',
+				`http://localhost:3000/api/v1/users/:${usuario}`,
 				{
-					method: 'PUT',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(data),
+					method: 'DELETE',
 				}
 			);
-
-			//si la rta falla, devuelvo el error para el catch
-			if (!response.ok) {
-				const error = await response.json();
-				throw error;
-			}
-
-			//se crea, muestro una alerta y reinicio la pagina
-			const usuarioCreado = await response.json();
-			console.log('Usuario creado:', usuarioCreado);
-			alert('Usuario creado exitosamente');
-			event.target.reset();
-		} catch (error) {
-			console.error('Error recibido del backend:', error);
-
-			//si backend devuelve error especifico lo muestro
-			if (Array.isArray(error.error)) {
-				mostrarErrores(error.error.map((msg) => ({ msg })));
+			if (response.ok) {
+				alert(`Usuario ${usuario} eliminado exitosamente.`);
+				usuarioInput.value = '';
+				document.getElementById('nombre').value = '';
+				document.getElementById('mail').value = '';
+				document.getElementById('pais-select').value = '';
+				document.getElementById('paises-container').innerHTML = '';
+				document.getElementById('idiomas-container').innerHTML = '';
+				document
+					.querySelectorAll('#confirmar input, #confirmar select')
+					.forEach((field) => {
+						field.disabled = true;
+					});
 			} else {
-				//sino msj generico (estos errores podriamos dejarlos solamente genericos arriba del form)
-				const errorGeneral = document.getElementById('error-general');
-				errorGeneral.textContent =
-					'Ocurrió un error inesperado. Intenta nuevamente.';
-				errorGeneral.style.display = 'block';
+				const errorData = await response.json();
+				alert(`Error al eliminar el usuario: ${errorData.error}`);
 			}
+		} catch (error) {
+			console.error('Error al realizar la solicitud de eliminación:', error);
+			alert(
+				'Error al eliminar el usuario. Por favor, inténtalo nuevamente más tarde.'
+			);
 		}
 	});
