@@ -31,7 +31,7 @@ app.get("/api/v1/users/:usuario", async (req, res) => {
   });
 
   if (!user) {
-    console.error("Usuario no encontrado: ", error);
+    console.error("Usuario no encontrado");
     return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
   }
 
@@ -50,7 +50,7 @@ app.get("/api/v1/users/:usuario", async (req, res) => {
   });
 
   if (!user) {
-    console.error("Usuario no encontrado: ", error);
+    console.error("Usuario no encontrado");
     return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
   }
 
@@ -96,7 +96,7 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
   });
 
   if (!user) {
-    console.error("Usuario no encontrado: ", error);
+    console.error("Usuario no encontrado");
     return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
   }
 
@@ -118,7 +118,7 @@ app.put("/api/v1/users/:id", async (req, res) => {
   });
 
   if (!user) {
-    console.error("Usuario no encontrado: ", error);
+    console.error("Usuario no encontrado");
     return res.redirect("/html/error.html?code=404&mensaje=Usuario no encontrado");
   }
 
@@ -166,7 +166,7 @@ app.get("/api/v1/viajes/:id", async (req, res) => {
   });
 
   if (!user) {
-    console.error("Viaje no encontrado: ", error);
+    console.error("Viaje no encontrado");
     return res.redirect("/html/error.html?code=404&mensaje=Viaje no encontrado");
   }
   res.json(viaje);
@@ -193,7 +193,7 @@ app.post("/api/v1/viajes", async (req, res) => {
     !presupuesto ||
     !calificacion
   ) {
-    console.error("Todos los campos son obligatorios: ", error);
+    console.error("Todos los campos son obligatorios");
     return res.status(400).json({ error: "Todos los campos son obligatorios" });
   }
 
@@ -204,7 +204,7 @@ app.post("/api/v1/viajes", async (req, res) => {
     });
 
     if (!paisData) {
-      console.error("El usuario especificado no existe: ", error);
+      console.error("El usuario especificado no existe");
       return res.redirect("/html/error.html?code=404&mensaje=El país especificado no existe");
     }
 
@@ -214,7 +214,7 @@ app.post("/api/v1/viajes", async (req, res) => {
     });
 
     if (!user) {
-      console.error("El usuario especificado no existe: ", error);
+      console.error("El usuario especificado no existe");
       return res.redirect("/html/error.html?code=404&mensaje=El usuario especificado no existe");
     }
 
@@ -256,7 +256,7 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
     });
 
     if (!viajeExistente) {
-      console.error("Viaje no encontrado: ", error);
+      console.error("Viaje no encontrado");
       return res.redirect("/html/error.html?code=404&mensaje=Viaje no encontrado");
     }
 
@@ -267,7 +267,7 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
       });
 
       if (!paisData) {
-        console.error("El país especificado no existe: ", error);
+        console.error("El país especificado no existe");
         return res.redirect("/html/error.html?code=404&mensaje=El país especificado no existe");
       }
       paisId = paisData.id;
@@ -280,7 +280,7 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
       });
 
       if (!user) {
-        console.error("El usuario especificado no existe: ", error);
+        console.error("El usuario especificado no existe");
         return res.redirect("/html/error.html?code=404&mensaje=El usuario especificado no existe");
       }
       nombreUsuario = usuario;
@@ -317,7 +317,7 @@ app.delete("/api/v1/viajes/:id", async (req, res) => {
   });
 
   if (!viaje) {
-    console.error("Viaje no encontrado: ", error);
+    console.error("Viaje no encontrado");
     return res.redirect("/html/error.html?code=404&mensaje=Viaje no encontrado");
   }
 
@@ -343,7 +343,7 @@ async function getCountriesFromAPI() {
     );
 
     if (!response.ok) {
-      console.error("Error al obtener el países: ", error);
+      console.error("Error al obtener el países");
       return res.status(500).json({ error: "Error al obtener el países" });
     }
 
