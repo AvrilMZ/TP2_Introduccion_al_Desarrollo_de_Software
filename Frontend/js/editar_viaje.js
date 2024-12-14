@@ -1,13 +1,70 @@
 let ciudadesArray = [];
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+    const viajeId = getViajeIdFromURL();
+
+    // Cargar los países en el select
     fetch('https://restcountries.com/v3.1/all')
         .then((response) => response.json())
         .then((countries) => {
             cargarPaisesSelect(countries);
         });
 
-    // Países para la nacionalidad
+    // Si hay un ID de viaje, cargar datos del viaje
+    if (viajeId) {
+        try {
+            const response = await fetch(`/api/v1/viajes/${viajeId}`);
+            if (response.ok) {
+                const viaje = await response.json();
+                cargarDatosViaje(viaje);
+            } else {
+                alert('No se pudo cargar la información del viaje.');
+            }
+        } catch (error) {
+            console.error('Error al cargar los datos del viaje:', error);
+        }
+    }
+
+    // Manejar el envío del formulario
+    document.getElementById('form-viaje').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const data = {
+            usuario: document.getElementById('usuario').value,
+            pais: document.getElementById('pais-select').value,
+            fechaInicio: document.getElementById('start-date').value,
+            fechaFin: document.getElementById('end-date').value,
+            ciudades: ciudadesArray,
+            presupuesto: parseFloat(document.getElementById('presupuesto').value),
+            calificacion: parseInt(document.getElementById('calificacion').value),
+        };
+
+        if (!validarDatos(data)) {
+            alert('Por favor, completa todos los campos correctamente.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/v1/viajes/${viajeId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                const viajeActualizado = await response.json();
+                alert('Viaje actualizado exitosamente.');
+                // Actualizar la card en la ventana principal
+                window.opener.actualizarCard(viajeActualizado);
+                window.close(); // Cierra la ventana de edición
+            } else {
+                alert('Hubo un error al actualizar el viaje.');
+            }
+        } catch (error) {
+            console.error('Error al enviar los datos:', error);
+        }
+    });
+
     function cargarPaisesSelect(countries) {
         const paisSelect = document.getElementById('pais-select');
         countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
@@ -19,119 +76,86 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function cargarDatosViaje(viaje) {
+        document.getElementById('usuario').value = viaje.usuario || '';
+        document.getElementById('pais-select').value = viaje.pais.nombre || '';
+        document.getElementById('start-date').value = viaje.fechaInicio.split('T')[0];
+        document.getElementById('end-date').value = viaje.fechaFin.split('T')[0];
+        document.getElementById('presupuesto').value = viaje.presupuesto || '';
+        document.getElementById('calificacion').value = viaje.calificacion || '';
+
+        ciudadesArray = viaje.ciudades;
+        const tagsContainer = document.getElementById('ciudades-tags');
+        tagsContainer.innerHTML = '';
+
+        ciudadesArray.forEach((ciudad) => {
+            const tag = crearTagCiudad(ciudad);
+            tagsContainer.appendChild(tag);
+        });
+    }
+
+    function crearTagCiudad(ciudad) {
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent = ciudad;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.className = 'delete-button';
+        deleteButton.innerHTML = '&times;';
+        tag.appendChild(deleteButton);
+
+        deleteButton.addEventListener('click', function () {
+            ciudadesArray = ciudadesArray.filter((c) => c !== ciudad);
+            tag.remove();
+        });
+
+        return tag;
+    }
+
+    // Manejar la entrada de ciudades
     const inputCiudades = document.getElementById('ciudades');
     const tagsContainer = document.getElementById('ciudades-tags');
 
-    // Array para almacenar las ciudades
     inputCiudades.addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
-            event.preventDefault(); // esto hace q no se envie el form con un enter
+            event.preventDefault();
 
             const ciudad = inputCiudades.value.trim().toUpperCase();
             if (ciudad && !ciudadesArray.includes(ciudad)) {
                 ciudadesArray.push(ciudad);
-
-                const tag = document.createElement('span');
-                tag.className = 'tag';
-                tag.textContent = ciudad;
-
-                const deleteButton = document.createElement('button');
-                deleteButton.type = 'button';
-                deleteButton.className = 'delete-button';
-                deleteButton.innerHTML = '&times;';
-                tag.appendChild(deleteButton);
-
+                const tag = crearTagCiudad(ciudad);
                 tagsContainer.appendChild(tag);
-
-                deleteButton.addEventListener('click', function () {
-                    ciudadesArray = ciudadesArray.filter((c) => c !== ciudad);
-                    tagsContainer.removeChild(tag);
-                });
+                inputCiudades.value = '';
             }
-
-            inputCiudades.value = '';
         }
     });
-});
 
-document
-    .querySelector('form')
-    .addEventListener('submit', async function (event) {
-        event.preventDefault();
-
-        function mostrarErrores(errores) {
-            const errorDiv = document.getElementById('error-mensajes');
-
-            errorDiv.innerHTML = '';
-            errores.forEach((error) => {
-                const mensaje = document.createElement('p'); //crea un p para cada error
-                mensaje.textContent = error.msg || error;
-                errorDiv.appendChild(mensaje);
-            });
-            errorDiv.style.display = 'block'; // muestra el container de errores
-        }
-
-        const formData = new FormData(event.target);
-        //guardo los valores de los inputs
-        const data = {
-            usuario: formData.get('usuario'),
-            pais: formData.get('pais'),
-            fechaInicio: formData.get('viaje-inicio'),
-            fechaFin: formData.get('viaje-fin'),
-            ciudades: ciudadesArray,
-            presupuesto: formData.get('presupuesto'),
-            calificacion: formData.get('calificacion'),
-        };
-
-        console.log('Datos enviados al backend:', data);
-
-        //VALIDACIONES
+    function validarDatos(data) {
         if (
-            !data.usuario ||
             !data.pais ||
-            !data.fechaFin ||
+            !data.usuario ||
             !data.fechaInicio ||
+            !data.fechaFin ||
+            !data.ciudades.length ||
             !data.presupuesto ||
-            !data.calificacion
+            isNaN(data.calificacion) ||
+            data.calificacion < 0 ||
+            data.calificacion > 5
         ) {
-            alert('Por favor, completa todos los campos obligatorios');
-            return;
+            return false;
         }
 
-        if (new Date(data['viaje-inicio']) > new Date(data['viaje-fin'])) {
-            alert(
-                'La fecha de inicio del viaje no puede ser posterior a la fecha de fin.'
-            );
-            return;
+        if (new Date(data.fechaInicio) > new Date(data.fechaFin)) {
+            alert('La fecha de inicio no puede ser posterior a la fecha de fin.');
+            return false;
         }
 
-        //envio los datos al backend
-        try {
-            const response = await fetch('http://localhost:3000/api/v1/viajes', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
+        return true;
+    }
 
-            //si la rta falla, devuelvo el error para el catch
-            if (!response.ok) {
-                const error = await response.json();
-                throw error;
-            }
-
-            //se crea, muestro una alerta y reinicio la pagina
-            const viajeCreado = await response.json();
-            console.log('Viaje creado:', viajeCreado);
-            alert('Viaje agregado exitosamente');
-            event.target.reset();
-        } catch (error) {
-            console.error('Error recibido del backend:', error);
-
-            //si backend devuelve error especifico lo muestro
-            if (Array.isArray(error.error)) {
-                mostrarErrores(error.error);
-            } else {
-                mostrarErrores(['Ocurrió un error inesperado. Intenta nuevamente.']);
-            }
-        }
-    });
+    function getViajeIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id');
+    }
+});
