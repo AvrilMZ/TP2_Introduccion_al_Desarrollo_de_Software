@@ -161,3 +161,37 @@ document.getElementById('buscar-viaje').addEventListener('click', async () => {
         alert('Por favor, ingrese un usuario.');
     }
 });
+
+// Evento para manejar la eliminación de un viaje
+document.addEventListener('click', async (event) => {
+    if (event.target.classList.contains('delete-viaje')) {
+        event.preventDefault();
+
+        // Obtener el ID del viaje desde el atributo `data-id`
+        const viajeId = event.target.dataset.id;
+
+        if (viajeId) {
+            const confirmar = confirm('¿Estás seguro de que quieres eliminar este viaje?');
+            if (confirmar) {
+                try {
+                    // Realiza una petición DELETE al servidor
+                    const response = await fetch(`http://localhost:3000/api/v1/viajes/${viajeId}`, {
+                        method: 'DELETE',
+                    });
+
+                    if (response.ok) {
+                        // Eliminar la tarjeta del DOM
+                        const card = event.target.closest('.card');
+                        card.remove();
+                        alert('El viaje ha sido eliminado con éxito.');
+                    } else {
+                        alert('No se pudo eliminar el viaje. Intente nuevamente.');
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar el viaje:', error);
+                    alert('Hubo un error al eliminar el viaje.');
+                }
+            }
+        }
+    }
+});
