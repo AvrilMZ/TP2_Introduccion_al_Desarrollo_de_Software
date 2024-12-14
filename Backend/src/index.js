@@ -72,7 +72,30 @@ app.post("/api/v1/users", async (req, res) => {
   try {
     console.log("Datos recibidos:", req.body);
 
-    // Crear el usuario
+    // Manejar países visitados
+    const paisesVisitados = req.body.paisesVisitados || [];
+    const viajes = [];
+
+    for (const paisNombre of paisesVisitados) {
+      // Buscar el país en la base de datos
+      const pais = await prisma.pais.findUnique({
+        where: { nombre: paisNombre },
+      });
+
+      // Si el país existe, agregarlo a la lista de viajes
+      if (pais) {
+        viajes.push({
+          paisId: pais.id,
+          fechaInicio: null,
+          fechaFin: null,
+          ciudades: [],
+          presupuesto: 0,
+          calificacion: 0,
+        });
+      }
+    }
+
+    // Crear el usuario con los viajes y los países visitados
     const user = await prisma.user.create({
       data: {
         nombre: req.body.nombre,
@@ -80,47 +103,22 @@ app.post("/api/v1/users", async (req, res) => {
         nacionalidad: req.body.nacionalidad,
         idiomas: req.body.idiomas,
         mail: req.body.mail,
+        paisesVisitados: paisesVisitados,
+        Viaje: {
+          create: viajes,
+        },
       },
     });
-
-    // Manejar países visitados
-    const paisesVisitados = req.body.paisesVisitados || [];
-    for (const paisNombre of paisesVisitados) {
-      // Buscar el país en la base de datos
-      const pais = await prisma.pais.findUnique({
-        where: { nombre: paisNombre },
-      });
-
-      // Si el país existe, asociarlo como un viaje
-      if (pais) {
-        await prisma.viaje.create({
-          data: {
-            paisId: pais.id,
-            usuarioId: user.id,
-            fechaInicio: null,
-            fechaFin: null,
-            ciudades: "",
-            presupuesto: 0,
-            calificacion: 0,
-          },
-        });
-      }
-    }
-
-    res.status(201).json({ user });
+    res.status(201).json(user);
   } catch (error) {
     console.error("Error en el backend:", error);
 
     // Manejo del error 'P2002' de prisma (campo único duplicado)
     if (error.code === "P2002") {
-      return res
-        .status(400)
-        .json({ error: "El mail o usuario ya está en uso" });
+      res.status(400).json({ error: "El usuario ya existe" });
+    } else {
+      res.status(500).json({ error: "Error al crear el usuario" });
     }
-
-    return res
-      .status(500)
-      .json({ error: "Hubo un problema al crear el usuario" });
   }
 });
 

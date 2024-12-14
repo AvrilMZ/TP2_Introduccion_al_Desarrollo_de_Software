@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Viaje" ALTER COLUMN "fechaFin" DROP NOT NULL,
+ALTER COLUMN "fechaInicio" DROP NOT NULL;

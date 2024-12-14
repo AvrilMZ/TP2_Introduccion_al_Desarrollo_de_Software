@@ -30,14 +30,14 @@ model Pais {
 }
 
 model Viaje {
-  id            Int      @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   paisId        Int
   nombreUsuario String
-  fechaInicio   DateTime
-  fechaFin      DateTime
+  fechaInicio   DateTime?
+  fechaFin      DateTime?
   ciudades      String[]
-  presupuesto   Decimal  @default(0)
-  calificacion  Int      @default(0)
-  pais          Pais     @relation(fields: [paisId], references: [id])
-  usuario       User     @relation(fields: [nombreUsuario], references: [usuario])
+  presupuesto   Decimal   @default(0)
+  calificacion  Int       @default(0)
+  pais          Pais      @relation(fields: [paisId], references: [id])
+  usuario       User      @relation(fields: [nombreUsuario], references: [usuario])
 }
