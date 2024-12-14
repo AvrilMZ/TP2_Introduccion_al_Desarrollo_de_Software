@@ -65,12 +65,12 @@ async function mostrarViajes(viajes, paisesVisitados) {
                 <div class="info">
                     <p>Fecha de inicio: ${new Date(viaje.fechaInicio).toLocaleDateString()}</p>
                     <p>Fecha de fin: ${new Date(viaje.fechaFin).toLocaleDateString()}</p>
-                    <p>Ciudades visitadas: ${viaje.ciudades}</p>
+                    <p>Ciudades visitadas: ${viaje.ciudades.join(', ')}</p>
                     <p>Presupuesto: $${viaje.presupuesto.toLocaleString()}</p>
                     <p>Calificación: ${viaje.calificacion}</p>
                 </div>
                 <footer class="card-footer">
-                    <a href="../html/editar_viaje.html" class="card-footer-item modificar-viaje" data-id="${viaje.id}">Modificar</a>
+                    <a href="../html/editar_viaje.html?id=${viaje.id}" class="card-footer-item modificar-viaje" data-id="${viaje.id}">Modificar</a>
                     <a href="#" class="card-footer-item delete-viaje" data-id="${viaje.id}">Eliminar</a>
                 </footer>
             </div>
@@ -110,12 +110,27 @@ async function mostrarViajes(viajes, paisesVisitados) {
                     <p>Calificación: -</p>
                 </div>
                 <footer class="card-footer">
-                    <a href="../html/editar_viaje.html?id=${viaje.id}" class="card-footer-item modificar-viaje" data-id="${viaje.id}">Modificar</a>
+                    <a href="../html/editar_viaje.html?pais=${pais}" class="card-footer-item modificar-viaje" data-pais="${pais}">Modificar</a>
                     <a href="#" class="card-footer-item delete-viaje" data-pais="${pais}">Eliminar</a>
                 </footer>
             </div>
         `;
         cardContainer.appendChild(card);
+    }
+}
+
+// Función para actualizar una card con datos editados
+function actualizarCard(viaje) {
+    const card = document.querySelector(`.card-footer-item[data-id="${viaje.id}"]`).closest('.card');
+    if (card) {
+        card.querySelector('.title.is-4').textContent = viaje.pais.nombre || 'País desconocido';
+        card.querySelector('.info').innerHTML = `
+            <p>Fecha de inicio: ${new Date(viaje.fechaInicio).toLocaleDateString()}</p>
+            <p>Fecha de fin: ${new Date(viaje.fechaFin).toLocaleDateString()}</p>
+            <p>Ciudades visitadas: ${viaje.ciudades.join(', ')}</p>
+            <p>Presupuesto: $${viaje.presupuesto.toLocaleString()}</p>
+            <p>Calificación: ${viaje.calificacion}</p>
+        `;
     }
 }
 
