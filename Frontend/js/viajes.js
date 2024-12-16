@@ -110,7 +110,7 @@ async function mostrarViajes(viajes, paisesVisitados) {
                     <p>Calificación: -</p>
                 </div>
                 <footer class="card-footer">
-                    <a href="../html/editar_viaje.html?pais=${pais}" class="card-footer-item modificar-viaje" data-pais="${pais}">Modificar</a>
+                    <a href="../html/editar_viaje.html?id=${viaje.id}" class="card-footer-item modificar-viaje" data-id="${viaje.id}">Modificar</a>
                     <a href="#" class="card-footer-item delete-viaje" data-pais="${pais}">Eliminar</a>
                 </footer>
             </div>
