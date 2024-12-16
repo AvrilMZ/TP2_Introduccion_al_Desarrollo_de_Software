@@ -262,67 +262,40 @@ app.post("/api/v1/viajes", async (req, res) => {
 });
 
 // Editar un viaje existente
-app.put("/api/v1/viajes/:id", async (req, res) => {
+app.put('/api/v1/viajes/:id', async (req, res) => {
   const { id } = req.params;
-  const { pais, usuario, fechaInicio, fechaFin, ciudades, presupuesto, calificacion } = req.body;
-
-  if (
-    !pais ||
-    !usuario ||
-    !fechaInicio ||
-    !fechaFin ||
-    !ciudades ||
-    !presupuesto ||
-    !calificacion
-  ) {
-    console.error("Todos los campos son obligatorios");
-    return res.status(400).json({ error: "Todos los campos son obligatorios" });
-  }
+  const { pais, ciudades, fechaInicio, fechaFin, presupuesto, calificacion } = req.body;
 
   try {
-    // Verifico que existe el pais
-    const paisData = await prisma.pais.findUnique({
-      where: { nombre: pais },
-    });
-
+    // Validar país
+    const paisData = await prisma.pais.findUnique({ where: { nombre: pais } });
     if (!paisData) {
-      console.error("El país especificado no existe");
-      return res.redirect(
-        "error.html?code=404&mensaje=El país especificado no existe"
-      );
+      console.error('El país especificado no existe:', pais);
+      return res.status(404).json({ error: 'El país especificado no existe.' });
     }
 
-    // Verifico que existe el usuario
-    const user = await prisma.user.findUnique({
-      where: { usuario: usuario },
-    });
-
-    if (!user) {
-      console.error("El usuario especificado no existe");
-      return res.redirect(
-        "error.html?code=404&mensaje=El usuario especificado no existe"
-      );
-    }
-
+    // Actualizar viaje
     const viajeActualizado = await prisma.viaje.update({
       where: { id: parseInt(id) },
       data: {
         paisId: paisData.id,
-        nombreUsuario: usuario,
+        ciudades,
         fechaInicio: new Date(fechaInicio),
         fechaFin: new Date(fechaFin),
-        ciudades,
         presupuesto: parseFloat(presupuesto),
         calificacion: parseInt(calificacion),
       },
     });
 
-    res.status(200).json(viajeActualizado);
+    console.log('Viaje actualizado:', viajeActualizado);
+    res.json(viajeActualizado);
   } catch (error) {
-    console.error("Error al actualizar el viaje: ", error);
-    res.status(500).json({ error: "Error interno al actualizar el viaje" });
+    console.error('Error al actualizar el viaje:', error);
+    res.status(500).json({ error: 'No se pudo actualizar el viaje.' });
   }
 });
+
+
 
 // Eliminar un viaje
 app.delete("/api/v1/viajes/:id", async (req, res) => {

@@ -1,176 +1,184 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Viajes - WorldTracker</title>
-        <link rel="icon" href="../img/logo.png" type="image/png">
-        <!-- Google Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <!-- Inter font -->
-         <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-        <!-- Icons Webpage -->
-        <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
-        <!--Bulma-->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-        <!--CSS-->
-        <link rel="stylesheet" href="../css/editar_viaje.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Viaje - WorldTracker</title>
+    <link rel="icon" href="../img/logo.png" type="image/png">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!-- Estilo personalizado -->
+    <link rel="stylesheet" href="../css/editar_viaje.css">
+</head>
+<body>
+    <!-- Encabezado -->
+    <header>
+        <a href="/html/index.html" class="logo-link">
+            <img src="../img/logo2.png" alt="WorldTracker" width="300">
+        </a>
+        <nav class="navbar">
+            <a href="/html/paises.html">PAISES</a>
+            <a href="/html/viajes.html">VIAJES</a>
+        </nav>
+    </header>
 
-    <body>
-        <!-- NavBar -->
-        <header role="banner">
-            <a href="/html/index.html" class="logo-link">
-                <img src="../img/logo2.png" alt="WorldTracker" width="300">
-            </a>
-            <div class="nav-center-no-bulma">
-                <nav class="paises">
-                    <a href="/html/paises.html"></i>PAISES</a>
-                </nav>
-                <nav class="vuelos">
-                    <a href="/html/viajes.html"></i>VIAJES</a>
-                </nav>
-            </div>
-            <div class="nav-right-no-bulma">
-                <nav class="logo_editar">
-                    <a href="/html/eliminar_usuario.html" class="Borrar-logo-link">
-                    <img src="../img/borrador.png" alt="Borrar usuario" width="30">
-                    </a>
-                </nav>
-                <nav class="usuario">
-                    <a href="/html/registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>REGISTRATE</a>
-                </nav>
-            </div>
-        </header>
+    <div class="container mt-5">
+        <h1 class="title has-text-centered">Modificar Viaje</h1>
 
-        <div class="content">
-            <h2>Modificar Viaje</h2>
+        <!-- Mensajes de error -->
+        <div id="error-general" class="notification is-danger is-hidden"></div>
 
-            <div id="error-mensajes" style="display: none; color: red"></div>
-			<div id="error-general" style="display: none; color: red"></div>
-            <!-- Formulario -->
-            <form id="confirmar">
-				<div class="field">
-					<label class="label">Usuario</label>
-					<div class="control">
-						<input
-							id="usuario"
-							class="input"
-							type="text"
-							name="usuario"
-							required
-						/>
-					</div>
-					<p id="usuario-encontrado" class="help is-success">Usuario encontrado</p>
-					<p id="usuario-desconocido" class="help is-danger">Usuario no encontrado</p>
-				</div>
-
-				<div class="field">
-					<label class="label" for="pais-select">País</label>
-					<div class="select">
-						<select id="pais-select" name="pais" required>
-							<option value="" selected>Seleccionar</option>
-						</select>
-					</div>
-				</div>
-
-				<div class="field">
-					<label class="label" for="start-date">Fecha de inicio:</label>
+        <!-- Formulario para modificar el viaje -->
+        <form id="form-viaje">
+			<div class="field">
+				<label class="label">Usuario</label>
+				<div class="control">
 					<input
-						type="date"
-						id="start-date"
-						name="viaje-inicio"
-						min="1950-01-01"
-						max="2024-12-31"
+						id="usuario"
+						class="input"
+						type="text"
+						name="usuario"
+						required
 					/>
 				</div>
-
-				<div class="field">
-					<label class="label" for="end-date">Fecha de fin:</label>
-					<input
-						type="date"
-						id="end-date"
-						name="viaje-fin"
-						min="1950-01-01"
-						max="2024-12-31"
-					/>
-				</div>
-
-				<div class="field">
-					<label class="label" for="ciudades">¿Qué ciudades visitaste?</label>
-					<div class="control">
-						<input
-							id="ciudades"
-							class="input"
-							type="text"
-							placeholder="Ingresa una ciudad y presiona Enter"
-						/>
-					</div>
-					<div id="ciudades-tags" class="tags"></div>
-				</div>
-
-				<div class="field">
-					<label class="label" for="presupuesto">Presupuesto</label>
-					<div class="control">
-						<input
-							id="presupuesto"
-							class="input"
-							type="number"
-							name="presupuesto"
-							required
-						/>
-					</div>
-				</div>
-
-				<div class="field">
-					<label class="label" for="calificacion">Calificación</label>
-					<div class="control">
-						<input
-							id="calificacion"
-							class="input"
-							type="number"
-							name="calificacion"
-							required
-							min="0"
-							max="5"
-						/>
-					</div>
-				</div>
-
-				<div class="field is-grouped">
-					<div class="control">
-						<button class="button is-link" type="submit">Añadir</button>
-					</div>
-					<div class="control">
-						<button
-							class="button is-link is-light"
-							type="button"
-							onclick="window.location.href='index.html'"
-						>
-							Cancelar
-						</button>
-					</div>
-				</div>
-			</form>
-        </div>
-        <script src="../js/editar_viaje.js"></script>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-container">
-                <p>© 2024 WorldTracker. Todos los derechos reservados.</p>
-                <p>
-                    Desarrollado por 
-                    <a href="https://github.com/abbnunez" target="_blank">Abril Belén Nuñez</a>, 
-                    <a href="https://github.com/anaprovvi" target="_blank">Ana Provvisionato</a>, 
-                    <a href="https://github.com/AvrilMZ" target="_blank">Avril Victoria Morfeo Zerbi</a> y 
-                    <a href="https://github.com/facustifman" target="_blank">Facundo Camilo Stifman</a>.
-                </p>
-                <div class="footer-social">
-                    <a href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software" target="_blank">GitHub</a>
+				<p id="usuario-encontrado" class="help is-success">
+					Usuario encontrado
+				</p>
+				<p id="usuario-desconocido" class="help is-danger">
+					Usuario no encontrado
+				</p>
+			</div>
+            <div class="field">
+                <label class="label">País</label>
+                <div class="control">
+                    <div class="select">
+                        <select id="pais-select" name="pais" required>
+                            <option value="" disabled selected>Seleccionar</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </footer>
-    </body>
+
+            <div class="field">
+                <label class="label">Fecha de inicio</label>
+                <div class="control">
+                    <input
+                        id="fecha-inicio"
+                        class="input"
+                        type="date"
+                        name="fechaInicio"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Fecha de fin</label>
+                <div class="control">
+                    <input
+                        id="fecha-fin"
+                        class="input"
+                        type="date"
+                        name="fechaFin"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Ciudades visitadas</label>
+                <div class="control">
+                    <input
+                        id="ciudades"
+                        class="input"
+                        type="text"
+                        placeholder="Ingresa una ciudad y presiona Enter"
+                    />
+                </div>
+                <div id="ciudades-tags" class="tags mt-2"></div>
+            </div>
+
+            <div class="field">
+                <label class="label">Presupuesto</label>
+                <div class="control">
+                    <input
+                        id="presupuesto"
+                        class="input"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        name="presupuesto"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Calificación</label>
+                <div class="control">
+                    <input
+                        id="calificacion"
+                        class="input"
+                        type="number"
+                        min="0"
+                        max="5"
+                        name="calificacion"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-link" type="submit">Modificar</button>
+                </div>
+                <div class="control">
+                    <a href="viajes.html" class="button is-light">Cancelar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <footer class="footer">
+			<div class="footer-container">
+				<p>© 2024 WorldTracker. Todos los derechos reservados.</p>
+				<p>
+					Desarrollado por
+					<a href="https://github.com/abbnunez" target="_blank">
+						Abril Belén Nuñez
+					</a>
+					,
+					<a href="https://github.com/anaprovvi" target="_blank">
+						Ana Provvisionato
+					</a>
+					,
+					<a href="https://github.com/AvrilMZ" target="_blank">
+						Avril Victoria Morfeo Zerbi
+					</a>
+					y
+					<a href="https://github.com/facustifman" target="_blank">
+						Facundo Camilo Stifman
+					</a>
+					.
+				</p>
+				<div class="footer-social">
+					<a
+						href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software"
+						target="_blank"
+					>
+						GitHub
+					</a>
+				</div>
+			</div>
+		</footer>
+    </footer>
+
+    <!-- JS -->
+    <script src="../js/editar_viaje.js"></script>
+	
+</body>
+
 </html>
