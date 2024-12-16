@@ -6,7 +6,6 @@ const app = express();
 const port = 3000;
 require("dotenv").config();
 const prisma = new PrismaClient();
-const axios = require("axios");
 
 app.use(express.json());
 app.use(cors());
