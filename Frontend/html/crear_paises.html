@@ -3,53 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Países</title>
-
-    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+    <title>Crear País</title>
+    <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
+    <!-- Estilos personalizados -->
     <link rel="stylesheet" href="../css/crear_paises.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Crear País</h1>
+    <!-- Encabezado -->
+    <header>
+        <a href="/html/index.html" class="logo-link">
+            <img src="../img/logo2.png" alt="WorldTracker" width="300">
+        </a>
+        <nav class="navbar">
+            <a href="/html/paises.html">PAÍSES</a>
+            <a href="/html/viajes.html">VIAJES</a>
+        </nav>
+    </header>
 
-        <div id="error-container" style="display: none; color: red;"></div>
-        <form id="crear-pais-form">
-            <div id="error-general" style="display: none; color: red;"></div>
+    <!-- Contenido principal -->
+    <div class="container">
+        <h1 class="title has-text-centered">Crear País</h1>
+
+        <!-- Contenedores de errores -->
+        <div id="error-mensajes" style="display: none; color: red;"></div>
+        <div id="error-general" style="display: none; color: red;"></div>
 
         <!-- Formulario para crear un país -->
         <form id="crear-pais-form">
             <div class="form-group">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" required>
+                <label for="nombre">Nombre del País:</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Nombre del país" required />
             </div>
 
             <div class="form-group">
                 <label for="capital">Capital:</label>
-                <input type="text" id="capital" name="capital" required>
+                <input type="text" id="capital" name="capital" placeholder="Capital del país" required />
             </div>
 
             <div class="form-group">
-                <label for="idiomas">Idiomas:</label>
-                <input type="text" id="idiomas" name="idiomas" required>
+                <label for="idioma">Idioma:</label>
+                <input type="text" id="idioma" name="idioma" placeholder="Idioma principal" required />
             </div>
 
             <div class="form-group">
                 <label for="moneda">Moneda:</label>
-                <input type="text" id="moneda" name="moneda" required>
+                <input type="text" id="moneda" name="moneda" placeholder="Moneda oficial" required />
             </div>
 
             <div class="form-group">
                 <label for="continente">Continente:</label>
-                <input type="text" id="continente" name="continente" required>
+                <select id="continente" name="continente" required>
+                    <option value="" selected>Selecciona un continente</option>
+                </select>
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Crear País">
+                <input class="button is-primary" type="submit" value="Crear País" />
             </div>
         </form>
     </div>
 
-    <!-- Archivo JS -->
+    <!-- Pie de página -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>© 2024 WorldTracker. Todos los derechos reservados.</p>
+            <p>
+                Desarrollado por
+                <a href="https://github.com/abbnunez" target="_blank">Abril Belén Nuñez</a>,
+                <a href="https://github.com/anaprovvi" target="_blank">Ana Provvisionato</a>,
+                <a href="https://github.com/AvrilMZ" target="_blank">Avril Victoria Morfeo Zerbi</a> y
+                <a href="https://github.com/facustifman" target="_blank">Facundo Camilo Stifman</a>.
+            </p>
+            <div class="footer-social">
+                <a href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software" target="_blank">
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script JS -->
     <script src="../js/crear_paises.js"></script>
 </body>
 </html>
