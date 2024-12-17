@@ -482,7 +482,6 @@ app.listen(port, () => {
 });
 
 // Ruta para crear un nuevo país
-// Ruta para crear un nuevo país
 app.post("/api/v1/paises", async (req, res) => {
   try {
     console.log("Datos recibidos:", req.body);
