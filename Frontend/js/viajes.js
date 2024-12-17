@@ -47,6 +47,8 @@ async function mostrarViajes(viajes, paisesVisitados) {
 		const card = document.createElement('div');
 		card.className = 'card is-horizontal';
 
+		console.log(viaje.id);
+
 		card.innerHTML = `
             <div class="card-image">
                 <figure class="image">

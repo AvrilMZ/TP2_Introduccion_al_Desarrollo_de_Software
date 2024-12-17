@@ -1,4 +1,11 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async () => {
+	function getViajeIdFromURL() {
+		const params = new URLSearchParams(window.location.search);
+		const id = params.get('id');
+		console.log('Id del viaje desde la url: ', id);
+		return id;
+	}
+
 	const viajeId = getViajeIdFromURL(); // Obtener el ID del viaje desde la URL
 	let ciudadesArray = []; // Array para almacenar las ciudades del viaje
 
@@ -16,14 +23,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	// Cargar datos del viaje si hay un ID válido
 	if (viajeId) {
-		fetch(`/api/v1/viajes/${viajeId}`)
+		fetch(`http://localhost:3000/api/v1/viajes/${viajeId}`)
 			.then((response) => {
+				console.log('Rta del servidor: ', response);
 				if (!response.ok) {
 					throw new Error('Error al obtener los datos del viaje.');
 				}
 				return response.json();
 			})
 			.then((viaje) => {
+				console.log('Datos del viaje: ', viaje);
 				cargarDatosViaje(viaje);
 			})
 			.catch((error) => {
@@ -51,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function () {
 				calificacion: parseInt(document.getElementById('calificacion').value),
 			};
 
-			// Debug: Verifica los datos capturados
 			console.log('Datos enviados:', data);
 
 			// Validaciones
@@ -116,13 +124,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	// Función para cargar datos del viaje en el formulario
 	function cargarDatosViaje(viaje) {
-		document.getElementById('pais-select').value = viaje.pais.nombre || '';
+		document.getElementById('pais-select').value = viaje.pais.nombre;
 		document.getElementById('fecha-inicio').value =
-			viaje.fechaInicio.split('T')[0] || '';
-		document.getElementById('fecha-fin').value =
-			viaje.fechaFin.split('T')[0] || '';
-		document.getElementById('presupuesto').value = viaje.presupuesto || '';
-		document.getElementById('calificacion').value = viaje.calificacion || '';
+			viaje.fechaInicio.split('T')[0];
+		document.getElementById('fecha-fin').value = viaje.fechaFin.split('T')[0];
+		document.getElementById('ciudades').value = viaje.ciudades.join(', ');
+		document.getElementById('presupuesto').value = viaje.presupuesto;
+		document.getElementById('calificacion').value = viaje.calificacion;
 
 		ciudadesArray = viaje.ciudades || [];
 		actualizarCiudadesTags();
@@ -172,13 +180,5 @@ document.addEventListener('DOMContentLoaded', function () {
 		setTimeout(() => {
 			errorGeneral.classList.add('is-hidden');
 		}, 5000);
-	}
-
-	// Obtener ID del viaje desde la URL
-	function getViajeIdFromURL() {
-		const params = new URLSearchParams(window.location.search);
-		const id = params.get('id');
-		console.log('Id del viaje desde la url: ', id);
-		return id;
 	}
 });
