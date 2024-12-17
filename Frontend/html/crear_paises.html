@@ -1,88 +1,176 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear País</title>
-    <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
-    <!-- Estilos personalizados -->
-    <link rel="stylesheet" href="../css/crear_paises.css">
-</head>
-<body>
-    <!-- Encabezado -->
-    <header>
-        <a href="/html/index.html" class="logo-link">
-            <img src="../img/logo2.png" alt="WorldTracker" width="300">
-        </a>
-        <nav class="navbar">
-            <a href="/html/paises.html">PAÍSES</a>
-            <a href="/html/viajes.html">VIAJES</a>
-        </nav>
-    </header>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Agregar Viaje - WorldTracker</title>
+		<link rel="icon" href="../img/logo.png" type="image/png" />
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<!-- Inter font -->
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+			rel="stylesheet"
+		/>
+		<!-- Icons Webpage -->
+		<link
+			href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
+			rel="stylesheet"
+		/>
+		<!-- Bulma -->
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+		/>
+		<!-- CSS -->
+		<link rel="stylesheet" href="../css/viaje_registro.css" />
+	</head>
 
-    <!-- Contenido principal -->
-    <div class="container">
-        <h1 class="title has-text-centered">Crear País</h1>
-
-        <!-- Contenedores de errores -->
-        <div id="error-mensajes" style="display: none; color: red;"></div>
-        <div id="error-general" style="display: none; color: red;"></div>
-
-        <!-- Formulario para crear un país -->
-        <form id="crear-pais-form">
-            <div class="form-group">
-                <label for="nombre">Nombre del País:</label>
-                <input type="text" id="nombre" name="nombre" placeholder="Nombre del país" required />
+	<body>
+		<!-- NavBar -->
+        <header role="banner">
+            <a href="/html/index.html" class="logo-link">
+                <img src="../img/logo2.png" alt="WorldTracker" width="300">
+            </a>
+            <div class="nav-center-no-bulma">
+                <nav class="paises">
+                    <a href="/html/paises.html"></i>PAISES</a>
+                </nav>
+                <nav class="vuelos">
+                    <a href="/html/viajes.html"></i>VIAJES</a>
+                </nav>
             </div>
-
-            <div class="form-group">
-                <label for="capital">Capital:</label>
-                <input type="text" id="capital" name="capital" placeholder="Capital del país" required />
+            <div class="nav-right-no-bulma">
+                <nav class="logo_editar">
+					<a href="/html/editar_usuario.html" class="Editar-logo-link">
+					<img src="../img/editor.png" alt="Editar usuario" width="30">
+					</a>
+				</nav>
+                <nav class="logo_borrar">
+                    <a href="/html/eliminar_usuario.html" class="Borrar-logo-link">
+                    <img src="../img/borrador.png" alt="Borrar usuario" width="30">
+                    </a>
+                </nav>
+                <nav class="usuario">
+                    <a href="/html/registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>REGISTRATE</a>
+                </nav>
             </div>
+        </header>
+		<div class="content">
+			<h2>Nuevo País</h2>
 
-            <div class="form-group">
-                <label for="idioma">Idioma:</label>
-                <input type="text" id="idioma" name="idioma" placeholder="Idioma principal" required />
-            </div>
+			<div id="error-mensajes" style="display: none; color: red"></div>
+			<div id="error-general" style="display: none; color: red"></div>
+			<!-- Formulario -->
+			<form id="confirmar">
+				<div class="field">
+					<label class="label">Nombre</label>
+					<div class="control">
+						<input
+							id="nombre"
+							class="input"
+							type="text"
+							name="nombre"
+							required
+						/>
+					</div>
 
-            <div class="form-group">
-                <label for="moneda">Moneda:</label>
-                <input type="text" id="moneda" name="moneda" placeholder="Moneda oficial" required />
-            </div>
+                <div class="field">
+					<label class="label">Capital</label>
+					<div class="control">
+						<input
+							id="capital"
+							class="input"
+							type="text"
+							name="capital"
+							required
+						/>
+					</div>
 
-            <div class="form-group">
-                <label for="continente">Continente:</label>
-                <select id="continente" name="continente" required>
-                    <option value="" selected>Selecciona un continente</option>
-                </select>
-            </div>
+				<div class="field">
+					<label class="label" for="idiomas">Idiomas</label>
+					<div class="control">
+						<input
+							id="idiomas"
+							class="input"
+							type="text"
+							placeholder="Ingresa un idioma y presiona Enter"
+						/>
+					</div>
+					<div id="idiomas-tags" class="tags"></div>
+				</div>
 
-            <div class="form-group">
-                <input class="button is-primary" type="submit" value="Crear País" />
-            </div>
-        </form>
-    </div>
+                <div class="field">
+					<label class="label">Moneda</label>
+					<div class="control">
+						<input
+							id="moneda"
+							class="input"
+							type="text"
+							name="moneda"
+							required
+						/>
+					</div>
+                <div class="field">
+					<label class="label" for="continente">Continente</label>
+					<div class="select">
+						<select id="continente" name="continente" required>
+							<option value="" selected>Seleccionar</option>
+						</select>
+					</div>
+				</div>
 
-    <!-- Pie de página -->
-    <footer class="footer">
-        <div class="footer-container">
-            <p>© 2024 WorldTracker. Todos los derechos reservados.</p>
-            <p>
-                Desarrollado por
-                <a href="https://github.com/abbnunez" target="_blank">Abril Belén Nuñez</a>,
-                <a href="https://github.com/anaprovvi" target="_blank">Ana Provvisionato</a>,
-                <a href="https://github.com/AvrilMZ" target="_blank">Avril Victoria Morfeo Zerbi</a> y
-                <a href="https://github.com/facustifman" target="_blank">Facundo Camilo Stifman</a>.
-            </p>
-            <div class="footer-social">
-                <a href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software" target="_blank">
-                    GitHub
-                </a>
-            </div>
-        </div>
-    </footer>
+				<div class="field is-grouped">
+					<div class="control">
+						<button class="button is-link" type="submit">Añadir</button>
+					</div>
+					<div class="control">
+						<button
+							class="button is-link is-light"
+							type="button"
+							onclick="window.location.href='index.html'"
+						>
+							Cancelar
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<script src="../js/crear_paises.js"></script>
 
-    <!-- Script JS -->
-    <script src="../js/crear_paises.js"></script>
-</body>
+		<!-- Footer -->
+		<footer class="footer">
+			<div class="footer-container">
+				<p>© 2024 WorldTravel. Todos los derechos reservados.</p>
+				<p>
+					Desarrollado por
+					<a href="https://github.com/abbnunez" target="_blank">
+						Abril Belén Nuñez
+					</a>
+					,
+					<a href="https://github.com/anaprovvi" target="_blank">
+						Ana Provvisionato
+					</a>
+					,
+					<a href="https://github.com/AvrilMZ" target="_blank">
+						Avril Victoria Morfeo Zerbi
+					</a>
+					y
+					<a href="https://github.com/facustifman" target="_blank">
+						Facundo Camilo Stifman
+					</a>
+					.
+				</p>
+				<div class="footer-social">
+					<a
+						href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software"
+						target="_blank"
+					>
+						GitHub
+					</a>
+				</div>
+			</div>
+		</footer>
+	</body>
 </html>
