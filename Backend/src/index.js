@@ -160,33 +160,84 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
   }
 });
 
+// Editar un usuario existente
+app.put("/api/v1/users/:usuario", async (req, res) => {
+  const { usuario } = req.params;
+  const { nombre, nacionalidad, idiomas, mail, paisesVisitados } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { usuario },
+    });
+
+    if (!user) {
+      console.error("Usuario no encontrado");
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    if (!nombre || !nacionalidad || !idiomas || !mail || !paisesVisitados) {
+      console.error("Todos los campos son obligatorios");
+      return res
+        .status(400)
+        .json({ error: "Todos los campos son obligatorios" });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { usuario },
+      data: {
+        nombre,
+        nacionalidad,
+        idiomas,
+        mail,
+        paisesVisitados,
+      },
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error("Error al actualizar el usuario:", error);
+    res.status(500).json({ error: "Error al actualizar el usuario" });
+  }
+});
+
 // METODOS VIAJES
 // Busco todos los viajes
 app.get("/api/v1/viajes", async (req, res) => {
-  const viajes = await prisma.viaje.findMany({
-    include: {
-      pais: true,
-      usuario: true,
-    },
-  });
-  res.json(viajes);
+  try {
+    const viajes = await prisma.viaje.findMany({
+      include: {
+        pais: true,
+        usuario: true,
+      },
+    });
+    res.json(viajes);
+  } catch (error) {
+    console.error("Error al obtener los viajes:", error);
+    res.status(500).json({ error: "Error interno al obtener los viajes" });
+  }
 });
-
 // Busco viaje por id
 app.get("/api/v1/viajes/:id", async (req, res) => {
-  const viaje = await prisma.viaje.findUnique({
-    where: { id: parseInt(req.params.id) },
-    include: {
-      pais: true,
-      usuario: true,
-    },
-  });
+  const { id } = req.params;
 
-  if (!viaje) {
-    console.error("Viaje no encontrado");
-    return res.redirect("error.html?code=404&mensaje=Viaje no encontrado");
+  try {
+    const viaje = await prisma.viaje.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        pais: true,
+        usuario: true,
+      },
+    });
+
+    if (!viaje) {
+      return res.status(404).json({ error: "Viaje no encontrado" });
+    }
+
+    res.status(200).json(viaje);
+  } catch (error) {
+    console.error("Error al obtener el viaje:", error);
+    res.status(500).json({ error: "Error interno al obtener el viaje" });
   }
-  res.json(viaje);
 });
 
 // Crear un viaje
