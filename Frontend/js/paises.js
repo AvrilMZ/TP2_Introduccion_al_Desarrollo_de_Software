@@ -78,4 +78,13 @@ function filtrarPaises(query) {
 document.getElementById('anterior').addEventListener('click', () => cambiarPagina(-1));
 document.getElementById('siguiente').addEventListener('click', () => cambiarPagina(1));
 
-fetchPaises();
+
+function cargarPaisesCreados() {
+    const paisesGuardados = JSON.parse(localStorage.getItem('paisesCreados')) || [];
+    paisesGuardados.forEach(crearCard);
+}
+
+// Llamar la función después de cargar los países de la API
+fetchPaises().then(() => {
+    cargarPaisesCreados();
+});
