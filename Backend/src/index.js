@@ -160,33 +160,84 @@ app.delete("/api/v1/users/:usuario", async (req, res) => {
   }
 });
 
+// Editar un usuario existente
+app.put("/api/v1/users/:usuario", async (req, res) => {
+  const { usuario } = req.params;
+  const { nombre, nacionalidad, idiomas, mail, paisesVisitados } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { usuario },
+    });
+
+    if (!user) {
+      console.error("Usuario no encontrado");
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    if (!nombre || !nacionalidad || !idiomas || !mail || !paisesVisitados) {
+      console.error("Todos los campos son obligatorios");
+      return res
+        .status(400)
+        .json({ error: "Todos los campos son obligatorios" });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { usuario },
+      data: {
+        nombre,
+        nacionalidad,
+        idiomas,
+        mail,
+        paisesVisitados,
+      },
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error("Error al actualizar el usuario:", error);
+    res.status(500).json({ error: "Error al actualizar el usuario" });
+  }
+});
+
 // METODOS VIAJES
 // Busco todos los viajes
 app.get("/api/v1/viajes", async (req, res) => {
-  const viajes = await prisma.viaje.findMany({
-    include: {
-      pais: true,
-      usuario: true,
-    },
-  });
-  res.json(viajes);
+  try {
+    const viajes = await prisma.viaje.findMany({
+      include: {
+        pais: true,
+        usuario: true,
+      },
+    });
+    res.json(viajes);
+  } catch (error) {
+    console.error("Error al obtener los viajes:", error);
+    res.status(500).json({ error: "Error interno al obtener los viajes" });
+  }
 });
-
 // Busco viaje por id
 app.get("/api/v1/viajes/:id", async (req, res) => {
-  const viaje = await prisma.viaje.findUnique({
-    where: { id: parseInt(req.params.id) },
-    include: {
-      pais: true,
-      usuario: true,
-    },
-  });
+  const { id } = req.params;
 
-  if (!viaje) {
-    console.error("Viaje no encontrado");
-    return res.redirect("error.html?code=404&mensaje=Viaje no encontrado");
+  try {
+    const viaje = await prisma.viaje.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        pais: true,
+        usuario: true,
+      },
+    });
+
+    if (!viaje) {
+      return res.status(404).json({ error: "Viaje no encontrado" });
+    }
+
+    res.status(200).json(viaje);
+  } catch (error) {
+    console.error("Error al obtener el viaje:", error);
+    res.status(500).json({ error: "Error interno al obtener el viaje" });
   }
-  res.json(viaje);
 });
 
 // Crear un viaje
@@ -261,16 +312,17 @@ app.post("/api/v1/viajes", async (req, res) => {
 });
 
 // Editar un viaje existente
-app.put('/api/v1/viajes/:id', async (req, res) => {
+app.put("/api/v1/viajes/:id", async (req, res) => {
   const { id } = req.params;
-  const { pais, ciudades, fechaInicio, fechaFin, presupuesto, calificacion } = req.body;
+  const { pais, ciudades, fechaInicio, fechaFin, presupuesto, calificacion } =
+    req.body;
 
   try {
     // Validar país
     const paisData = await prisma.pais.findUnique({ where: { nombre: pais } });
     if (!paisData) {
-      console.error('El país especificado no existe:', pais);
-      return res.status(404).json({ error: 'El país especificado no existe.' });
+      console.error("El país especificado no existe:", pais);
+      return res.status(404).json({ error: "El país especificado no existe." });
     }
 
     // Actualizar viaje
@@ -286,15 +338,13 @@ app.put('/api/v1/viajes/:id', async (req, res) => {
       },
     });
 
-    console.log('Viaje actualizado:', viajeActualizado);
+    console.log("Viaje actualizado:", viajeActualizado);
     res.json(viajeActualizado);
   } catch (error) {
-    console.error('Error al actualizar el viaje:', error);
-    res.status(500).json({ error: 'No se pudo actualizar el viaje.' });
+    console.error("Error al actualizar el viaje:", error);
+    res.status(500).json({ error: "No se pudo actualizar el viaje." });
   }
 });
-
-
 
 // Eliminar un viaje
 app.delete("/api/v1/viajes/:id", async (req, res) => {
@@ -363,8 +413,7 @@ async function Guardar_paisesDB() {
   try {
     const countries = await Agarrar_paises_api();
 
-    const countryData = countries.map((country, index) => ({
-      id: index + 1,
+    const countryData = countries.map((country) => ({
       nombre: country.name.common,
       capital: country.capital ? country.capital[0] : "Indefinido",
       idiomas: country.languages ? Object.values(country.languages) : [],
@@ -377,10 +426,8 @@ async function Guardar_paisesDB() {
     }));
 
     for (const country of countryData) {
-      await prisma.pais.upsert({
-        where: { id: country.id },
-        update: country,
-        create: country,
+      await prisma.pais.create({
+        data: country,
       });
     }
 
@@ -397,7 +444,7 @@ app.get("/api/v1/paises", async (req, res) => {
   try {
     const paises = await prisma.pais.findMany({
       orderBy: { nombre: "asc" },
-      take: 250, // Limitar a los primeros 250 países
+      take: 300, // Limitar a los primeros 250 países
     });
     res.json(paises);
   } catch (error) {
@@ -435,11 +482,17 @@ app.listen(port, () => {
 });
 
 // Ruta para crear un nuevo país
+// Ruta para crear un nuevo país
 app.post("/api/v1/paises", async (req, res) => {
   try {
     console.log("Datos recibidos:", req.body);
 
     const { nombre, capital, idiomas, moneda, continente } = req.body;
+
+    // Validar que todos los campos requeridos estén presentes
+    if (!nombre || !capital || !idiomas || !moneda || !continente) {
+      return res.status(400).json({ error: "Todos los campos son requeridos" });
+    }
 
     const nuevoPais = await prisma.pais.create({
       data: {
@@ -454,10 +507,12 @@ app.post("/api/v1/paises", async (req, res) => {
     res.status(201).json(nuevoPais);
   } catch (error) {
     console.error("Error al crear el país: ", error);
-    res.status(500).json({ error: "Error interno al crear el país", detalles: error.message });
+    res.status(500).json({
+      error: "Error interno al crear el país",
+      detalles: error.message,
+    });
   }
 });
-
 
 // Ruta para editar un país existente
 app.put("/api/v1/paises/:id", async (req, res) => {

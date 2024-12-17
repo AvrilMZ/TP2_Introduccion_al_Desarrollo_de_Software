@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 	<head>
-		<head>
 			<meta charset="UTF-8" />
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<title>Registro - WorldTracker</title>
@@ -49,7 +48,7 @@
                 </nav>
             </div>
             <div class="nav-right-no-bulma">
-                <nav class="logo_editar">
+				<nav class="logo_editar">
 					<a href="/html/editar_usuario.html" class="Editar-logo-link">
 					<img src="../img/editor.png" alt="Editar usuario" width="30">
 					</a>
@@ -65,42 +64,45 @@
             </div>
         </header>
 		<div class="content">
-			<h2>Registrate</h2>
+			<h2>Editar Usuario</h2>
 			<div id="error-mensajes" style="display: none; color: red"></div>
 			<div id="error-general" style="display: none; color: red"></div>
+
+            <div class="field">
+                <label class="label">Usuario</label>
+                <div class="control">
+                    <input
+                        id="usuario"
+                        class="input"
+                        type="text"
+                        name="usuario"
+                        required
+                    />
+                </div>
+                <p id="usuario-encontrado" class="help is-success" style="display: none;">Usuario encontrado</p>
+                <p id="usuario-desconocido" class="help is-danger" style="display: none;">Usuario no encontrado</p>
+            </div>
+
+            <div class="field is-grouped">
+                <div class="control">
+                    <button id="buscar-usuario" class="button is-primary is-rounded">Buscar Usuario</button>
+                </div>
+            </div>
+
 
 			<!-- Formulario -->
 			<form id="confirmar">
 				<div class="field">
 					<label class="label">Nombre Completo</label>
 					<div class="control">
-						<input class="input" type="text" name="nombre" required />
+						<input class="input" type="text" name="nombre" disabled required />
 					</div>
-				</div>
-
-				<div class="field">
-					<label class="label">Usuario</label>
-					<div class="control">
-						<input
-							id="usuario"
-							class="input"
-							type="text"
-							name="usuario"
-							required
-						/>
-					</div>
-					<p id="usuario-disponible" class="help is-success">
-						Usuario disponible
-					</p>
-					<p id="usuario-ocupado" class="help is-danger">
-						Usuario no disponible
-					</p>
 				</div>
 
 				<div class="field">
 					<label class="label">Email</label>
 					<div class="control">
-						<input id="mail" class="input" type="mail" name="mail" required />
+						<input id="mail" class="input" type="mail" name="mail" disabled required />
 					</div>
 					<p id="email-help" class="help is-danger" style="display: none">
 						Email inválido
@@ -110,7 +112,7 @@
 				<div class="field">
 					<label class="label">Nacionalidad</label>
 					<div class="select">
-						<select id="pais-select" name="nacionalidad" required>
+						<select id="pais-select" name="nacionalidad" disabled required>
 							<option value="" selected>Seleccionar</option>
 						</select>
 					</div>
@@ -123,6 +125,7 @@
 						name="paisesVisitados[]"
 						multiple
 						required
+                        disabled
 					></select>
 					<p
 						id="paises-visitados-help"
@@ -135,25 +138,13 @@
 
 				<div class="field">
 					<label class="label">Idiomas que hablas</label>
-					<select id="idiomas-container" name="idiomas[]" multiple></select>
+					<select id="idiomas-container" name="idiomas[]" required multiple></select>
 				</div>
 
-				<div class="field">
-					<div class="control">
-						<label class="checkbox">
-							<input id="termsCheckbox" type="checkbox" required />
-							Acepto
-							<a href="#">términos y condiciones</a>
-						</label>
-					</div>
-					<p id="error-terminos" class="help is-danger" style="display: none">
-						Debes aceptar los términos y condiciones.
-					</p>
-				</div>
 
 				<div class="field is-grouped">
 					<div class="control">
-						<button class="button is-link" type="submit">Registrate</button>
+						<button class="button is-link" type="submit">Modificar</button>
 					</div>
 					<div class="control">
 						<button
@@ -167,7 +158,7 @@
 				</div>
 			</form>
 		</div>
-		<script src="../js/registro.js"></script>
+		<script src="../js/editar_usuario.js"></script>
 		<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
 
 		<!-- Footer -->
