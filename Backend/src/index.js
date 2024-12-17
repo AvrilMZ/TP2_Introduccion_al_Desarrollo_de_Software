@@ -2,6 +2,7 @@ const path = require("path");
 const { PrismaClient } = require("@prisma/client");
 const express = require("express");
 const cors = require("cors");
+const fetch = require("node-fetch");
 const app = express();
 const port = 3000;
 require("dotenv").config();
@@ -377,35 +378,75 @@ app.delete("/api/v1/viajes/:id", async (req, res) => {
 
 //! METODOS PAISES
 // Ruta para traer y guardar países desde la API
+async function Agarrar_paises_api() {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000); // Timeout de 20 segundos
+
+  try {
+    const response = await fetch(
+      "https://restcountries.com/v3.1/all?fields=name,capital,languages,currencies,region",
+      { signal: controller.signal }
+    );
+
+    if (!response.ok) {
+      console.error("Error al obtener el países");
+      return res.status(500).json({ error: "Error al obtener el países" });
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.error("La solicitud fue abortada debido al timeout: ", error);
+      return res
+        .status(504)
+        .json({ error: "La solicitud fue abortada debido al timeout" });
+    } else {
+      console.error("Error de fetch: ", error);
+      return res.status(500).json({ error: "Error de fetch" });
+    }
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+// Guardar países en la base de datos
 async function Guardar_paisesDB() {
   try {
-    const paises = await obtenerDatosDeAPI(); // Función que obtiene datos de la API
+    const paises = await Agarrar_paises_api(); // Función que obtiene datos de la API
 
     for (const country of paises) {
+      const nombre = country.name.common; // Asegúrate de que estás accediendo al nombre correctamente
+      const capital = country.capital ? country.capital[0] : null;
+      const idiomas = country.languages ? Object.values(country.languages) : []; // Asegúrate de que sea un array
+      const moneda = country.currencies
+        ? Object.keys(country.currencies).join(", ")
+        : null;
+      const continente = country.region;
+
       await prisma.pais.upsert({
-        where: { nombre: country.nombre },
+        where: { nombre },
         update: {
-          capital: country.capital,
-          idiomas: country.idiomas,
-          moneda: country.moneda,
-          continente: country.continente,
+          capital,
+          idiomas, // Asegúrate de que sea un array
+          moneda,
+          continente,
         },
         create: {
-          nombre: country.nombre,
-          capital: country.capital,
-          idiomas: country.idiomas,
-          moneda: country.moneda,
-          continente: country.continente,
+          nombre,
+          capital,
+          idiomas, // Asegúrate de que sea un array
+          moneda,
+          continente,
         },
       });
     }
 
-    console.log("Todos los países se han guardado correctamente.");
+    console.log("Todos los países han sido guardados o actualizados.");
   } catch (error) {
-    console.error("Error al guardar los países: ", error);
+    console.error("Error guardando países en la base de datos:", error);
   }
 }
-
+// llamada para guardar los países en la base de datos
 Guardar_paisesDB();
 
 // Ruta para obtener todos los países
@@ -413,7 +454,7 @@ app.get("/api/v1/paises", async (req, res) => {
   try {
     const paises = await prisma.pais.findMany({
       orderBy: { nombre: "asc" },
-      take: 300, // Limitar a los primeros 250 países
+      take: 300,
     });
     res.json(paises);
   } catch (error) {
@@ -475,52 +516,49 @@ app.post("/api/v1/paises", async (req, res) => {
     res.status(201).json(nuevoPais);
   } catch (error) {
     console.error("Error al crear el país: ", error);
-    if (error.code === "P2002") {
-      return res.status(400).json({ error: "El país ya existe." });
-    }
     res.status(500).json({
       error: "Error interno al crear el país",
       detalles: error.message,
     });
   }
+});
 
-  // Ruta para editar un país existente
-  app.put("/api/v1/paises/:id", async (req, res) => {
-    const { id } = req.params;
-    const { nombre, capital, idiomas, moneda, continente } = req.body;
+// Ruta para editar un país existente
+app.put("/api/v1/paises/:id", async (req, res) => {
+  const { id } = req.params;
+  const { nombre, capital, idiomas, moneda, continente } = req.body;
 
-    try {
-      const paisActualizado = await prisma.pais.update({
-        where: { id: parseInt(id) },
-        data: {
-          nombre,
-          capital,
-          idiomas,
-          moneda,
-          continente,
-        },
-      });
+  try {
+    const paisActualizado = await prisma.pais.update({
+      where: { id: parseInt(id) },
+      data: {
+        nombre,
+        capital,
+        idiomas,
+        moneda,
+        continente,
+      },
+    });
 
-      res.status(200).json(paisActualizado);
-    } catch (error) {
-      console.error("Error al actualizar el país: ", error);
-      res.status(500).json({ error: "Error interno al actualizar el país" });
-    }
-  });
+    res.status(200).json(paisActualizado);
+  } catch (error) {
+    console.error("Error al actualizar el país: ", error);
+    res.status(500).json({ error: "Error interno al actualizar el país" });
+  }
+});
 
-  // Ruta para borrar un país existente
-  app.delete("/api/v1/paises/:id", async (req, res) => {
-    const { id } = req.params;
+// Ruta para borrar un país existente
+app.delete("/api/v1/paises/:id", async (req, res) => {
+  const { id } = req.params;
 
-    try {
-      await prisma.pais.delete({
-        where: { id: parseInt(id) },
-      });
+  try {
+    await prisma.pais.delete({
+      where: { id: parseInt(id) },
+    });
 
-      res.status(204).send();
-    } catch (error) {
-      console.error("Error al borrar el país: ", error);
-      res.status(500).json({ error: "Error interno al borrar el país" });
-    }
-  });
+    res.status(204).send();
+  } catch (error) {
+    console.error("Error al borrar el país: ", error);
+    res.status(500).json({ error: "Error interno al borrar el país" });
+  }
 });

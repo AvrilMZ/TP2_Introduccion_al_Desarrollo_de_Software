@@ -10,17 +10,22 @@ function crearCard(pais) {
 	card.className = 'card';
 
 	card.innerHTML = `
-        <img src="${pais.flags.png}" class="card-img-top" alt="${pais.name.common}">
+        <img src="${pais.flags.png}" class="card-img-top" alt="${
+		pais.name.common
+	}">
         <div class="content">
             <h5 class="card-title">${pais.name.common}</h5>
             <p>Capital: ${pais.capital || 'No disponible'}</p>
             <p>Región: ${pais.region || 'No disponible'}</p>
             <p>Población: ${pais.population.toLocaleString()}</p> 
-            <p>Superficie: ${pais.area.toLocaleString()} km²</p>
-            <p>Idiomas: ${pais.languages
-			? Object.values(pais.languages).join(', ')
-			: 'No disponible'
-		}</p>
+			<p>Superficie: ${
+				pais.area ? pais.area.toLocaleString() : 'No disponible'
+			} km²</p>
+            <p>Idiomas: ${
+							pais.languages
+								? Object.values(pais.languages).join(', ')
+								: 'No disponible'
+						}</p>
         </div>
     `;
 	cardContainer.appendChild(card);
@@ -69,22 +74,25 @@ function buscarPaises() {
 
 // Filtra los países por nombre (case-insensitive)
 function filtrarPaises(query) {
-	return paisesData.filter(pais =>
+	return paisesData.filter((pais) =>
 		pais.name.common.toLowerCase().includes(query)
 	);
 }
 
 // Asociar acción a los botones de paginación
-document.getElementById('anterior').addEventListener('click', () => cambiarPagina(-1));
-document.getElementById('siguiente').addEventListener('click', () => cambiarPagina(1));
-
+document
+	.getElementById('anterior')
+	.addEventListener('click', () => cambiarPagina(-1));
+document
+	.getElementById('siguiente')
+	.addEventListener('click', () => cambiarPagina(1));
 
 function cargarPaisesCreados() {
-    const paisesGuardados = JSON.parse(localStorage.getItem('paisesCreados')) || [];
-    paisesGuardados.forEach(crearCard);
+	const paisesGuardados =
+		JSON.parse(localStorage.getItem('paisesCreados')) || [];
+	paisesGuardados.forEach(crearCard);
 }
 
 // Llamar la función después de cargar los países de la API
-fetchPaises().then(() => {
-    cargarPaisesCreados();
-});
+fetchPaises();
+cargarPaisesCreados();
