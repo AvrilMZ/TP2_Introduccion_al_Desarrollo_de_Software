@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 	const viajeId = getViajeIdFromURL(); // Obtener el ID del viaje desde la URL
 	let ciudadesArray = []; // Array para almacenar las ciudades del viaje
-	let nombreUsuario = ''; // Almacenar el nombre del usuario asociado al viaje
 
 	// Cargar la lista de países en el selector
 	fetch('https://restcountries.com/v3.1/all')
@@ -45,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			const data = {
 				pais: document.getElementById('pais-select').value,
-				usuario: nombreUsuario, // Usuario original del viaje
 				ciudades: ciudadesArray,
 				fechaInicio: document.getElementById('fecha-inicio').value,
 				fechaFin: document.getElementById('fecha-fin').value,
@@ -59,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			// Validaciones
 			if (
 				!data.pais ||
-				!data.usuario ||
 				!data.fechaInicio ||
 				!data.fechaFin ||
 				!data.ciudades.length ||
@@ -129,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		ciudadesArray = viaje.ciudades || [];
 		actualizarCiudadesTags();
-		nombreUsuario = viaje.nombreUsuario; // Guardar el usuario para futuras referencias
 	}
 
 	// Función para actualizar las etiquetas de ciudades
