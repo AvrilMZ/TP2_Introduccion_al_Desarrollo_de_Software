@@ -437,6 +437,8 @@ app.listen(port, () => {
 // Ruta para crear un nuevo país
 app.post("/api/v1/paises", async (req, res) => {
   try {
+    console.log("Datos recibidos:", req.body);
+
     const { nombre, capital, idiomas, moneda, continente } = req.body;
 
     const nuevoPais = await prisma.pais.create({
@@ -452,9 +454,10 @@ app.post("/api/v1/paises", async (req, res) => {
     res.status(201).json(nuevoPais);
   } catch (error) {
     console.error("Error al crear el país: ", error);
-    res.status(500).json({ error: "Error interno al crear el país" });
+    res.status(500).json({ error: "Error interno al crear el país", detalles: error.message });
   }
 });
+
 
 // Ruta para editar un país existente
 app.put("/api/v1/paises/:id", async (req, res) => {
