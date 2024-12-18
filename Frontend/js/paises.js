@@ -9,26 +9,35 @@ function crearCard(pais) {
 	const card = document.createElement('div');
 	card.className = 'card';
 
+	const bandera = pais.flags.png || pais.flags.jpg || '../img/img_no_disponible.jpg';
+
 	card.innerHTML = `
-        <img src="${pais.flags.png}" class="card-img-top" alt="${
-		pais.name.common
-	}">
+        <img src="${bandera}" class="card-img-top" alt="${pais.name.common}">
         <div class="content">
             <h5 class="card-title">${pais.name.common}</h5>
             <p>Capital: ${pais.capital || 'No disponible'}</p>
             <p>Región: ${pais.region || 'No disponible'}</p>
             <p>Población: ${pais.population.toLocaleString()}</p> 
-			<p>Superficie: ${
-				pais.area ? pais.area.toLocaleString() : 'No disponible'
-			} km²</p>
-            <p>Idiomas: ${
-							pais.languages
-								? Object.values(pais.languages).join(', ')
-								: 'No disponible'
-						}</p>
+			<p>Superficie: ${pais.area ? pais.area.toLocaleString() : 'No disponible'
+		} km²</p>
+            <p>Idiomas: ${pais.languages
+			? Object.values(pais.languages).join(', ')
+			: 'No disponible'
+		}</p>
         </div>
     `;
 	cardContainer.appendChild(card);
+}
+
+function cargarPaisesCreados() {
+	const paisesGuardados = JSON.parse(localStorage.getItem('paisesCreados')) || [];
+	paisesGuardados.forEach((pais) => {
+		// Asignar una bandera predeterminada si el país no tiene bandera
+		if (!pais.flags || !pais.flags.jpg) {
+			pais.flags = { jpg: '../img/img_no_disponible.jpg' };
+		}
+		crearCard(pais);
+	});
 }
 
 // Filtra los países según la búsqueda actual
@@ -86,12 +95,6 @@ document
 document
 	.getElementById('siguiente')
 	.addEventListener('click', () => cambiarPagina(1));
-
-function cargarPaisesCreados() {
-	const paisesGuardados =
-		JSON.parse(localStorage.getItem('paisesCreados')) || [];
-	paisesGuardados.forEach(crearCard);
-}
 
 // Llamar la función después de cargar los países de la API
 fetchPaises();
