@@ -155,9 +155,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Función para cargar los países en el selector
+  // Función para cargar los países en el selector
   function cargarPaisesSelect(paises) {
     const paisSelect = document.getElementById("pais-select");
     paisSelect.innerHTML = "";
+
+    // Agregar opción por defecto
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Seleccionar";
+    defaultOption.selected = true;
+    defaultOption.disabled = true;
+    paisSelect.appendChild(defaultOption);
 
     paises.forEach((pais) => {
       const option = document.createElement("option");
