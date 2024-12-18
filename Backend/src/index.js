@@ -1,11 +1,11 @@
-import path from 'path';
-import { PrismaClient } from '@prisma/client';
-import express from 'express';
-import cors from 'cors';
-import fetch from 'node-fetch';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import path from "path";
+import { PrismaClient } from "@prisma/client";
+import express from "express";
+import cors from "cors";
+import fetch from "node-fetch";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 // Obtiene la ruta del directorio actual
 const __filename = fileURLToPath(import.meta.url);
@@ -496,6 +496,28 @@ app.get("/api/v1/paises/:id", async (req, res) => {
   }
 });
 
+//Ruta para buscar un pais por nombre
+app.get("/api/v1/paises/:nombre", async (req, res) => {
+  const { nombre } = req.params;
+
+  try {
+    // Buscar país por nombre
+    const pais = await prisma.pais.findUnique({
+      where: { nombre },
+    });
+
+    if (!pais) {
+      console.error("País no encontrado: ", nombre);
+      return res.redirect("error.html?code=404&mensaje=País no encontrado");
+    }
+
+    res.status(200).json(pais);
+  } catch (error) {
+    console.error("Error al obtener el país: ", error);
+    return res.status(500).json({ error: "Error interno al obtener el país" });
+  }
+});
+
 // Ruta para crear un nuevo país
 app.post("/api/v1/paises", async (req, res) => {
   try {
@@ -529,26 +551,46 @@ app.post("/api/v1/paises", async (req, res) => {
 });
 
 // Ruta para editar un país existente
-app.put("/api/v1/paises/:id", async (req, res) => {
-  const { id } = req.params;
-  const { nombre, capital, idiomas, moneda, continente } = req.body;
+app.put("/api/v1/paises/:paisNombre", async (req, res) => {
+  const { paisNombre } = req.params;
+  const { nombre, capital, continente, moneda, idiomas } = req.body;
 
   try {
-    const paisActualizado = await prisma.pais.update({
-      where: { id: parseInt(id) },
+    // Buscar el país por su nombre
+    const pais = await prisma.pais.findUnique({
+      where: { nombre: paisNombre },
+    });
+
+    if (!pais) {
+      console.error("País no encontrado");
+      return res.status(404).json({ error: "País no encontrado" });
+    }
+
+    // Validar que todos los campos necesarios estén presentes
+    if (!nombre || !capital || !continente || !moneda || !idiomas) {
+      console.error("Todos los campos son obligatorios");
+      return res
+        .status(400)
+        .json({ error: "Todos los campos son obligatorios" });
+    }
+
+    // Actualizar el país en la base de datos
+    const updatedPais = await prisma.pais.update({
+      where: { nombre: paisNombre },
       data: {
         nombre,
         capital,
-        idiomas,
-        moneda,
         continente,
+        moneda,
+        idiomas,
       },
     });
 
-    res.status(200).json(paisActualizado);
+    // Enviar la respuesta con el país actualizado
+    res.json(updatedPais);
   } catch (error) {
-    console.error("Error al actualizar el país: ", error);
-    res.status(500).json({ error: "Error interno al actualizar el país" });
+    console.error("Error al actualizar el país:", error);
+    res.status(500).json({ error: "Error al actualizar el país" });
   }
 });
 
