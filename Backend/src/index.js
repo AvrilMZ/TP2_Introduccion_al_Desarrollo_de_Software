@@ -1,16 +1,25 @@
-const path = require("path");
-const { PrismaClient } = require("@prisma/client");
-const express = require("express");
-const cors = require("cors");
-const fetch = require("node-fetch");
-const app = express();
-const port = 3000;
-require("dotenv").config();
+import path from 'path';
+import { PrismaClient } from '@prisma/client';
+import express from 'express';
+import cors from 'cors';
+import fetch from 'node-fetch';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// Obtiene la ruta del directorio actual
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config(); // Carga las variables de entorno
+
+const port = process.env.PORT || 3000;
 const prisma = new PrismaClient();
+const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../Frontend/html")));
+app.use(express.static(path.join(__dirname, "../Frontend")));
 
 app.get("/", (req, res) => {
   res.send("Viajandoo...");
@@ -487,10 +496,6 @@ app.get("/api/v1/paises/:id", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
 // Ruta para crear un nuevo país
 app.post("/api/v1/paises", async (req, res) => {
   try {
@@ -561,4 +566,8 @@ app.delete("/api/v1/paises/:id", async (req, res) => {
     console.error("Error al borrar el país: ", error);
     res.status(500).json({ error: "Error interno al borrar el país" });
   }
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
 });
