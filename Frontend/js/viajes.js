@@ -52,46 +52,30 @@ async function mostrarViajes(viajes, paisesVisitados) {
 		card.innerHTML = `
             <div class="card-image">
                 <figure class="image">
-                    <img src="${flagUrl}" alt="${
-			pais ? pais.nombre : 'País desconocido'
-		}">
+                    <img src="${flagUrl}" alt="${pais ? pais.nombre : 'País desconocido'}">
                 </figure>
             </div>
             <div class="card-content">
                 <div class="media">
                     <div class="media-left">
                         <figure class="image is-48x48">
-                            <img src="${flagUrl}" alt="${
-			pais ? pais.nombre : 'País desconocido'
-		}">
+                            <img src="${flagUrl}" alt="${pais ? pais.nombre : 'País desconocido'}">
                         </figure>
                     </div>
                     <div class="media-content">
-                        <p class="title is-4">${
-													pais ? pais.nombre : 'País desconocido'
-												}</p>
+                        <p class="title is-4">${pais ? pais.nombre : 'País desconocido'}</p>
                     </div>
                 </div>
                 <div class="info">
-                    <p>Fecha de inicio: ${new Date(
-											viaje.fechaInicio
-										).toLocaleDateString()}</p>
-                    <p>Fecha de fin: ${new Date(
-											viaje.fechaFin
-										).toLocaleDateString()}</p>
+                    <p>Fecha de inicio: ${new Date(viaje.fechaInicio).toLocaleDateString()}</p>
+                    <p>Fecha de fin: ${new Date(viaje.fechaFin).toLocaleDateString()}</p>
                     <p>Ciudades visitadas: ${viaje.ciudades.join(', ')}</p>
                     <p>Presupuesto: $${viaje.presupuesto.toLocaleString()}</p>
                     <p>Calificación: ${viaje.calificacion}</p>
                 </div>
                 <footer class="card-footer">
-                    <a href="../html/editar_viaje.html?id=${
-											viaje.id
-										}" class="card-footer-item modificar-viaje" data-id="${
-			viaje.id
-		}">Modificar</a>
-                    <a href="#" class="card-footer-item delete-viaje" data-id="${
-											viaje.id
-										}">Eliminar</a>
+                    <a href="../html/editar_viaje.html?id=${viaje.id}" class="card-footer-item modificar-viaje" data-id="${viaje.id}">Modificar</a>
+                    <a href="#" class="card-footer-item delete-viaje" data-id="${viaje.id}">Eliminar</a>
                 </footer>
             </div>
         `;
@@ -149,11 +133,11 @@ function actualizarCard(viaje) {
 			viaje.pais.nombre || 'País desconocido';
 		card.querySelector('.info').innerHTML = `
             <p>Fecha de inicio: ${new Date(
-							viaje.fechaInicio
-						).toLocaleDateString()}</p>
+			viaje.fechaInicio
+		).toLocaleDateString()}</p>
             <p>Fecha de fin: ${new Date(
-							viaje.fechaFin
-						).toLocaleDateString()}</p>
+			viaje.fechaFin
+		).toLocaleDateString()}</p>
             <p>Ciudades visitadas: ${viaje.ciudades.join(', ')}</p>
             <p>Presupuesto: $${viaje.presupuesto.toLocaleString()}</p>
             <p>Calificación: ${viaje.calificacion}</p>

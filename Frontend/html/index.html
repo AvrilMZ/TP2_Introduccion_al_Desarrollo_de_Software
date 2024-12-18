@@ -16,7 +16,9 @@
         <!--Bulma-->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
         <!--CSS-->
+        <link rel="stylesheet" href="../css/navbar.css">
         <link rel="stylesheet" href="../css/style.css">
+        <link rel="stylesheet" href="../css/footer.css">
     </head>
 
     <body>
@@ -34,22 +36,31 @@
                 </nav>
             </div>
             <div class="nav-right-no-bulma">
-                <nav class="logo_editar">
-					<a href="/html/editar_usuario.html" class="Editar-logo-link">
-					<img src="../img/editor.png" alt="Editar usuario" width="30">
-					</a>
-				</nav>
-                <nav class="logo_borrar">
-                    <a href="/html/eliminar_usuario.html" class="Borrar-logo-link">
-                    <img src="../img/borrador.png" alt="Borrar usuario" width="30">
-                    </a>
-                </nav>
+                <div class="dropdown is-hoverable is-right">
+                    <div class="dropdown-trigger">
+                        <span>USUARIO</span>
+                        <span class="icon is-small">
+                            <i class='bx bx-chevron-down'></i>
+                        </span>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+                            <nav class="editar-usuario">
+                                <a href="/html/editar_usuario.html" class="boton-editar-usuario"><i class='bx bx-edit'></i>Editar</a>
+                            </nav>
+                            <nav class="borrar-usuario">
+                                <a href="/html/eliminar_usuario.html" class="boton-borrar-usuario"><i class='bx bx-trash'></i>Eliminar</a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
                 <nav class="usuario">
                     <a href="/html/registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>REGISTRATE</a>
                 </nav>
             </div>
         </header>
 
+        <!-- Content -->
         <div class="content">
             <!-- Carrousel -->
             <div class="carrousel">
@@ -69,9 +80,10 @@
                     <img src="../img/carrousel1.jpg" alt="Londres">
                     
                 </div>
-                <!-- Next and previous buttons -->
+
                 <a class="anterior" onclick="avanzarFotos(-1)">&#10095;</a>
                 <a class="siguiente" onclick="avanzarFotos(1)">&#10094;</a>
+                
                 <div class="boton-paises-contenedor hidden">
                     <a href="paises.html" class="button is-primary boton-paises" style= "background-color: rgb(225, 142, 112);">Ver todos los países </a>
                 </div>
@@ -81,20 +93,20 @@
         </div>
 
         <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-container">
-                <p>© 2024 WorldTracker. Todos los derechos reservados.</p>
-                <p>
-                    Desarrollado por 
-                    <a href="https://github.com/abbnunez" target="_blank">Abril Belén Nuñez</a>, 
-                    <a href="https://github.com/anaprovvi" target="_blank">Ana Provvisionato</a>, 
-                    <a href="https://github.com/AvrilMZ" target="_blank">Avril Victoria Morfeo Zerbi</a> y 
-                    <a href="https://github.com/facustifman" target="_blank">Facundo Camilo Stifman</a>.
-                </p>
-                <div class="footer-social">
-                    <a href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software" target="_blank">GitHub</a>
-                </div>
-            </div>
-        </footer>
+		<footer class="footer">
+			<div class="footer-container">
+				<p>© 2024 WorldTracker. Todos los derechos reservados.</p>
+				<p>
+					Desarrollado por
+					<a href="https://github.com/abbnunez" target="_blank">Abril Belén Nuñez</a>,
+					<a href="https://github.com/anaprovvi" target="_blank">Ana Provvisionato</a>,
+					<a href="https://github.com/AvrilMZ" target="_blank">Avril Victoria Morfeo Zerbi</a> y
+					<a href="https://github.com/facustifman" target="_blank">Facundo Camilo Stifman</a>.
+				</p>
+				<div class="footer-social">
+					<a href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software" target="_blank">GitHub</a>
+				</div>
+			</div>
+		</footer>
     </body>
 </html>

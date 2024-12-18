@@ -1,35 +1,59 @@
 <!DOCTYPE html>
 <html lang="es">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Modificar Viaje - WorldTracker</title>
-		<link rel="icon" href="../img/logo.png" type="image/png" />
+		<link rel="icon" href="../img/logo.png" type="image/png">
 		<!-- Google Fonts -->
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-			rel="stylesheet"
-		/>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"rel="stylesheet">
 		<!-- Bulma CSS -->
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
-		/>
-		<!-- Estilo personalizado -->
-		<link rel="stylesheet" href="../css/editar_viaje.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+		<!-- CSS -->
+		<link rel="stylesheet" href="../css/navbar.css">
+		<link rel="stylesheet" href="../css/editar_viaje.css">
+		<link rel="stylesheet" href="../css/footer.css">
 	</head>
 	<body>
-		<!-- Encabezado -->
-		<header>
-			<a href="/html/index.html" class="logo-link">
-				<img src="../img/logo2.png" alt="WorldTracker" width="300" />
-			</a>
-			<nav class="navbar">
-				<a href="/html/paises.html">PAISES</a>
-				<a href="/html/viajes.html">VIAJES</a>
-			</nav>
-		</header>
+		<!-- NavBar -->
+        <header role="banner">
+            <a href="/html/index.html" class="logo-link">
+                <img src="../img/logo2.png" alt="WorldTracker" width="300">
+            </a>
+            <div class="nav-center-no-bulma">
+                <nav class="paises">
+                    <a href="/html/paises.html"></i>PAISES</a>
+                </nav>
+                <nav class="vuelos">
+                    <a href="/html/viajes.html"></i>VIAJES</a>
+                </nav>
+            </div>
+            <div class="nav-right-no-bulma">
+                <div class="dropdown is-hoverable is-right">
+                    <div class="dropdown-trigger">
+                        <span>USUARIO</span>
+                        <span class="icon is-small">
+                            <i class='bx bx-chevron-down'></i>
+                        </span>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+                            <nav class="editar-usuario">
+                                <a href="/html/editar_usuario.html" class="boton-editar-usuario"><i class='bx bx-edit'></i>Editar</a>
+                            </nav>
+                            <nav class="borrar-usuario">
+                                <a href="/html/eliminar_usuario.html" class="boton-borrar-usuario"><i class='bx bx-trash'></i>Eliminar</a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <nav class="usuario">
+                    <a href="/html/registro.html" class="boton-registro"><i class='new bx bx-id-card'></i>REGISTRATE</a>
+                </nav>
+            </div>
+        </header>
 
+		<!-- Content -->
 		<div class="container mt-5">
 			<h1 class="title has-text-centered">Modificar Viaje</h1>
 
@@ -130,39 +154,21 @@
 			</form>
 		</div>
 
+		<!-- Footer -->
 		<footer class="footer">
-			<footer class="footer">
-				<div class="footer-container">
-					<p>© 2024 WorldTracker. Todos los derechos reservados.</p>
-					<p>
-						Desarrollado por
-						<a href="https://github.com/abbnunez" target="_blank">
-							Abril Belén Nuñez
-						</a>
-						,
-						<a href="https://github.com/anaprovvi" target="_blank">
-							Ana Provvisionato
-						</a>
-						,
-						<a href="https://github.com/AvrilMZ" target="_blank">
-							Avril Victoria Morfeo Zerbi
-						</a>
-						y
-						<a href="https://github.com/facustifman" target="_blank">
-							Facundo Camilo Stifman
-						</a>
-						.
-					</p>
-					<div class="footer-social">
-						<a
-							href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software"
-							target="_blank"
-						>
-							GitHub
-						</a>
-					</div>
+			<div class="footer-container">
+				<p>© 2024 WorldTracker. Todos los derechos reservados.</p>
+				<p>
+					Desarrollado por
+					<a href="https://github.com/abbnunez" target="_blank">Abril Belén Nuñez</a>,
+					<a href="https://github.com/anaprovvi" target="_blank">Ana Provvisionato</a>,
+					<a href="https://github.com/AvrilMZ" target="_blank">Avril Victoria Morfeo Zerbi</a> y
+					<a href="https://github.com/facustifman" target="_blank">Facundo Camilo Stifman</a>.
+				</p>
+				<div class="footer-social">
+					<a href="https://github.com/AvrilMZ/TP2_Introduccion_al_Desarrollo_de_Software" target="_blank">GitHub</a>
 				</div>
-			</footer>
+			</div>
 		</footer>
 
 		<!-- JS -->
