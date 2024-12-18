@@ -1,101 +1,142 @@
 let minimo = 0;
 let maximo = 20;
 let paisesData = [];
+let paisesCreados = [];
 
-const cardContainer = document.getElementById('card-container');
+const cardContainer = document.getElementById("card-container");
 
 function crearCard(pais) {
-	// Crea un elemento div con la clase "card"
-	const card = document.createElement('div');
-	card.className = 'card';
+  // Crea un elemento div con la clase "card"
+  const card = document.createElement("div");
+  card.className = "card";
 
-	const bandera = pais.flags.png || pais.flags.jpg || '../img/img_no_disponible.jpg';
+  // Asignar bandera o imagen predeterminada
+  const bandera =
+    pais.flags?.png || pais.flags?.jpg || "../img/img_no_disponible.jpg";
 
-	card.innerHTML = `
-        <img src="${bandera}" class="card-img-top" alt="${pais.name.common}">
+  card.innerHTML = `
+        <img src="${bandera}" class="card-img-top" alt="${pais.name}">
         <div class="content">
-            <h5 class="card-title">${pais.name.common}</h5>
-            <p>Capital: ${pais.capital || 'No disponible'}</p>
-            <p>Región: ${pais.region || 'No disponible'}</p>
-            <p>Población: ${pais.population.toLocaleString()}</p> 
-			<p>Superficie: ${pais.area ? pais.area.toLocaleString() : 'No disponible'
-		} km²</p>
-            <p>Idiomas: ${pais.languages
-			? Object.values(pais.languages).join(', ')
-			: 'No disponible'
-		}</p>
+            <h5 class="card-title">${pais.name}</h5>
+            <p>Capital: ${pais.capital || "No disponible"}</p>
+            <p>Región: ${pais.region || "No disponible"}</p>
+            <p>Población: ${
+              pais.population
+                ? pais.population.toLocaleString()
+                : "No disponible"
+            }</p> 
+			<p>Superficie: ${
+        pais.area ? pais.area.toLocaleString() : "No disponible"
+      } km²</p>
+            <p>Idiomas: ${pais.languages || "No disponible"}</p>
         </div>
     `;
-	cardContainer.appendChild(card);
+  cardContainer.appendChild(card);
 }
 
 function cargarPaisesCreados() {
-	const paisesGuardados = JSON.parse(localStorage.getItem('paisesCreados')) || [];
-	paisesGuardados.forEach((pais) => {
-		// Asignar una bandera predeterminada si el país no tiene bandera
-		if (!pais.flags || !pais.flags.jpg) {
-			pais.flags = { jpg: '../img/img_no_disponible.jpg' };
-		}
-		crearCard(pais);
-	});
+  // Obtiene los países creados desde localStorage
+  paisesCreados = JSON.parse(localStorage.getItem("paisesCreados")) || [];
+
+  // Normaliza los datos de los países creados
+  paisesCreados = paisesCreados.map((pais) => ({
+    name: pais.name || "Sin nombre",
+    capital: pais.capital || "No disponible",
+    region: pais.region || "No disponible",
+    population: pais.population || null,
+    area: pais.area || null,
+    flags: pais.flags || { jpg: "../img/img_no_disponible.jpg" },
+    languages: pais.languages
+      ? Object.values(pais.languages).join(", ")
+      : "No disponible",
+  }));
 }
 
-// Filtra los países según la búsqueda actual
+function combinarDatos() {
+  // Combinar los datos de restcountries y los países creados
+  const unificados = [...paisesData, ...paisesCreados];
+
+  // Eliminar duplicados basados en el nombre del país
+  const nombresUnicos = new Set();
+  const paisesUnificados = unificados.filter((pais) => {
+    if (nombresUnicos.has(pais.name)) return false;
+    nombresUnicos.add(pais.name);
+    return true;
+  });
+
+  // Ordenar alfabéticamente por nombre
+  paisesUnificados.sort((a, b) => a.name.localeCompare(b.name));
+
+  return paisesUnificados;
+}
+
 function actualizarPaginacion(paisesFiltrados) {
-	const paisesPorPagina = paisesFiltrados.slice(minimo, minimo + maximo);
-	cardContainer.innerHTML = ''; // Limpiar el contenedor de tarjetas
-	paisesPorPagina.forEach(crearCard);
-	actualizarBotones(paisesFiltrados);
+  const paisesPorPagina = paisesFiltrados.slice(minimo, minimo + maximo);
+  cardContainer.innerHTML = ""; // Limpiar el contenedor de tarjetas
+  paisesPorPagina.forEach(crearCard);
+  actualizarBotones(paisesFiltrados);
 }
 
-// Si estás en la primera página o en la última, se deshabilitan los botones
 function actualizarBotones(paisesFiltrados) {
-	const botonAnterior = document.getElementById('anterior');
-	const botonSiguiente = document.getElementById('siguiente');
-	botonAnterior.disabled = minimo === 0;
-	botonSiguiente.disabled = minimo + maximo >= paisesFiltrados.length;
+  const botonAnterior = document.getElementById("anterior");
+  const botonSiguiente = document.getElementById("siguiente");
+  botonAnterior.disabled = minimo === 0;
+  botonSiguiente.disabled = minimo + maximo >= paisesFiltrados.length;
 }
 
 function fetchPaises() {
-	fetch('https://restcountries.com/v3.1/all')
-		.then((response) => response.json())
-		.then((data) => {
-			paisesData = data; // Guarda los datos de todos los países
-			paisesData.sort((a, b) => a.name.common.localeCompare(b.name.common));
-			actualizarPaginacion(paisesData); // Actualiza la visualización inicial con todos los países
-		})
-		.catch((error) => console.error('Error al obtener los países:', error));
+  fetch("https://restcountries.com/v3.1/all")
+    .then((response) => response.json())
+    .then((data) => {
+      // Normaliza los datos de la API
+      paisesData = data.map((pais) => ({
+        name: pais.name.common,
+        capital: pais.capital?.[0] || "No disponible",
+        region: pais.region || "No disponible",
+        population: pais.population || null,
+        area: pais.area || null,
+        flags: pais.flags || { png: "../img/img_no_disponible.jpg" },
+        languages: pais.languages
+          ? Object.values(pais.languages).join(", ")
+          : "No disponible",
+      }));
+
+      // Combina datos y actualiza la visualización inicial
+      const paisesUnificados = combinarDatos();
+      actualizarPaginacion(paisesUnificados);
+    })
+    .catch((error) => console.error("Error al obtener los países:", error));
 }
 
 function cambiarPagina(direccion) {
-	minimo += direccion * maximo;
-	if (minimo < 0) minimo = 0;
-	const query = document.getElementById('search').value.toLowerCase();
-	const paisesFiltrados = filtrarPaises(query);
-	actualizarPaginacion(paisesFiltrados);
+  minimo += direccion * maximo;
+  if (minimo < 0) minimo = 0;
+  const query = document.getElementById("search").value.toLowerCase();
+  const paisesFiltrados = filtrarPaises(query);
+  actualizarPaginacion(paisesFiltrados);
 }
 
 function buscarPaises() {
-	const query = document.getElementById('search').value.toLowerCase();
-	const paisesFiltrados = filtrarPaises(query);
-	actualizarPaginacion(paisesFiltrados);
+  const query = document.getElementById("search").value.toLowerCase();
+  const paisesFiltrados = filtrarPaises(query);
+  actualizarPaginacion(paisesFiltrados);
 }
 
-// Filtra los países por nombre (case-insensitive)
 function filtrarPaises(query) {
-	return paisesData.filter((pais) =>
-		pais.name.common.toLowerCase().includes(query)
-	);
+  const paisesUnificados = combinarDatos();
+  return paisesUnificados.filter((pais) =>
+    pais.name.toLowerCase().includes(query)
+  );
 }
 
-// Asociar acción a los botones de paginación
+// Asociar acciones a los botones
 document
-	.getElementById('anterior')
-	.addEventListener('click', () => cambiarPagina(-1));
+  .getElementById("anterior")
+  .addEventListener("click", () => cambiarPagina(-1));
 document
-	.getElementById('siguiente')
-	.addEventListener('click', () => cambiarPagina(1));
+  .getElementById("siguiente")
+  .addEventListener("click", () => cambiarPagina(1));
 
-// Llamar la función después de cargar los países de la API
-fetchPaises();
+// Llamar las funciones después de cargar los países
 cargarPaisesCreados();
+fetchPaises();
