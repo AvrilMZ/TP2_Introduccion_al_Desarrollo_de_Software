@@ -19,11 +19,11 @@ html, body {
 }
   
 #search {
-    width: 1200px;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    flex-grow: 1;
 }
 
 td {
@@ -53,7 +53,6 @@ td {
     border-radius: 10px;
     cursor: pointer;
     transition: transform 0.3s ease;
-
 }
 
 .card:hover {
@@ -89,13 +88,16 @@ td {
     margin: 5px 0;
 }
 
-button {
-    background-color:rgb(27, 122, 194);
-    border: none;
-    border-radius: 5px;
-    transition: 0.3s;
-    font-optical-sizing: auto;
-    font-weight: 700;
-    font-style: bold;
-    color: white;
+.control {
+    display: flex;
+    max-width: 1200px;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }

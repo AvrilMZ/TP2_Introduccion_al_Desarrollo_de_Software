@@ -78,16 +78,12 @@
 							required
 						/>
 					</div>
-					<p id="usuario-encontrado" class="help is-success">
-						Usuario encontrado
-					</p>
-					<p id="usuario-desconocido" class="help is-danger">
-						Usuario no encontrado
-					</p>
+					<p id="usuario-encontrado" class="help is-success">Usuario encontrado</p>
+					<p id="usuario-desconocido" class="help is-danger">Usuario no encontrado</p>
 				</div>
 
 				<div class="field">
-					<label class="label" for="pais-select">País</label>
+					<label class="label">País</label>
 					<div class="select">
 						<select id="pais-select" name="pais" required>
 							<option value="" selected>Seleccionar</option>
@@ -96,7 +92,7 @@
 				</div>
 
 				<div class="field">
-					<label class="label" for="start-date">Fecha de inicio:</label>
+					<label class="label">Fecha de inicio:</label>
 					<input
 						type="date"
 						id="start-date"
@@ -107,7 +103,7 @@
 				</div>
 
 				<div class="field">
-					<label class="label" for="end-date">Fecha de fin:</label>
+					<label class="label">Fecha de fin:</label>
 					<input
 						type="date"
 						id="end-date"
@@ -118,7 +114,7 @@
 				</div>
 
 				<div class="field">
-					<label class="label" for="ciudades">¿Qué ciudades visitaste?</label>
+					<label class="label">¿Qué ciudades visitaste?</label>
 					<div class="control">
 						<input
 							id="ciudades"
@@ -131,7 +127,7 @@
 				</div>
 
 				<div class="field">
-					<label class="label" for="presupuesto">Presupuesto</label>
+					<label class="label">Presupuesto</label>
 					<div class="control">
 						<input
 							id="presupuesto"
@@ -144,7 +140,7 @@
 				</div>
 
 				<div class="field">
-					<label class="label" for="calificacion">Calificación</label>
+					<label class="label">Calificación</label>
 					<div class="control">
 						<input
 							id="calificacion"
@@ -163,13 +159,9 @@
 						<button class="button is-link" type="submit">Añadir</button>
 					</div>
 					<div class="control">
-						<button
-							class="button is-link is-light"
-							type="button"
-							onclick="window.location.href='index.html'"
-						>
-							Cancelar
-						</button>
+						<a href="/html/index.html">
+							<button class="button is-link is-light" type="button">Cancelar</button>
+						</a>
 					</div>
 				</div>
 			</form>

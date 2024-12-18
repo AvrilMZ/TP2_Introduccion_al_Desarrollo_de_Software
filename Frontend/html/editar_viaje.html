@@ -6,7 +6,13 @@
 		<title>Modificar Viaje - WorldTracker</title>
 		<link rel="icon" href="../img/logo.png" type="image/png">
 		<!-- Google Fonts -->
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:ital,wght@1,400&display=swap" rel="stylesheet">
+        <!-- Inter font -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+        <!-- Icons Webpage -->
+        <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
 		<!-- Bulma CSS -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 		<!-- CSS -->
@@ -14,6 +20,7 @@
 		<link rel="stylesheet" href="../css/editar_viaje.css">
 		<link rel="stylesheet" href="../css/footer.css">
 	</head>
+
 	<body>
 		<!-- NavBar -->
         <header role="banner">
@@ -54,15 +61,12 @@
         </header>
 
 		<!-- Content -->
-		<div class="container mt-5">
-			<h1 class="title has-text-centered">Modificar Viaje</h1>
-
-			<!-- Mensajes de error -->
+		<div class="content">
+			<h2>Modificar Viaje</h2>
 			<div id="error-general" class="notification is-danger is-hidden"></div>
 
-			<!-- Formulario para modificar el viaje -->
+			<!-- Formulario -->
 			<form id="form-viaje">
-				<div class="field"></div>
 				<div class="field">
 					<label class="label">País</label>
 					<div class="control">
@@ -75,29 +79,25 @@
 				</div>
 
 				<div class="field">
-					<label class="label">Fecha de inicio</label>
-					<div class="control">
-						<input
-							id="fecha-inicio"
-							class="input"
-							type="date"
-							name="fechaInicio"
-							required
-						/>
-					</div>
+					<label class="label">Fecha de inicio:</label>
+					<input
+						type="date"
+						id="start-date"
+						name="viaje-inicio"
+						min="1950-01-01"
+						max="2024-12-31"
+					/>
 				</div>
 
 				<div class="field">
-					<label class="label">Fecha de fin</label>
-					<div class="control">
-						<input
-							id="fecha-fin"
-							class="input"
-							type="date"
-							name="fechaFin"
-							required
-						/>
-					</div>
+					<label class="label">Fecha de fin:</label>
+					<input
+						type="date"
+						id="end-date"
+						name="viaje-fin"
+						min="1950-01-01"
+						max="2024-12-31"
+					/>
 				</div>
 
 				<div class="field">
@@ -110,7 +110,7 @@
 							placeholder="Ingresa una ciudad y presiona Enter"
 						/>
 					</div>
-					<div id="ciudades-tags" class="tags mt-2"></div>
+					<div id="ciudades-tags" class="tags"></div>
 				</div>
 
 				<div class="field">
@@ -120,8 +120,6 @@
 							id="presupuesto"
 							class="input"
 							type="number"
-							min="0"
-							step="0.01"
 							name="presupuesto"
 							required
 						/>
@@ -153,6 +151,7 @@
 				</div>
 			</form>
 		</div>
+		<script src="../js/editar_viaje.js"></script>
 
 		<!-- Footer -->
 		<footer class="footer">
@@ -170,8 +169,5 @@
 				</div>
 			</div>
 		</footer>
-
-		<!-- JS -->
-		<script src="../js/editar_viaje.js"></script>
 	</body>
 </html>

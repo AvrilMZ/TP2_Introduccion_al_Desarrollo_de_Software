@@ -16,7 +16,7 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 		<!-- CSS -->
 		<link rel="stylesheet" href="../css/navbar.css">
-		<link rel="stylesheet" href="../css/viaje_registro.css">
+		<link rel="stylesheet" href="../css/crear_paises.css">
 		<link rel="stylesheet" href="../css/footer.css">
 	</head>
 
@@ -62,9 +62,9 @@
 		<!-- Content -->
 		<div class="content">
 			<h2>Nuevo País</h2>
-
 			<div id="error-mensajes" style="display: none; color: red"></div>
 			<div id="error-general" style="display: none; color: red"></div>
+
 			<!-- Formulario -->
 			<form id="confirmar">
 				<div class="field">
@@ -78,6 +78,7 @@
 							required
 						/>
 					</div>
+				</div>
 
                 <div class="field">
 					<label class="label">Capital</label>
@@ -90,9 +91,10 @@
 							required
 						/>
 					</div>
+				</div>
 
 				<div class="field">
-					<label class="label" for="idiomas">Idiomas</label>
+					<label class="label">Idiomas</label>
 					<div class="control">
 						<input
 							id="idiomas"
@@ -115,8 +117,10 @@
 							required
 						/>
 					</div>
+				</div>
+
                 <div class="field">
-					<label class="label" for="continente">Continente</label>
+					<label class="label">Continente</label>
 					<div class="select">
 						<select id="continente" name="continente" required>
 							<option value="" selected>Seleccionar</option>
@@ -129,13 +133,9 @@
 						<button class="button is-link" type="submit">Añadir</button>
 					</div>
 					<div class="control">
-						<button
-							class="button is-link is-light"
-							type="button"
-							onclick="window.location.href='index.html'"
-						>
-							Cancelar
-						</button>
+						<a href="/html/index.html">
+							<button class="button is-link is-light" type="button">Cancelar</button>
+						</a>
 					</div>
 				</div>
 			</form>
