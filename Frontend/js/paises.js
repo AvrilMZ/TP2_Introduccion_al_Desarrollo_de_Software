@@ -20,14 +20,12 @@ function crearCard(pais) {
             <h5 class="card-title">${pais.name}</h5>
             <p>Capital: ${pais.capital || "No disponible"}</p>
             <p>Región: ${pais.region || "No disponible"}</p>
-            <p>Población: ${
-              pais.population
-                ? pais.population.toLocaleString()
-                : "No disponible"
-            }</p> 
-			<p>Superficie: ${
-        pais.area ? pais.area.toLocaleString() : "No disponible"
-      } km²</p>
+            <p>Población: ${pais.population
+      ? pais.population.toLocaleString()
+      : "No disponible"
+    }</p> 
+			<p>Superficie: ${pais.area ? pais.area.toLocaleString() : "No disponible"
+    } km²</p>
             <p>Idiomas: ${pais.languages || "No disponible"}</p>
         </div>
     `;
@@ -40,14 +38,14 @@ function cargarPaisesCreados() {
 
   // Normaliza los datos de los países creados
   paisesCreados = paisesCreados.map((pais) => ({
-    name: pais.name || "Sin nombre",
+    name: pais.nombre || "Sin nombre",
     capital: pais.capital || "No disponible",
-    region: pais.region || "No disponible",
-    population: pais.population || null,
-    area: pais.area || null,
+    region: pais.continente || "No disponible",
+    population: pais.poblacion || null,
+    area: pais.superficie || null,
     flags: pais.flags || { jpg: "../img/img_no_disponible.jpg" },
-    languages: pais.languages
-      ? Object.values(pais.languages).join(", ")
+    languages: Array.isArray(pais.idiomas)
+      ? pais.idiomas.join(", ")
       : "No disponible",
   }));
 }
@@ -85,6 +83,7 @@ function actualizarBotones(paisesFiltrados) {
 }
 
 function fetchPaises() {
+  cargarPaisesCreados();
   fetch("https://restcountries.com/v3.1/all")
     .then((response) => response.json())
     .then((data) => {
