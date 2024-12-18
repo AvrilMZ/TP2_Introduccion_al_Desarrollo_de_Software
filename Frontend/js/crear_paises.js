@@ -142,13 +142,11 @@ document
       let paisesCreados =
         JSON.parse(localStorage.getItem("paisesCreados")) || [];
       paisesCreados.push({
-        name: paisCreado.nombre,
+        nombre: paisCreado.nombre,
         capital: paisCreado.capital,
-        region: paisCreado.continente,
-        population: null, // Si no tienes estos datos
-        area: null,
-        flags: { jpg: "../img/img_no_disponible.jpg" },
-        languages: paisCreado.idiomas.join(", "),
+        continente: paisCreado.continente,
+        moneda: paisCreado.moneda,
+        idiomas: paisCreado.idiomas,
       });
       localStorage.setItem("paisesCreados", JSON.stringify(paisesCreados));
 
