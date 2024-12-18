@@ -8,59 +8,59 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   paisSelect.addEventListener("change", function (event) {
     const paisNombre = event.target.value;
-    const paisesCreados =
-      JSON.parse(localStorage.getItem("paisesCreados")) || [];
-    const paisEncontrado = paisesCreados.find(
-      (pais) => pais.nombre === paisNombre
-    );
-
+    const paisesCreados = JSON.parse(localStorage.getItem("paisesCreados")) || [];
+    const paisEncontrado = paisesCreados.find((pais) => pais.nombre === paisNombre);
+  
     if (paisEncontrado) {
-      document.querySelector('input[name="nombre"]').value =
-        paisEncontrado.nombre;
-      document.getElementById("capital").value = paisEncontrado.capital;
-      document.getElementById("continente").value = paisEncontrado.continente;
-      document.getElementById("moneda").value = paisEncontrado.moneda;
-      document.getElementById("idiomas").value =
-        paisEncontrado.idiomas.join(", ");
-      habilitarCambios();
-      document.getElementById("pais-encontrado").style.display = "block";
-      document.getElementById("pais-desconocido").style.display = "none";
+      // Si el país está en localStorage (base de datos local)
+      mostrarDatos(paisEncontrado);
     } else {
+      // Si el país no está, buscarlo en la API externa
       fetch(
         `https://restcountries.com/v3.1/name/${encodeURIComponent(paisNombre)}`
       )
         .then((response) => response.json())
         .then((countries) => {
           if (countries && countries.length > 0) {
-            const country = countries[0];
-            document.querySelector('input[name="nombre"]').value =
-              country.name.common;
-            document.getElementById("capital").value = country.capital
-              ? country.capital[0]
-              : "";
-            document.getElementById("continente").value = country.region;
-            document.getElementById("moneda").value = Object.values(
-              country.currencies
-            )[0].name;
-            document.getElementById("idiomas").value = Object.values(
-              country.languages
-            ).join(", ");
-            habilitarCambios();
-            document.getElementById("pais-encontrado").style.display = "block";
-            document.getElementById("pais-desconocido").style.display = "none";
+            mostrarDatosAPI(countries[0]);
           } else {
-            document.getElementById("pais-encontrado").style.display = "none";
-            document.getElementById("pais-desconocido").style.display = "block";
+            mostrarErrorGeneral("País no encontrado.");
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          document.getElementById("pais-encontrado").style.display = "none";
-          document.getElementById("pais-desconocido").style.display = "block";
+          mostrarErrorGeneral("No se pudo cargar el país.");
         });
     }
   });
-
+  
+  function mostrarDatos(pais) {
+    document.querySelector('input[name="nombre"]').value = pais.nombre;
+    document.getElementById("capital").value = pais.capital;
+    document.getElementById("continente").value = pais.continente;
+    document.getElementById("moneda").value = pais.moneda;
+    document.getElementById("idiomas").value = pais.idiomas.split(", ").join(", ");
+    habilitarCambios();
+  }
+  
+  function mostrarDatosAPI(country) {
+    document.querySelector('input[name="nombre"]').value = country.name.common;
+    document.getElementById("capital").value = country.capital ? country.capital[0] : "";
+    document.getElementById("continente").value = country.region;
+  
+    // Verificar currencies
+    document.getElementById("moneda").value = country.currencies
+      ? Object.values(country.currencies)[0].name
+      : "Sin moneda definida";
+  
+    // Verificar languages
+    document.getElementById("idiomas").value = country.languages
+      ? Object.values(country.languages).join(", ")
+      : "Sin idiomas definidos";
+  
+    habilitarCambios(); 
+  }
+  
   saveButton.addEventListener("click", async (event) => {
     event.preventDefault();
     const paisNombre = paisSelect.value;
@@ -71,7 +71,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       moneda: document.getElementById("moneda").value,
       idiomas: document.getElementById("idiomas").value.split(", "),
     };
-
+  
+    // Validación de campos vacíos
     if (
       !paisActualizado.nombre ||
       !paisActualizado.capital ||
@@ -82,40 +83,40 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("Por favor, completa todos los campos.");
       return;
     }
-
+  
     try {
+      // Enviar el país actualizado al backend
       const response = await fetch(
         `http://localhost:3000/api/v1/paises/${encodeURIComponent(paisNombre)}`,
         {
-          method: "PUT",
+          method: "PUT", // Actualiza en lugar de crear
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(paisActualizado),
         }
       );
-
+  
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || "Error al guardar los cambios");
       }
-
+  
+      // Actualizar localStorage con el nuevo país
       actualizarPaisEnLocalStorage(paisNombre, paisActualizado);
-
+  
+      // Actualizar el menú desplegable
+      cargarPaisesSelect(JSON.parse(localStorage.getItem("paisesCreados")) || []);
+  
+      // Mostrar un mensaje de éxito
       alert("País actualizado exitosamente.");
-
-      document.querySelector('input[name="nombre"]').value = data.nombre;
-      document.getElementById("capital").value = data.capital;
-      document.getElementById("continente").value = data.continente;
-      document.getElementById("moneda").value = data.moneda;
-      document.getElementById("idiomas").value = data.idiomas.join(", ");
-
-      console.log("Data:", data);
-
-      window.location.href = "../html/index.html";
     } catch (error) {
       console.error("Error al guardar los cambios:", error);
       alert("Error al guardar los cambios: " + error.message);
     }
   });
+  
+  
+  
+  
 
   function habilitarCambios() {
     document.querySelector('input[name="nombre"]').disabled = false;
@@ -135,37 +136,54 @@ document.addEventListener("DOMContentLoaded", async () => {
     saveButton.disabled = true;
   }
 
+  
+
   async function cargarPaises() {
     try {
       const [apiResponse, bddResponse] = await Promise.all([
         fetch("https://restcountries.com/v3.1/all"),
         fetch("http://localhost:3000/api/v1/paises"),
       ]);
-
+  
       if (!apiResponse.ok || !bddResponse.ok) {
         throw new Error("Error al cargar países desde una de las fuentes.");
       }
-
+  
       const countriesAPI = await apiResponse.json();
       const countriesBDD = await bddResponse.json();
-
-      const paisesCombinados = combinarPaises(countriesAPI, countriesBDD);
-
-      cargarPaisesSelect(paisesCombinados);
+  
+      // Recuperar países existentes en localStorage
+      const paisesLocales = JSON.parse(localStorage.getItem("paisesCreados")) || [];
+  
+      // Combinar países locales con los de la base de datos
+      const paisesCombinados = [...new Map([...countriesBDD, ...paisesLocales].map((pais) => [pais.nombre, pais])).values()];
+  
+      // Guardar en localStorage
+      localStorage.setItem("paisesCreados", JSON.stringify(paisesCombinados));
+  
+      // Combinar con API y actualizar el select
+      const paisesFinales = combinarPaises(countriesAPI, paisesCombinados);
+      cargarPaisesSelect(paisesFinales);
     } catch (error) {
       console.error("Error al cargar países:", error);
       mostrarErrorGeneral("No se pudieron cargar los países.");
     }
   }
+  
 
   function combinarPaises(apiPaises, dbPaises) {
-    const nombres = new Set();
-    dbPaises.forEach((pais) => nombres.add(pais.nombre));
-    apiPaises.forEach((pais) => nombres.add(pais.name.common));
-    return Array.from(nombres)
-      .sort((a, b) => a.localeCompare(b))
-      .map((nombre) => ({ nombre }));
+    const nombres = new Map();
+    dbPaises.forEach((pais) => nombres.set(pais.nombre, pais));
+    apiPaises.forEach((pais) => {
+      if (!nombres.has(pais.name.common)) {
+        nombres.set(pais.name.common, { nombre: pais.name.common });
+      }
+    });
+  
+    return Array.from(nombres.values())
+      .sort((a, b) => a.nombre.localeCompare(b.nombre));
   }
+  
 
   function cargarPaisesSelect(paises) {
     const paisSelect = document.getElementById("pais-select");
@@ -188,28 +206,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function mostrarErrorGeneral(mensaje) {
     const errorGeneral = document.getElementById("error-general");
+    if (errorGeneral) {
     errorGeneral.textContent = mensaje;
     errorGeneral.style.display = "block";
     setTimeout(() => {
       errorGeneral.style.display = "none";
     }, 5000);
+  } else {
+    console.error("No se pudo mostrar el error")
+  }
+}
+
+function actualizarPaisEnLocalStorage(paisNombre, paisActualizado) {
+  let paisesCreados = JSON.parse(localStorage.getItem("paisesCreados")) || [];
+
+  // Verificar si el país ya existe
+  const index = paisesCreados.findIndex((pais) => pais.nombre === paisNombre);
+
+  if (index !== -1) {
+    // Actualizar el país existente
+    paisesCreados[index] = paisActualizado;
+  } else {
+    // Agregar el país si no existe
+    paisesCreados.push(paisActualizado);
   }
 
-  // Función para actualizar el país en el localStorage
-  function actualizarPaisEnLocalStorage(paisNombre, paisActualizado) {
-    let paisesCreados = JSON.parse(localStorage.getItem("paisesCreados")) || [];
-
-    const index = paisesCreados.findIndex((pais) => pais.nombre === paisNombre);
-
-    if (index !== -1) {
-      paisesCreados[index] = {
-        nombre: paisActualizado.nombre,
-        capital: paisActualizado.capital,
-        continente: paisActualizado.continente,
-        moneda: paisActualizado.moneda,
-        idiomas: paisActualizado.idiomas,
-      };
-    }
-    localStorage.setItem("paisesCreados", JSON.stringify(paisesCreados));
-  }
+  localStorage.setItem("paisesCreados", JSON.stringify(paisesCreados));
+}
 });
+
+
+
