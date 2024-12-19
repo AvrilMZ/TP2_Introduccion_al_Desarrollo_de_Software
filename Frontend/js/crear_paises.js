@@ -1,7 +1,6 @@
 let idiomasArray = [];
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Cargar continentes en el selector de continentes
   fetch("https://restcountries.com/v3.1/all")
     .then((response) => response.json())
     .then((countries) => {
@@ -146,7 +145,10 @@ document
         capital: paisCreado.capital,
         continente: paisCreado.continente,
         moneda: paisCreado.moneda,
-        idiomas: paisCreado.idiomas,
+        idiomas: paisCreado.idiomas.join(", "),
+        population: paisCreado.population || null,
+        area: paisCreado.area || null,
+        flags: paisCreado.flags || { jpg: "../img/img_no_disponible.jpg" },
       });
       localStorage.setItem("paisesCreados", JSON.stringify(paisesCreados));
 

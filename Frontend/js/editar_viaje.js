@@ -1,19 +1,32 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // Función para obtener el ID del viaje desde la URL
-  function getViajeIdFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    console.log("Id del viaje desde la url: ", id);
-    return id;
+  // Función para obtener los parámetros de la URL
+  function getParametrosDesdeURL() {
+    const pathname = window.location.pathname;
+    console.log("Ruta completa:", pathname); // Verifica la URL en la consola
+
+    // Suponiendo que la URL es algo como: /html/editar_viaje.html/usuario/:usuario/viajes/:id
+    const segments = pathname.split('/');
+
+    // Asumiendo que el usuario está en la segunda posición y el id en la cuarta
+    const usuario = segments[segments.length - 3];  // 'usuario'
+    const viajeId = segments[segments.length - 1];  // 'id'
+
+    console.log("Usuario extraído: ", usuario);  // Verifica que el usuario se extraiga correctamente
+    console.log("ID del viaje extraído: ", viajeId);
+
+    return { usuario, viajeId };
   }
 
-  const viajeId = getViajeIdFromURL(); // Obtener el ID del viaje desde la URL
-  let ciudadesArray = []; // Array para almacenar las ciudades del viaje
+  const { usuario, viajeId } = getParametrosDesdeURL(); // Extraemos usuario y viajeId de la URL
 
-  // Llamar a la función para cargar países
+  if (!usuario || !viajeId) {
+    mostrarErrorGeneral("No se pudo obtener el usuario o el ID del viaje.");
+    return;
+  }
+
+  let ciudadesArray = [];
+
   await cargarPaises();
-
-  // Cargar datos del viaje si hay un ID válido
   if (viajeId) {
     fetch(`http://localhost:3000/api/v1/viajes/${viajeId}`)
       .then((response) => {
@@ -34,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     mostrarErrorGeneral("No se encontró un ID válido para este viaje.");
   }
 
-  // Manejar el evento de envío del formulario
+  // Manejar envío del formulario
   document
     .getElementById("form-viaje")
     .addEventListener("submit", async function (event) {
@@ -71,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       try {
-        const response = await fetch(`/api/v1/viajes/${viajeId}`, {
+        const response = await fetch(`/api/v1/users/${usuario}/viajes/${viajeId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -82,13 +95,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         alert("Viaje actualizado exitosamente.");
-        window.location.href = "../html/viajes.html";
+        window.location.href = `../html/viajes.html/usuario/${usuario}`;
       } catch (error) {
         mostrarErrorGeneral(error.message || "No se pudo actualizar el viaje.");
       }
     });
 
-  // Evento para capturar ciudades
+  // Capturar ciudades
   const inputCiudades = document.getElementById("ciudades");
   inputCiudades.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
@@ -102,13 +115,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Función para cargar países desde la API y base de datos
+  // Cargar países desde la API y base de datos
   async function cargarPaises() {
     try {
-      // Realizar fetch a ambas fuentes
       const [apiResponse, bddResponse] = await Promise.all([
-        fetch("https://restcountries.com/v3.1/all"), //endpoint de restapi
-        fetch("http://localhost:3000/api/v1/paises"), //endpoint de bdd
+        fetch("https://restcountries.com/v3.1/all"), // Endpoint de restapi
+        fetch("http://localhost:3000/api/v1/paises"), // Endpoint de BDD
       ]);
 
       if (!apiResponse.ok || !bddResponse.ok) {
@@ -121,7 +133,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Combinar y estandarizar los países
       const paisesCombinados = combinarPaises(countriesAPI, countriesBDD);
 
-      // Cargar países en el selector
       cargarPaisesSelect(paisesCombinados);
     } catch (error) {
       console.error("Error al cargar países:", error);
@@ -129,23 +140,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Función para combinar países de la API externa y la base de datos
+  // Combinar países de la API externa y la base de datos
   function combinarPaises(apiPaises, dbPaises) {
-    // Extraigo nombres de la API
     const nombresAPI = apiPaises.map((pais) => ({
       nombre: pais.name.common,
     }));
 
-    // Extraigo nombres de la base de datos
     const nombresBDD = dbPaises.map((pais) => ({
       nombre: pais.nombre,
     }));
 
     // Combinar y eliminar duplicados basados en el nombre
-    const paisesUnicos = [...nombresBDD]; // Copio los países de la base de datos
+    const paisesUnicos = [...nombresBDD];
     nombresAPI.forEach((apiPais) => {
       if (!paisesUnicos.some((p) => p.nombre === apiPais.nombre)) {
-        // Si no existe en la base de datos lo agrego
         paisesUnicos.push(apiPais);
       }
     });
@@ -154,8 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return paisesUnicos;
   }
 
-  // Función para cargar los países en el selector
-  // Función para cargar los países en el selector
+  // Cargar los países en el selector
   function cargarPaisesSelect(paises) {
     const paisSelect = document.getElementById("pais-select");
     paisSelect.innerHTML = "";
@@ -177,11 +184,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Función para cargar datos del viaje
+  // Cargar datos del viaje
   function cargarDatosViaje(viaje) {
     document.getElementById("pais-select").value = viaje.pais.nombre;
-    document.getElementById("fecha-inicio").value =
-      viaje.fechaInicio.split("T")[0];
+    document.getElementById("fecha-inicio").value = viaje.fechaInicio.split("T")[0];
     document.getElementById("fecha-fin").value = viaje.fechaFin.split("T")[0];
     document.getElementById("presupuesto").value = viaje.presupuesto;
     document.getElementById("calificacion").value = viaje.calificacion;
@@ -190,7 +196,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     actualizarCiudadesTags();
   }
 
-  // Función para actualizar etiquetas de ciudades
+  // Actualizar etiquetas de ciudades
   function actualizarCiudadesTags() {
     const tagsContainer = document.getElementById("ciudades-tags");
     tagsContainer.innerHTML = "";

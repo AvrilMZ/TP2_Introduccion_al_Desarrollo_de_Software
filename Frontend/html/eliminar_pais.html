@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
         <!--CSS-->
         <link rel="stylesheet" href="../css/navbar.css">
-        <link rel="stylesheet" href="../css/paises.css">
+        <link rel="stylesheet" href="../css/eliminar_pais.css">
         <link rel="stylesheet" href="../css/footer.css">
     </head>
 
@@ -61,27 +61,29 @@
         
         <!-- Content -->
         <div class="content">
+            <h2>Eliminar País</h2>
+
             <div class="field">
+                <label class="label">País</label>
                 <div class="control">
-                    <input class="input" type="text" id="search" placeholder="Buscar país..." oninput="buscarPaises()">
-                    <a href="/html/crear_paises.html">
-                        <button class="button is-primary is-rounded">Añadir</button>
-                    </a>
-                    <a href="/html/editar_paises.html">
-                        <button class="button is-rounded" style="color: #00d1b2; border-color: #00d1b2;">Modificar</button>
-                    </a>
-                    <a href="/html/eliminar_pais.html">
-                        <button class="button is-rounded" style="color: #00d1b2; border-color: #00d1b2;">Eliminar</button>
-                    </a>
+                    <div class="select is-fullwidth">
+                        <select id="pais-select" required>
+                            <option value="" disabled selected>Seleccionar</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="card-container" id="card-container"></div>
-            <div class="button-container">
-                <button id="anterior" class="button is-primary is-rounded">Anterior</button>
-                <button id="siguiente" class="button is-primary is-rounded">Siguiente</button>
+
+            <p id="pais-encontrado" class="help is-success" style="display: none;">País encontrado</p>
+            <p id="pais-desconocido" class="help is-danger" style="display: none;">País no encontrado</p>
+
+            <div class="field is-grouped">
+                <div class="control">
+                    <button id="eliminar_pais" class="button is-primary is-rounded">Eliminar</button>
+                </div>
             </div>
         </div>
-        <script src="../js/paises.js"></script>
+        <script src="../js/eliminar_pais.js"></script>
     
         <!-- Footer -->
 		<footer class="footer">
