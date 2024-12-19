@@ -2,20 +2,16 @@
   "version": 2,
   "builds": [
     {
-      "src": "Frontend/**/*.html",
+      "src": "Frontend/**/*",
       "use": "@vercel/static"
     },
     {
-      "src": "Frontend/**/*.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "Frontend/**/*.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "Frontend/**/*.img",
-      "use": "@vercel/static"
+      "src": "Backend/api/**/*.js",
+      "use": "@vercel/node"
     }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "postgresql://postgres.zyfjxntfqrnzvcpqscdt:contraseña_database@aws-0-us-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
+    "DIRECT_URL": "postgresql://postgres.zyfjxntfqrnzvcpqscdt:contraseña_database@aws-0-us-west-1.pooler.supabase.com:5432/postgres"
+  }
 }
