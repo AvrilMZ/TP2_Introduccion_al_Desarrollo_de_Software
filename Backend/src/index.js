@@ -368,39 +368,44 @@ app.delete("/api/v1/viajes/:viajeId", async (req, res) => {
   const { viajeId } = req.params;
 
   try {
-    // Obtén el viaje para saber qué país eliminar
     const viaje = await prisma.viaje.findUnique({
-      where: { id: parseInt(viajeId) },
       where: { id: parseInt(viajeId, 10) },
+      include: { pais: true, usuario: true },
     });
 
     if (!viaje) {
       return res.status(404).json({ error: "Viaje no encontrado" });
     }
 
-    const pais = viaje.pais.nombre;
-    const usuario = viaje.usuario.usuario;
+    const pais = viaje.pais?.nombre;
+    const usuario = viaje.usuario?.usuario;
 
-    // Eliminar el viaje de la base de datos
+    // Eliminar el viaje
     await prisma.viaje.delete({
-      where: { id: parseInt(viajeId) },
+      where: { id: parseInt(viajeId, 10) },
     });
 
-    // Actualizar el campo paisesVisitados del usuario, eliminando el país
-    await prisma.user.update({
-      where: { usuario: usuario },
-      data: {
-        paisesVisitados: {
-          set: viaje.usuario.paisesVisitados.filter((p) => p !== pais),
+    // Actualizar países visitados
+    if (usuario && pais) {
+      await prisma.user.update({
+        where: { usuario: usuario },
+        data: {
+          paisesVisitados: {
+            set: (viaje.usuario.paisesVisitados || []).filter((p) => p !== pais),
+          },
         },
-      },
-    });
+      });
+    }
 
     res.status(200).json({ message: "Viaje y país eliminados correctamente" });
   } catch (error) {
     console.error(
       "Error al eliminar el viaje y actualizar los países visitados:",
-      error
+      {
+        error: error.message,
+        stack: error.stack,
+        viajeId,
+      }
     );
     res.status(500).json({ error: "Hubo un error al procesar la solicitud" });
   }
