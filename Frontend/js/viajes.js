@@ -47,88 +47,36 @@ async function mostrarViajes(viajes, paisesVisitados) {
     card.innerHTML = `
             <div class="card-image">
                 <figure class="image">
-                    <img src="${flagUrl}" alt="${
-      pais ? pais.nombre : "País desconocido"
-    }">
+                    <img src="${flagUrl}" alt="${pais ? pais.nombre : "País desconocido"}">
                 </figure>
             </div>
             <div class="card-content">
                 <div class="media">
                     <div class="media-left">
                         <figure class="image is-48x48">
-                            <img src="${flagUrl}" alt="${
-      pais ? pais.nombre : "País desconocido"
-    }">
+                            <img src="${flagUrl}" alt="${pais ? pais.nombre : "País desconocido"}">
                         </figure>
                     </div>
                     <div class="media-content">
-                        <p class="title is-4">${
-                          pais ? pais.nombre : "País desconocido"
-                        }</p>
+                        <p class="title is-4" style="display: inline-block;">${pais ? pais.nombre : "País desconocido"}</p>
+                        <p class="subtitle" style="display: inline-block; float: right; margin-top: .20rem;">ID: ${viaje.id}</p>
                     </div>
                 </div>
                 <div class="info">
-                    <p>Fecha de inicio: ${new Date(
-                      viaje.fechaInicio
-                    ).toLocaleDateString()}</p>
-                    <p>Fecha de fin: ${new Date(
-                      viaje.fechaFin
-                    ).toLocaleDateString()}</p>
+                    <p>Fecha de inicio: ${new Date(viaje.fechaInicio).toLocaleDateString()}</p>
+                    <p>Fecha de fin: ${new Date(viaje.fechaFin).toLocaleDateString()}</p>
                     <p>Ciudades visitadas: ${viaje.ciudades.join(", ")}</p>
                     <p>Presupuesto: $${viaje.presupuesto.toLocaleString()}</p>
                     <p>Calificación: ${viaje.calificacion}</p>
                 </div>
                 <footer class="card-footer">
-                    <a href="editar_viaje.html?id=${
-                      viaje.id
-                    }" class="card-footer-item">Modificar</a>
-                    <a href="#" class="card-footer-item delete-viaje" data-id="${
-                      viaje.id
-                    }">Eliminar</a>
+                    <a href="editar_viaje.html?id=${viaje.id}" class="card-footer-item">Modificar</a>
+                    <a href="#" class="card-footer-item delete-viaje" data-id="${viaje.id}">Eliminar</a>
                 </footer>
             </div>
         `;
     cardContainer.appendChild(card);
   });
-
-  for (const pais of paisesNoAsociados) {
-    const flagUrl = await obtenerBandera(pais);
-
-    const card = document.createElement("div");
-    card.className = "card is-horizontal";
-
-    card.innerHTML = `
-            <div class="card-image">
-                <figure class="image">
-                    <img src="${flagUrl}" alt="${pais}">
-                </figure>
-            </div>
-            <div class="card-content">
-                <div class="media">
-                    <div class="media-left">
-                        <figure class="image is-48x48">
-                            <img src="${flagUrl}" alt="${pais}">
-                        </figure>
-                    </div>
-                    <div class="media-content">
-                        <p class="title is-4">${pais}</p>
-                    </div>
-                </div>
-                <div class="info">
-                    <p>Fecha de inicio: -</p>
-                    <p>Fecha de fin: -</p>
-                    <p>Ciudades visitadas: -</p>
-                    <p>Presupuesto: -</p>
-                    <p>Calificación: -</p>
-                </div>
-                <footer class="card-footer">
-                    <a href="#" class="card-footer-item modificar-viaje">Modificar</a>
-                    <a href="#" class="card-footer-item delete-viaje">Eliminar</a>
-                </footer>
-            </div>
-        `;
-    cardContainer.appendChild(card);
-  }
 }
 
 function agregarEventosModificar() {

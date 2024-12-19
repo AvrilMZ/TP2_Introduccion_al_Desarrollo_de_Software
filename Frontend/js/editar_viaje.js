@@ -1,3 +1,5 @@
+const API_URL = "http://localhost:3000/api/v1";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const viajeIdInput = document.getElementById("viaje-id");
   const buscarViajeButton = document.getElementById("buscar-viaje");
@@ -32,59 +34,61 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Manejar envío del formulario
-  document
-    .getElementById("form-viaje")
-    .addEventListener("submit", async function (event) {
-      event.preventDefault();
+  document.getElementById("form-viaje").addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-      const viajeId = viajeIdInput.value.trim();
-      const data = {
-        pais: document.getElementById("pais-select").value,
-        ciudades: ciudadesArray,
-        fechaInicio: document.getElementById("fecha-inicio").value,
-        fechaFin: document.getElementById("fecha-fin").value,
-        presupuesto: parseFloat(document.getElementById("presupuesto").value),
-        calificacion: parseInt(document.getElementById("calificacion").value),
-      };
+    const viajeId = viajeIdInput.value.trim(); // ID del viaje
+    const data = {
+      pais: document.getElementById("pais-select").value.trim(),
+      ciudades: ciudadesArray,
+      fechaInicio: document.getElementById("fecha-inicio").value.trim(),
+      fechaFin: document.getElementById("fecha-fin").value.trim(),
+      presupuesto: parseFloat(document.getElementById("presupuesto").value.trim()),
+      calificacion: parseInt(document.getElementById("calificacion").value.trim()),
+    };
 
-      if (
-        !data.pais ||
-        !data.fechaInicio ||
-        !data.fechaFin ||
-        !data.ciudades.length ||
-        !data.presupuesto ||
-        data.calificacion === undefined
-      ) {
-        mostrarErrorGeneral(
-          "Por favor, completa todos los campos obligatorios."
-        );
-        return;
+    console.log("Datos enviados al servidor:", data);
+
+    // Validaciones básicas antes de enviar
+    if (
+      !data.pais ||
+      !data.fechaInicio ||
+      !data.fechaFin ||
+      data.ciudades.length === 0 ||
+      isNaN(data.presupuesto) ||
+      isNaN(data.calificacion)
+    ) {
+      mostrarErrorGeneral("Por favor, completa todos los campos obligatorios.");
+      return;
+    }
+
+    if (new Date(data.fechaInicio) > new Date(data.fechaFin)) {
+      mostrarErrorGeneral("La fecha de inicio no puede ser posterior a la fecha de fin.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/viajes/${viajeId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "No se pudo actualizar el viaje.");
       }
 
-      if (new Date(data.fechaInicio) > new Date(data.fechaFin)) {
-        mostrarErrorGeneral(
-          "La fecha de inicio no puede ser posterior a la fecha de fin."
-        );
-        return;
-      }
+      const viajeActualizado = await response.json();
+      console.log("Viaje actualizado:", viajeActualizado);
 
-      try {
-        const response = await fetch(`/api/v1/viajes/${viajeId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-          throw new Error("No se pudo actualizar el viaje.");
-        }
-
-        alert("Viaje actualizado exitosamente.");
-        window.location.href = `../html/viajes.html`;
-      } catch (error) {
-        mostrarErrorGeneral(error.message || "No se pudo actualizar el viaje.");
-      }
-    });
+      alert("Viaje actualizado exitosamente.");
+      window.location.href = "../html/viajes.html";
+    } catch (error) {
+      console.error("Error al actualizar el viaje:", error);
+      mostrarErrorGeneral(error.message || "No se pudo actualizar el viaje.");
+    }
+  });
 
   // Capturar ciudades
   const inputCiudades = document.getElementById("ciudades");
