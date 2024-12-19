@@ -132,7 +132,6 @@ app.post("/api/v1/users", async (req, res) => {
 });
 
 // Elimina un usuario
-
 app.delete("/api/v1/users/:usuario", async (req, res) => {
   const userUsuario = req.params.usuario;
 
@@ -282,10 +281,8 @@ app.post("/api/v1/viajes", async (req, res) => {
     });
 
     if (!paisData) {
-      console.error("El usuario especificado no existe");
-      return res.redirect(
-        "error.html?code=404&mensaje=El país especificado no existe"
-      );
+      console.error("El país especificado no existe");
+      return res.status(404).json({ error: "El país especificado no existe" });
     }
 
     // Verifico que existe el usuario
@@ -295,9 +292,7 @@ app.post("/api/v1/viajes", async (req, res) => {
 
     if (!user) {
       console.error("El usuario especificado no existe");
-      return res.redirect(
-        "error.html?code=404&mensaje=El usuario especificado no existe"
-      );
+      return res.status(404).json({ error: "El usuario especificado no existe" });
     }
 
     const nuevoViaje = await prisma.viaje.create({
@@ -312,27 +307,67 @@ app.post("/api/v1/viajes", async (req, res) => {
       },
     });
 
+    // Actualizamos el campo paisesVisitados del usuario agregando el nombre del país
+    await prisma.user.update({
+      where: { usuario: usuario },
+      data: {
+        paisesVisitados: {
+          push: pais,
+        },
+      },
+    });
+
     res.status(201).json(nuevoViaje);
   } catch (error) {
     console.error("Ocurrió un error al crear el viaje: ", error);
-    return res
-      .status(500)
-      .json({ error: "Ocurrió un error al crear el viaje" });
+    return res.status(500).json({ error: "Ocurrió un error al crear el viaje" });
   }
 });
 
-// Editar un viaje existente
-app.put("/api/v1/viajes/:id", async (req, res) => {
-  const { id } = req.params;
-  const { pais, ciudades, fechaInicio, fechaFin, presupuesto, calificacion } =
-    req.body;
+// Editar un viaje existente basado en el usuario y el ID del viaje
+app.put("/api/v1/users/:usuario/viajes/:id", async (req, res) => {
+  const { usuario, id } = req.params;
+  const { pais, ciudades, fechaInicio, fechaFin, presupuesto, calificacion } = req.body;
+
+  if (!usuario) {
+    return res.status(400).send({ message: 'El usuario es requerido' });
+  }
+
+  if (!id) {
+    return res.status(400).send({ message: 'ID del viaje es requerido' });
+  }
 
   try {
+    // Validar si el usuario existe
+    const usuarioExistente = await prisma.usuario.findUnique({
+      where: { username: usuario },
+    });
+
+    if (!usuarioExistente) {
+      console.error("El usuario especificado no existe:", usuario);
+      return res.status(404).json({ error: "El usuario especificado no existe." });
+    }
+
     // Validar país
-    const paisData = await prisma.pais.findUnique({ where: { nombre: pais } });
+    const paisData = await prisma.pais.findUnique({
+      where: { nombre: pais },
+    });
+
     if (!paisData) {
       console.error("El país especificado no existe:", pais);
       return res.status(404).json({ error: "El país especificado no existe." });
+    }
+
+    // Verificar que el viaje pertenece al usuario
+    const viajeExistente = await prisma.viaje.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!viajeExistente || viajeExistente.usuarioId !== usuarioExistente.id) {
+      console.error("El viaje no pertenece al usuario:", usuario);
+      return res
+        .status(403)
+        .json({ error: "El viaje no pertenece al usuario especificado." });
     }
 
     // Actualizar viaje
@@ -357,31 +392,42 @@ app.put("/api/v1/viajes/:id", async (req, res) => {
 });
 
 // Eliminar un viaje
-app.delete("/api/v1/viajes/:id", async (req, res) => {
-  const viajeId = parseInt(req.params.id);
+app.delete('/api/v1/viajes/:viajeId', async (req, res) => {
+  const { viajeId } = req.params;
+
   try {
+    // Obtén el viaje para saber qué país eliminar
     const viaje = await prisma.viaje.findUnique({
-      where: {
-        id: viajeId,
-      },
+      where: { id: parseInt(viajeId) },
+      include: { pais: true, usuario: true },
     });
 
     if (!viaje) {
-      console.error("Viaje no encontrado");
-      return res.redirect("error.html?code=404&mensaje=Viaje no encontrado");
+      return res.status(404).json({ error: 'Viaje no encontrado' });
     }
 
+    const pais = viaje.pais.nombre;
+    const usuario = viaje.usuario.usuario;
+
+    // Eliminar el viaje de la base de datos
     await prisma.viaje.delete({
-      where: {
-        id: viajeId,
+      where: { id: parseInt(viajeId) },
+    });
+
+    // Actualizar el campo paisesVisitados del usuario, eliminando el país
+    await prisma.user.update({
+      where: { usuario: usuario },
+      data: {
+        paisesVisitados: {
+          set: viaje.usuario.paisesVisitados.filter(p => p !== pais),
+        },
       },
     });
 
-    console.log(`Viaje eliminado exitosamente`);
-    res.send(`Viaje ${viajeId} eliminado exitosamente`);
+    res.status(200).json({ message: 'Viaje y país eliminados correctamente' });
   } catch (error) {
-    console.error("Error al eliminar el viaje:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error('Error al eliminar el viaje y actualizar los países visitados:', error);
+    res.status(500).json({ error: 'Hubo un error al procesar la solicitud' });
   }
 });
 

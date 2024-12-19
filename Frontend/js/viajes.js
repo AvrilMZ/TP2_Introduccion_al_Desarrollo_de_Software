@@ -7,10 +7,10 @@ async function obtenerBandera(nombrePais) {
 			`https://restcountries.com/v3.1/name/${encodeURIComponent(nombrePais)}`
 		);
 		const data = await response.json();
-		return data[0]?.flags?.png || 'https://via.placeholder.com/150'; // Imagen por defecto si no hay bandera
+		return data[0]?.flags?.png || "../img/img_no_disponible.jpg";
 	} catch (error) {
 		console.error('Error al obtener la bandera:', error);
-		return 'https://via.placeholder.com/150'; // Imagen por defecto si hay un error
+		return "../img/img_no_disponible.jpg";
 	}
 }
 
@@ -31,23 +31,18 @@ async function mostrarViajes(viajes, paisesVisitados) {
 	const cardContainer = document.getElementById('card-container');
 	cardContainer.innerHTML = '';
 
-	// Asegura que los viajes tengan banderas
 	const viajesConBanderas = await agregarBanderas(viajes);
 
-	// Extrae los países que no tienen un viaje asociado
 	const paisesNoAsociados = paisesVisitados.filter(
 		(pais) => !viajesConBanderas.some((viaje) => viaje.pais?.nombre === pais)
 	);
 
-	// Muestra cada viaje existente
 	viajesConBanderas.forEach((viaje) => {
 		const pais = viaje.pais;
-		const flagUrl = pais?.flags?.png || 'https://via.placeholder.com/150';
+		const flagUrl = pais?.flags?.png || "../img/img_no_disponible.jpg";
 
 		const card = document.createElement('div');
 		card.className = 'card is-horizontal';
-
-		console.log(viaje.id);
 
 		card.innerHTML = `
             <div class="card-image">
@@ -74,15 +69,16 @@ async function mostrarViajes(viajes, paisesVisitados) {
                     <p>Calificación: ${viaje.calificacion}</p>
                 </div>
                 <footer class="card-footer">
-                    <a href="../html/editar_viaje.html?id=${viaje.id}" class="card-footer-item modificar-viaje" data-id="${viaje.id}">Modificar</a>
-                    <a href="#" class="card-footer-item delete-viaje" data-id="${viaje.id}">Eliminar</a>
-                </footer>
+					<a href="#" class="card-footer-item modificar-viaje" 
+					data-id="${viaje.id}" 
+					data-usuario="${viaje.usuario}">Modificar</a>
+					<a href="#" class="card-footer-item delete-viaje" data-id="${viaje.id}">Eliminar</a>
+            	</footer>
             </div>
         `;
 		cardContainer.appendChild(card);
 	});
 
-	// Muestra tarjetas para los países visitados sin viajes
 	for (const pais of paisesNoAsociados) {
 		const flagUrl = await obtenerBandera(pais);
 
@@ -114,36 +110,39 @@ async function mostrarViajes(viajes, paisesVisitados) {
                     <p>Calificación: -</p>
                 </div>
                 <footer class="card-footer">
-                    <a href="../html/editar_viaje.html?id=${viaje.id}" class="card-footer-item modificar-viaje" data-id="${viaje.id}">Modificar</a>
-                    <a href="#" class="card-footer-item delete-viaje" data-pais="${pais}">Eliminar</a>
+                    <a href="#" class="card-footer-item modificar-viaje">Modificar</a>
+                    <a href="#" class="card-footer-item delete-viaje">Eliminar</a>
                 </footer>
             </div>
         `;
 		cardContainer.appendChild(card);
 	}
+
+	agregarEventosModificar(); // Agrega los eventos a los botones "Modificar"
 }
 
-// Función para actualizar una card con datos editados
-function actualizarCard(viaje) {
-	const card = document
-		.querySelector(`.card-footer-item[data-id="${viaje.id}"]`)
-		.closest('.card');
-	if (card) {
-		card.querySelector('.title.is-4').textContent =
-			viaje.pais.nombre || 'País desconocido';
-		card.querySelector('.info').innerHTML = `
-            <p>Fecha de inicio: ${new Date(
-			viaje.fechaInicio
-		).toLocaleDateString()}</p>
-            <p>Fecha de fin: ${new Date(
-			viaje.fechaFin
-		).toLocaleDateString()}</p>
-            <p>Ciudades visitadas: ${viaje.ciudades.join(', ')}</p>
-            <p>Presupuesto: $${viaje.presupuesto.toLocaleString()}</p>
-            <p>Calificación: ${viaje.calificacion}</p>
-        `;
-	}
+function agregarEventosModificar() {
+	const botonesModificar = document.querySelectorAll('.modificar-viaje');
+
+	botonesModificar.forEach((boton) => {
+		boton.addEventListener('click', (event) => {
+			event.preventDefault();
+
+			// Obtener el ID del viaje y el nombre del usuario
+			const viajeId = boton.getAttribute('data-id');
+			const usuario = boton.getAttribute('data-usuario');
+
+			// Verificar que los datos existan
+			if (viajeId && usuario) {
+				// Redirigir a la página de edición con los parámetros en la URL
+				window.location.href = `editar_viaje.html?usuario=${usuario}&id=${viajeId}`;
+			} else {
+				console.error('Faltan datos para la redirección');
+			}
+		});
+	});
 }
+
 
 // Verificar existencia de usuario y obtener viajes
 document.getElementById('buscar-viaje').addEventListener('click', async () => {
@@ -197,8 +196,9 @@ document.addEventListener('click', async (event) => {
 	if (event.target.classList.contains('delete-viaje')) {
 		event.preventDefault();
 
-		// Obtener el ID del viaje desde el atributo `data-id`
+		// Obtener el ID del viaje y el país desde el atributo `data-id` o `data-pais`
 		const viajeId = event.target.dataset.id;
+		const pais = event.target.dataset.pais;
 
 		if (viajeId) {
 			const confirmar = confirm(
@@ -206,7 +206,7 @@ document.addEventListener('click', async (event) => {
 			);
 			if (confirmar) {
 				try {
-					// Realiza una petición DELETE al servidor
+					// Realiza una petición DELETE al servidor para eliminar el viaje
 					const response = await fetch(
 						`http://localhost:3000/api/v1/viajes/${viajeId}`,
 						{
@@ -219,6 +219,39 @@ document.addEventListener('click', async (event) => {
 						const card = event.target.closest('.card');
 						card.remove();
 						alert('El viaje ha sido eliminado con éxito.');
+
+						// Actualizar el campo `paisesVisitados` del usuario para eliminar el país
+						if (pais) {
+							const usuarioInput = document.getElementById('usuario');
+							const usuario = usuarioInput.value.trim();
+
+							// Elimina el país de la lista de países visitados del usuario
+							const updateResponse = await fetch(
+								`http://localhost:3000/api/v1/users/${usuario}`,
+								{
+									method: 'PATCH',
+									headers: {
+										'Content-Type': 'application/json',
+									},
+									body: JSON.stringify({
+										paisesVisitados: [
+											...new Set(
+												// Elimina el país del array de países visitados
+												userData.paisesVisitados.filter(
+													(p) => p !== pais
+												)
+											),
+										],
+									}),
+								}
+							);
+
+							if (updateResponse.ok) {
+								console.log('País eliminado de países visitados del usuario');
+							} else {
+								alert('No se pudo actualizar el país visitado.');
+							}
+						}
 					} else {
 						alert('No se pudo eliminar el viaje. Intente nuevamente.');
 					}
