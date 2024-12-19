@@ -1,14 +1,19 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "Frontend/**/*",
       "use": "@vercel/static"
+    },
+    {
+      "src": "Backend/**/*",
+      "use": "@vercel/node"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "Frontend/$1"
-    }
-  ]
+  "build": {
+    "commands": [
+      "npx prisma generate",
+      "npx prisma migrate deploy"
+    ]
+  }
 }

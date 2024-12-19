@@ -176,15 +176,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Cargar datos del viaje
   function cargarDatosViaje(viaje) {
     document.getElementById("pais-select").value = viaje.pais.nombre;
-    document.getElementById("fecha-inicio").value =
-      viaje.fechaInicio.split("T")[0];
-    document.getElementById("fecha-fin").value = viaje.fechaFin.split("T")[0];
+
+    const fechaInicio = viaje.fechaInicio ? viaje.fechaInicio.split("T")[0] : "1950-01-01";
+    const fechaFin = viaje.fechaFin ? viaje.fechaFin.split("T")[0] : "1950-01-02";
+
+    document.getElementById("fecha-inicio").value = fechaInicio;
+    document.getElementById("fecha-fin").value = fechaFin;
+
     document.getElementById("presupuesto").value = viaje.presupuesto;
     document.getElementById("calificacion").value = viaje.calificacion;
 
     ciudadesArray = viaje.ciudades || [];
     actualizarCiudadesTags();
   }
+
 
   // Actualizar etiquetas de ciudades
   function actualizarCiudadesTags() {
