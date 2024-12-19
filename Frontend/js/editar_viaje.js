@@ -1,51 +1,35 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // Función para obtener los parámetros de la URL
-  function getParametrosDesdeURL() {
-    const pathname = window.location.pathname;
-    console.log("Ruta completa:", pathname); // Verifica la URL en la consola
-
-    // Suponiendo que la URL es algo como: /html/editar_viaje.html/usuario/:usuario/viajes/:id
-    const segments = pathname.split('/');
-
-    // Asumiendo que el usuario está en la segunda posición y el id en la cuarta
-    const usuario = segments[segments.length - 3];  // 'usuario'
-    const viajeId = segments[segments.length - 1];  // 'id'
-
-    console.log("Usuario extraído: ", usuario);  // Verifica que el usuario se extraiga correctamente
-    console.log("ID del viaje extraído: ", viajeId);
-
-    return { usuario, viajeId };
-  }
-
-  const { usuario, viajeId } = getParametrosDesdeURL(); // Extraemos usuario y viajeId de la URL
-
-  if (!usuario || !viajeId) {
-    mostrarErrorGeneral("No se pudo obtener el usuario o el ID del viaje.");
-    return;
-  }
-
+  const viajeIdInput = document.getElementById("viaje-id");
+  const buscarViajeButton = document.getElementById("buscar-viaje");
+  const saveButton = document.querySelector('button[type="submit"]');
   let ciudadesArray = [];
 
-  await cargarPaises();
-  if (viajeId) {
-    fetch(`http://localhost:3000/api/v1/viajes/${viajeId}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Error al obtener los datos del viaje.");
-        }
-        return response.json();
-      })
-      .then((viaje) => {
-        cargarDatosViaje(viaje);
-      })
-      .catch((error) => {
-        mostrarErrorGeneral(
-          "No se pudieron cargar los datos del viaje. Intenta nuevamente."
-        );
-      });
-  } else {
-    mostrarErrorGeneral("No se encontró un ID válido para este viaje.");
-  }
+  deshabilitarCamposEdicion();
+
+  buscarViajeButton.addEventListener("click", async function (event) {
+    event.preventDefault();
+    const viajeId = viajeIdInput.value.trim();
+
+    if (!viajeId) {
+      mostrarErrorGeneral("Por favor, ingresa un ID de viaje.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/v1/viajes/${viajeId}`
+      );
+      if (!response.ok) {
+        throw new Error("No se pudo encontrar el viaje.");
+      }
+
+      const viaje = await response.json();
+      cargarDatosViaje(viaje);
+      habilitarCamposEdicion();
+    } catch (error) {
+      mostrarErrorGeneral(error.message || "No se pudo encontrar el viaje.");
+    }
+  });
 
   // Manejar envío del formulario
   document
@@ -53,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .addEventListener("submit", async function (event) {
       event.preventDefault();
 
+      const viajeId = viajeIdInput.value.trim();
       const data = {
         pais: document.getElementById("pais-select").value,
         ciudades: ciudadesArray,
@@ -84,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       try {
-        const response = await fetch(`/api/v1/users/${usuario}/viajes/${viajeId}`, {
+        const response = await fetch(`/api/v1/viajes/${viajeId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -95,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         alert("Viaje actualizado exitosamente.");
-        window.location.href = `../html/viajes.html/usuario/${usuario}`;
+        window.location.href = `../html/viajes.html`;
       } catch (error) {
         mostrarErrorGeneral(error.message || "No se pudo actualizar el viaje.");
       }
@@ -187,7 +172,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Cargar datos del viaje
   function cargarDatosViaje(viaje) {
     document.getElementById("pais-select").value = viaje.pais.nombre;
-    document.getElementById("fecha-inicio").value = viaje.fechaInicio.split("T")[0];
+    document.getElementById("fecha-inicio").value =
+      viaje.fechaInicio.split("T")[0];
     document.getElementById("fecha-fin").value = viaje.fechaFin.split("T")[0];
     document.getElementById("presupuesto").value = viaje.presupuesto;
     document.getElementById("calificacion").value = viaje.calificacion;
@@ -229,4 +215,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       errorGeneral.classList.add("is-hidden");
     }, 5000);
   }
+
+  function habilitarCamposEdicion() {
+    document.getElementById("pais-select").disabled = false;
+    document.getElementById("fecha-inicio").disabled = false;
+    document.getElementById("fecha-fin").disabled = false;
+    document.getElementById("presupuesto").disabled = false;
+    document.getElementById("calificacion").disabled = false;
+    document.getElementById("ciudades").disabled = false;
+    saveButton.disabled = false;
+  }
+
+  function deshabilitarCamposEdicion() {
+    document.getElementById("pais-select").disabled = true;
+    document.getElementById("fecha-inicio").disabled = true;
+    document.getElementById("fecha-fin").disabled = true;
+    document.getElementById("presupuesto").disabled = true;
+    document.getElementById("calificacion").disabled = true;
+    document.getElementById("ciudades").disabled = true;
+    saveButton.disabled = true;
+  }
+
+  await cargarPaises();
 });
