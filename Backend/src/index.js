@@ -595,18 +595,31 @@ app.put("/api/v1/paises/:paisNombre", async (req, res) => {
 });
 
 // Ruta para borrar un país existente
-app.delete("/api/v1/paises/:id", async (req, res) => {
+app.delete('/api/v1/paises/:id', async (req, res) => {
   const { id } = req.params;
+  console.log("ID recibido en el servidor:", id);
+
+  if (isNaN(id)) {
+    return res.status(400).json({ error: 'El ID debe ser un número válido.' });
+  }
 
   try {
-    await prisma.pais.delete({
-      where: { id: parseInt(id) },
-    });
+    const transaction = await prisma.$transaction([
+      prisma.viaje.deleteMany({
+        where: { paisId: parseInt(id) },  // Eliminar viajes que hacen referencia al país
+      }),
+      prisma.pais.delete({
+        where: { id: parseInt(id) },  // Eliminar el país
+      }),
+    ]);
 
-    res.status(204).send();
+    res.status(200).json({ message: `País y sus viajes eliminados exitosamente.` });
   } catch (error) {
-    console.error("Error al borrar el país: ", error);
-    res.status(500).json({ error: "Error interno al borrar el país" });
+    console.error('Error al eliminar el país y sus viajes:', error);
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'País no encontrado.' });
+    }
+    res.status(500).json({ error: 'Hubo un problema al eliminar el país.' });
   }
 });
 
