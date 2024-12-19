@@ -67,11 +67,24 @@
 
 			<!-- Formulario -->
 			<form id="form-viaje">
+				<!-- Agregar campo de entrada para el ID del viaje -->
+				<div class="field">
+					<label class="label">ID del Viaje</label>
+					<div class="control">
+						<input id="viaje-id" class="input" type="text" placeholder="Ingresa el ID del viaje" required />
+					</div>
+				</div>
+				<div class="field">
+					<div class="control">
+						<button id="buscar-viaje" class="button is-link">Buscar Viaje</button>
+					</div>
+				</div>
+
 				<div class="field">
 					<label class="label">País</label>
 					<div class="control">
 						<div class="select">
-							<select id="pais-select" name="pais" required>
+							<select id="pais-select" name="pais" required disabled>
 								<option value="" disabled selected>Seleccionar</option>
 							</select>
 						</div>
@@ -82,10 +95,11 @@
 					<label class="label">Fecha de inicio:</label>
 					<input
 						type="date"
-						id="start-date"
+						id="fecha-inicio"
 						name="viaje-inicio"
 						min="1950-01-01"
 						max="2024-12-31"
+						disabled
 					/>
 				</div>
 
@@ -93,10 +107,11 @@
 					<label class="label">Fecha de fin:</label>
 					<input
 						type="date"
-						id="end-date"
+						id="fecha-fin"
 						name="viaje-fin"
 						min="1950-01-01"
 						max="2024-12-31"
+						disabled
 					/>
 				</div>
 
@@ -108,6 +123,7 @@
 							class="input"
 							type="text"
 							placeholder="Ingresa una ciudad y presiona Enter"
+							disabled
 						/>
 					</div>
 					<div id="ciudades-tags" class="tags"></div>
@@ -122,6 +138,7 @@
 							type="number"
 							name="presupuesto"
 							required
+							disabled
 						/>
 					</div>
 				</div>
@@ -137,13 +154,14 @@
 							max="5"
 							name="calificacion"
 							required
+							disabled
 						/>
 					</div>
 				</div>
 
 				<div class="field is-grouped">
 					<div class="control">
-						<button class="button is-link" type="submit">Modificar</button>
+						<button class="button is-link" type="submit" disabled>Modificar</button>
 					</div>
 					<div class="control">
 						<a href="viajes.html" class="button is-light">Cancelar</a>
