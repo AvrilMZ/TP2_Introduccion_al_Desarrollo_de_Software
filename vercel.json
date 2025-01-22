@@ -1,28 +1,27 @@
 {
     "version": 2,
     "builds": [
-      {
-        "src": "Backend/package.json",
-        "use": "@vercel/node"
-      },
-      {
-        "src": "Frontend/**/*",
-        "use": "@vercel/static"
-      }
+        {
+            "src": "Backend/package.json",
+            "use": "@vercel/node"
+        },
+        {
+            "src": "Frontend/**/*",
+            "use": "@vercel/static"
+        }
     ],
     "env": {
-      "DATABASE_URL": "@database_url",
-      "DIRECT_URL": "@direct_url"
+        "DATABASE_URL": "database_url",
+        "DIRECT_URL": "direct_url"
     },
     "routes": [
-      {
-        "src": "/",
-        "dest": "/html/index.html"
-      },
-      {
-        "src": "/html/(.*)",
-        "dest": "/html/$1"
-      }
+        {
+            "src": "/",
+            "dest": "/html/index.html"
+        },
+        {
+            "src": "/html/(.*)",
+            "dest": "/html/$1"
+        }
     ]
-  }
-  
+}  
