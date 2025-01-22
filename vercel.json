@@ -1,19 +1,18 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "Frontend/**/*",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "Backend/**/*",
-      "use": "@vercel/node"
+    "version": 2,
+    "builds": [
+      {
+        "src": "Backend/package.json",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "Frontend/**/*",
+        "use": "@vercel/static"
+      }
+    ],
+    "env": {
+      "DATABASE_URL": "@database_url",
+      "DIRECT_URL": "@direct_url"
     }
-  ],
-  "build": {
-    "commands": [
-      "npx prisma generate",
-      "npx prisma migrate deploy"
-    ]
-  }
 }
+ 
