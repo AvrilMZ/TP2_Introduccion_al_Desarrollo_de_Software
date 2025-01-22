@@ -13,6 +13,16 @@
     "env": {
       "DATABASE_URL": "@database_url",
       "DIRECT_URL": "@direct_url"
-    }
-}
- 
+    },
+    "routes": [
+      {
+        "src": "/",
+        "dest": "/html/index.html"
+      },
+      {
+        "src": "/html/(.*)",
+        "dest": "/html/$1"
+      }
+    ]
+  }
+  
