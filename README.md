@@ -28,15 +28,6 @@ WorldTracker es una página web que permite a los usuarios registrar los países
 
 API utilizada: [REST Countries](https://restcountries.com/)
 
-### Capturas de pantalla del funcionamiento
-
-<!--
-![Pantalla de inicio](ruta de la imagen)
-![Formulario Usuario](ruta de la imagen)
-![Paises a visitar](ruta de la imagen)
-![3er entidad](ruta de la imagen)
--->
-
 ### Instrucciones para correr el proyecto
 
 Antes de ejecutar el proyecto, hay que tener instaladas las siguientes herramientas:
@@ -58,48 +49,42 @@ git clone <clave_ssh>
 cd <direccion_local_repositorio>
 ```
 
-3. Levantar el contenedor de la base de datos con Docker:
-
-```bash
-cd Backend
-docker compose up -d
-```
-
-4. Renombra el archivo 'example.env' a '.env' y luego, usándolo como modelo, modifica los detalles con tu base de datos:
+3. Renombra el archivo 'example.env' a '.env' y luego, usándolo como modelo, modifica los detalles con tu base de datos:
 
 ```bash
 cp .example.env .env
 ```
 
-5. Instalar las dependencias del proyecto:
+4. Instalar las dependencias del proyecto:
 
 ```bash
 npm install
 ```
 
-6. Generar el cliente de Prisma:
+5. Generar el cliente de Prisma:
 
 ```bash
 npx prisma generate
 ```
 
-7. Aplicar migraciones para crear tablas en la base de datos:
+6. Aplicar migraciones para crear tablas en la base de datos:
 
 ```bash
 npx prisma migrate dev
 ```
 
-8. Levantar el servidor del Backend:
+7. Levantar el servidor del Backend:
 
 ```bash
 npm run dev
 ```
 
-9. Levantar el servidor del Frontend (en una terminal aparte):
+8. Levantar el servidor del Frontend (en una terminal aparte):
 
 ```bash
 cd <direccion_local_repositorio>
 cd Frontend
+npm install
 npm run start
 
 ```
