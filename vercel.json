@@ -16,12 +16,24 @@
     },
     "routes": [
         {
-            "src": "/",
-            "dest": "/html/index.html"
+            "src": "/css/(.*)",
+            "dest": "/Frontend/css/$1"
+        },
+        {
+            "src": "/js/(.*)",
+            "dest": "/Frontend/js/$1"
+        },
+        {
+            "src": "/img/(.*)",
+            "dest": "/Frontend/img/$1"
         },
         {
             "src": "/html/(.*)",
-            "dest": "/html/$1"
+            "dest": "/Frontend/html/$1"
+        },
+        {
+            "src": "/",
+            "dest": "/Frontend/html/index.html"
         }
     ]
-}  
+}
