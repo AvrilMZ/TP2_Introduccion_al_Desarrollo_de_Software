@@ -16,12 +16,8 @@
     },
     "routes": [
         {
-            "src": "/",
-            "dest": "/html/index.html"
-        },
-        {
-            "src": "/html/(.*)",
-            "dest": "/html/$1"
+            "src": "/(.*)",
+            "dest": "/Frontend/html/$1"
         }
     ]
-}  
+}
