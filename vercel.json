@@ -18,6 +18,18 @@
         {
             "src": "/(.*)",
             "dest": "/Frontend/html/$1"
+        },
+        {
+            "src": "/css/(.*)",
+            "dest": "/Frontend/css/$1"
+        },
+        {
+            "src": "/js/(.*)",
+            "dest": "/Frontend/js/$1"
+        },
+        {
+            "src": "/img/(.*)",
+            "dest": "/Frontend/img/$1"
         }
     ]
 }
