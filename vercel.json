@@ -1,15 +1,5 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "Backend/package.json",
-            "use": "@vercel/node"
-        },
-        {
-            "src": "Frontend/**/*",
-            "use": "@vercel/static"
-        }
-    ],
     "routes": [
         {
             "src": "/css/(.*)",
