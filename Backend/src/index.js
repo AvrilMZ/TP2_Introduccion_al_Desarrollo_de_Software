@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
-import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
@@ -11,10 +10,25 @@ import { dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config(); // Carga las variables de entorno
+// Verificar que las variables de entorno estén configuradas
+const databaseUrl = process.env.DATABASE_URL;
+const directUrl = process.env.DIRECT_URL;
+
+if (!databaseUrl || !directUrl) {
+  console.error("Las variables DATABASE_URL o DIRECT_URL no están configuradas.");
+  process.exit(1);
+}
+
+// Inicializar Prisma
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: databaseUrl, // Usa DATABASE_URL para conectar con la base de datos
+    },
+  },
+});
 
 const port = process.env.PORT || 3000;
-const prisma = new PrismaClient();
 const app = express();
 
 app.use(express.json());
