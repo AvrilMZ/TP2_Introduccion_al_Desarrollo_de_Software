@@ -23,7 +23,7 @@ Desarrollar un sitio web completo utilizando las tecnologías vistas a lo largo 
 - **Backend**: Bruno, DBeaver, Prisma
 - **DevOps**: Docker Compose
 
-## WorldTracker
+## [WorldTracker](https://worldtracker-intro.vercel.app/)
 WorldTracker es una página web que permite a los usuarios registrar los países que han visitado, rellenar un formulario sobre su experiencia además de contar con información de cada país.
 
 API utilizada: [REST Countries](https://restcountries.com/)
@@ -35,7 +35,7 @@ Antes de ejecutar el proyecto, hay que tener instaladas las siguientes herramien
 - Docker (última versión estable)
 - Node.js (LTS)
 
-**Pasos a seguir:**
+**Pasos a seguir para levantar el proyecto localmente:**
 
 1. Clonar el repositorio:
 
